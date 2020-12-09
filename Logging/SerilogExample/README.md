@@ -9,6 +9,7 @@ This project showcases the powerful ability of [Serilog](https://serilog.net/) a
 * Configuration
 * Sinks
 * Enrichers
+* Filter Expressions
 
 ## Great Video Tutorials
 
