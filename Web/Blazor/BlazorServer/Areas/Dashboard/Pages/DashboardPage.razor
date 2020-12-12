@@ -1,0 +1,92 @@
+﻿@page "/dashboard"
+@using BlazorServer.Areas.Dashboard.Components
+
+<h3>DashboardPage</h3>
+
+<style>
+    /*
+        Not sure why but this fixes the extra vertical scrollbar issue
+        https://media.giphy.com/media/13FrpeVH09Zrb2/giphy.gif
+    */
+    .mud-main-content {
+        overflow: revert !important;
+    }
+</style>
+<MudGrid>
+    <MudItem xs="12" sm="12" md="12" lg="6">
+        <MudPaper Elevation="2" Class="pa-4">
+            <DashboardLineChart></DashboardLineChart>
+        </MudPaper>
+    </MudItem>
+    <MudHidden Breakpoint="Breakpoint.MdAndUp" Invert="true">
+        <MudItem xs="0" sm="0" md="12" lg="6">
+            <MudPaper Elevation="2" Class="pa-4">
+                <DashboardTable></DashboardTable>
+            </MudPaper>
+        </MudItem>
+    </MudHidden>
+    <MudItem xs="12" sm="12" md="12" lg="6">
+        <MudCard>
+            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="200px" />
+            <MudCardContent>
+                <MudSkeleton Width="30%" Height="42px;" />
+                <MudSkeleton Width="80%" />
+                <MudSkeleton Width="100%" />
+            </MudCardContent>
+            <MudCardActions>
+                <MudSkeleton Width="10%" Height="40px" Class="ml-2" />
+                <MudSkeleton Width="25%" Height="40px" Class="ml-3" />
+            </MudCardActions>
+        </MudCard>
+    </MudItem>
+    <MudItem xs="12" sm="12" md="12" lg="6">
+        <MudPaper Elevation="2" Class="pa-4">
+            <DashboardPieChart></DashboardPieChart>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12" sm="12" md="6" lg="4">
+        <MudPaper Elevation="2" Class="pa-4">
+            <MudList Clickable="true">
+                <MudListSubheader>
+                    Nested List Items
+                </MudListSubheader>
+                <MudListItem Icon="@Icons.Material.Send">
+                    Sent mail
+                </MudListItem>
+                <MudListItem Icon="@Icons.Material.Drafts">
+                    Drafts
+                </MudListItem>
+                <MudListItem Icon="@Icons.Material.Inbox" Text="Inbox">
+                    <NestedList>
+                        <MudListItem Icon="@Icons.Material.StarRate">
+                            Starred
+                        </MudListItem>
+                        <MudListItem Icon="@Icons.Material.WatchLater">
+                            Snoozed
+                        </MudListItem>
+                    </NestedList>
+                </MudListItem>
+            </MudList>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12" sm="12" md="6" lg="4">
+        <MudPaper Elevation="2" Class="pa-4">
+            <MudList Clickable="true">
+                <MudListItem Text="Inbox" Icon="@Icons.Material.Inbox" />
+                <MudListItem Text="Sent" Icon="@Icons.Material.Send" />
+                <MudDivider />
+                <MudListItem Text="Trash" />
+                <MudListItem Text="Spam" />
+            </MudList>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12" sm="12" md="12" lg="4">
+        <MudPaper Elevation="2" Class="pa-4">
+            <MudText Align="Align.Left"><b>Left</b> Lorem ipsum dolor sit amet.</MudText>
+            <MudText Align="Align.Right"><b>Right</b> Lorem ipsum dolor sit amet.</MudText>
+            <MudText Align="Align.Center"><b>Center</b> Lorem ipsum dolor sit amet.</MudText>
+            <MudText Align="Align.Justify"><b>Justify</b> Lorem ipsum dolor sit amet.</MudText>
+            <MudText Align="Align.Inherit"><b>Inherit</b> Lorem ipsum dolor sit amet.</MudText>
+        </MudPaper>
+    </MudItem>
+</MudGrid>

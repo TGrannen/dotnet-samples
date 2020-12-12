@@ -1,0 +1,23 @@
+﻿@using BlazorServer.Data
+
+<MudTable Items="@Forecasts" Hover="true" Breakpoint="Breakpoint.Sm">
+    <HeaderContent>
+        <MudTh><MudTableSortLabel SortBy="new Func<WeatherForecast, object>(x=>x.Date)">Date</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<WeatherForecast, object>(x=>x.TemperatureC)">Temp. (C)</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<WeatherForecast, object>(x=>x.TemperatureF)">Temp. (F)</MudTableSortLabel></MudTh>
+        <MudTh>
+            <MudTableSortLabel SortBy="new Func<WeatherForecast, object>(x=>x.Summary)">Summary</MudTableSortLabel>
+        </MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Date">@context.Date.ToShortDateString()</MudTd>
+        <MudTd DataLabel="TemperatureC">@context.TemperatureC</MudTd>
+        <MudTd DataLabel="TemperatureF">@context.TemperatureF</MudTd>
+        <MudTd DataLabel="Summary">@context.Summary</MudTd>
+    </RowTemplate>
+</MudTable>
+
+@code {
+    [Parameter]
+    public IEnumerable<WeatherForecast> Forecasts { get; set; } = new List<WeatherForecast>();
+}

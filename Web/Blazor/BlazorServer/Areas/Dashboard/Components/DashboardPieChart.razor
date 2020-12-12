@@ -1,0 +1,18 @@
+﻿<MudChart ChartType="ChartType.Pie" InputData="@data" InputLabels="@labels" Width="300px" Height="300px" />
+
+@code {
+    int dataSize = 4;
+    double[] data = { 77, 25, 20, 5 };
+    string[] labels = { "Uranium", "Plutonium", "Thorium", "Caesium", "Technetium", "Promethium", "Polonium", "Astatine", "Radon", "Francium", "Radium", "Actinium", "Protactinium", "Neptunium", "Americium", "Curium", "Berkelium", "Californium", "Einsteinium", "Mudblaznium" };
+
+    readonly Random _random = new Random();
+    void RandomizeData()
+    {
+        var new_data = new double[dataSize];
+        for (int i = 0; i < new_data.Length; i++)
+            new_data[i] = _random.NextDouble() * 100;
+        data = new_data;
+        StateHasChanged();
+    }
+
+}

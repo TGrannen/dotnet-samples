@@ -1,0 +1,47 @@
+﻿@page "/fetchdata"
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+@using BlazorServer.Areas.Weather.Forecasts.Components
+@using BlazorServer.Services
+@using BlazorServer.Store.Forecasts
+
+@inject IState<ForecastState> ForecastsState
+@inject WeatherService Facade
+
+<h1>Weather forecast</h1>
+
+<p>This component demonstrates fetching data from a service.</p>
+
+<div class="mt-lg-4">
+    @if (!ForecastsState.Value.IsLoading)
+    {
+        <div>
+            <MudIconButton Icon="@Filled.Refresh" Color="Color.Primary" OnClick="() => Facade.LoadForecasts()"></MudIconButton>
+        </div>
+    }
+
+    @if (ForecastsState.Value.IsLoading)
+    {
+        <MudProgressLinear Color="Color.Primary" Indeterminate="true" />
+    }
+    else if (ForecastsState.Value.HasCurrentErrors)
+    {
+        <MudAlert Severity="Severity.Warning">Whoops! Looks like an issue occurred loading Forecasts :(</MudAlert>
+    }
+    else if (!(ForecastsState.Value.CurrentForecasts is null))
+    {
+        <WeatherForecastTable Forecasts="ForecastsState.Value.CurrentForecasts"></WeatherForecastTable>
+    }
+</div>
+
+@code {
+
+    protected override void OnInitialized()
+    {
+        if (ForecastsState.Value.CurrentForecasts is null)
+        {
+            Facade.LoadForecasts();
+        }
+
+        base.OnInitialized();
+    }
+}

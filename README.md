@@ -31,12 +31,13 @@ This repository's purpose is to showcase common design patterns, best practices,
 
 ### Web
 
+* [Blazor](Web/Blazor/)
 * [Health Checks](Web/HealthEndpoints/)
 
 ## Remaining topics to be added to this repo
 
-| Section    | Item       |
-| ---------- | ---------- |
-| DataAccess | EF Core    |
-| Testing    | FakeItEasy |
-| Web        | Blazor     |
+| Section    | Item            |
+| ---------- | --------------- |
+| DataAccess | EF Core         |
+| Testing    | FakeItEasy      |
+| Web        | Blazor (Client) |

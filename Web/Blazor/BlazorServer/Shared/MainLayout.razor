@@ -1,0 +1,47 @@
+﻿@inherits Fluxor.Blazor.Web.Components.FluxorLayout
+@inject NavigationManager NavigationManager
+
+<div class="page">
+    <MudLayout>
+        <MudAppBar Elevation="1">
+            <MudIconButton Icon="@Icons.Material.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@ToggleDrawer" />
+            <MudText Typo="Typo.h6">Blazor Server</MudText>
+            <MudAppBarSpacer />
+            <MudIconButton Icon="@Icons.Custom.GitHub" Color="Color.Inherit" Link="https://github.com/Garderoben/MudBlazor" Target="_blank" />
+        </MudAppBar>
+        <MudDrawer @bind-Open="@open" Elevation="1">
+            <MudDrawerHeader>
+                <MudText Typo="Typo.h6" @onclick="AppNameClick">Blazor Server</MudText>
+            </MudDrawerHeader>
+            <MudNavMenu>
+                <MudNavLink Href="/Dashboard" Icon="@Filled.Dashboard">Dashboard</MudNavLink>
+                <MudNavLink Href="/counter" Icon="@Filled.PlusOne">Counter</MudNavLink>
+                <MudNavLink Href="/fetchdata" Icon="@Filled.Receipt">Billing</MudNavLink>
+            </MudNavMenu>
+        </MudDrawer>
+        <MudMainContent Class="pt-16 px-8">
+            <MudContainer Class="mt-6" MaxWidth="MaxWidth.ExtraLarge">
+                @Body
+            </MudContainer>
+        </MudMainContent>
+    </MudLayout>
+
+    <MudThemeProvider />
+    <MudDialogProvider />
+    <MudSnackbarProvider />
+</div>
+
+@code{
+    bool open = false;
+
+    void ToggleDrawer()
+    {
+        open = !open;
+    }
+
+    private void AppNameClick()
+    {
+        NavigationManager.NavigateTo("/dashboard");
+    }
+
+}
