@@ -36,9 +36,13 @@ This repository's purpose is to showcase common design patterns, best practices,
 
 ## Remaining topics to be added to this repo
 
-| Section        | Item            |
-| -------------- | --------------- |
-| DataAccess     | EF Core         |
-| Object Mapping | AutoMapper      |
-| Testing        | FakeItEasy      |
-| Web            | Blazor (Client) |
+| Section         | Item            |
+| --------------- | --------------- |
+| Background Jobs | Quartz          |
+| DataAccess      | EF Core         |
+| Email           | Fluent Email    |
+| Logging         | AWS Cloudwatch  |
+| Object Mapping  | AutoMapper      |
+| Testing         | FakeItEasy      |
+| Web             | Blazor (Client) |
+
