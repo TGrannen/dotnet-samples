@@ -10,6 +10,10 @@ This repository's purpose is to showcase common design patterns, best practices,
 * [Refit](APIAccess/Refit/)
 * [HttpREPL](APIAccess/HttpREPL/)
 
+### Background Jobs
+
+* [Quartz](BackgroundJobs/QuartzExample.Web/)
+
 ### Configration
 
 * [Configuration](Configuration/)
@@ -36,13 +40,12 @@ This repository's purpose is to showcase common design patterns, best practices,
 
 ## Remaining topics to be added to this repo
 
-| Section         | Item            |
-| --------------- | --------------- |
-| Background Jobs | Quartz          |
-| DataAccess      | EF Core         |
-| Email           | Fluent Email    |
-| Logging         | AWS Cloudwatch  |
-| Object Mapping  | AutoMapper      |
-| Testing         | FakeItEasy      |
-| Web             | Blazor (Client) |
+| Section        | Item            |
+| -------------- | --------------- |
+| DataAccess     | EF Core         |
+| Email          | Fluent Email    |
+| Logging        | AWS Cloudwatch  |
+| Object Mapping | AutoMapper      |
+| Testing        | FakeItEasy      |
+| Web            | Blazor (Client) |
 
