@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net5.0</TargetFramework>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Remove="Content\meme.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Include="Content\meme.png">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="FluentEmail.Razor" Version="2.9.0" />
+		<PackageReference Include="FluentEmail.SendGrid" Version="2.9.0" />
+		<PackageReference Include="FluentEmail.Smtp" Version="2.9.0" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
+		<PackageReference Include="Serilog.AspNetCore" Version="3.4.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="FluentEmail.Core" Version="2.9.0" />
+	</ItemGroup>
+
+	<!--Needed to get Razor Templating to work-->
+	<PropertyGroup>
+		<PreserveCompilationReferences>true</PreserveCompilationReferences>
+		<PreserveCompilationContext>true</PreserveCompilationContext>
+	</PropertyGroup>
+
+
+</Project>

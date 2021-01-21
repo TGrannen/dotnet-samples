@@ -18,6 +18,10 @@ This repository's purpose is to showcase common design patterns, best practices,
 
 * [Configuration](Configuration/)
 
+### Emailing
+
+* [FluentEmail](Emailing/FluentEmail.Web/)
+
 ### Logging
 
 * [Serilog](Logging/SerilogExample/)
@@ -43,9 +47,7 @@ This repository's purpose is to showcase common design patterns, best practices,
 | Section        | Item            |
 | -------------- | --------------- |
 | DataAccess     | EF Core         |
-| Email          | Fluent Email    |
 | Logging        | AWS Cloudwatch  |
 | Object Mapping | AutoMapper      |
 | Testing        | FakeItEasy      |
 | Web            | Blazor (Client) |
-
