@@ -25,6 +25,7 @@ This repository's purpose is to showcase common design patterns, best practices,
 ### Logging
 
 * [Serilog](Logging/SerilogExample/)
+* [Serilog - AWS CloudWatch](Logging/AWSCloudWatch/)
 
 ### Templates
 
@@ -47,7 +48,6 @@ This repository's purpose is to showcase common design patterns, best practices,
 | Section        | Item            |
 | -------------- | --------------- |
 | DataAccess     | EF Core         |
-| Logging        | AWS Cloudwatch  |
 | Object Mapping | AutoMapper      |
 | Testing        | FakeItEasy      |
 | Web            | Blazor (Client) |
