@@ -49,5 +49,4 @@ This repository's purpose is to showcase common design patterns, best practices,
 | -------------- | --------------- |
 | DataAccess     | EF Core         |
 | Object Mapping | AutoMapper      |
-| Testing        | FakeItEasy      |
 | Web            | Blazor (Client) |

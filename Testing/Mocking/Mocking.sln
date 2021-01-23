@@ -3,15 +3,25 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30717.126
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mocking.Moq", "Mocking.Moq\Mocking.Moq.csproj", "{0CEC016B-D727-4AD7-9328-B20E4BB4B538}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mocking.Moq", "Mocking.Moq\Mocking.Moq.csproj", "{0CEC016B-D727-4AD7-9328-B20E4BB4B538}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mocking.NSubstitute", "Mocking.NSubstitute\Mocking.NSubstitute.csproj", "{F1CDDA94-C8F3-45B5-8CCE-CD4C502DFDC3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mocking.NSubstitute", "Mocking.NSubstitute\Mocking.NSubstitute.csproj", "{F1CDDA94-C8F3-45B5-8CCE-CD4C502DFDC3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mocking.Shared", "Mocking.Shared\Mocking.Shared.csproj", "{E4C3602D-7E67-4632-9901-1A4E3D5F8E39}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mocking.Shared", "Mocking.Shared\Mocking.Shared.csproj", "{E4C3602D-7E67-4632-9901-1A4E3D5F8E39}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mocking.Mediator", "Mocking.Mediator\Mocking.Mediator.csproj", "{FC840549-D8AF-47C6-B3DD-5A179474C506}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mocking.Mediator", "Mocking.Mediator\Mocking.Mediator.csproj", "{FC840549-D8AF-47C6-B3DD-5A179474C506}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mocking.Mediator.Tests", "Mocking.Mediator.Tests\Mocking.Mediator.Tests.csproj", "{656DAF7D-5233-4302-9D7A-FBDF159BDD88}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mocking.Mediator.Tests", "Mocking.Mediator.Tests\Mocking.Mediator.Tests.csproj", "{656DAF7D-5233-4302-9D7A-FBDF159BDD88}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mocking.FakeItEasy", "Mocking.FakeItEasy\Mocking.FakeItEasy.csproj", "{8B6700FB-FDC8-40E6-B736-42E78FE68F19}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FakeItEasy", "FakeItEasy", "{85B378C8-47CB-4D6D-8916-18663073F943}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Moq", "Moq", "{7C55C5AD-F569-4CDE-93F4-1514C6B76E12}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NSubstitute", "NSubstitute", "{4CD8851E-8884-4880-A6DF-87897DE23793}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mediator", "Mediator", "{475334D0-FFF7-4AC1-8E8C-D63671E8B71B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -83,9 +93,29 @@ Global
 		{656DAF7D-5233-4302-9D7A-FBDF159BDD88}.Release|x64.Build.0 = Release|Any CPU
 		{656DAF7D-5233-4302-9D7A-FBDF159BDD88}.Release|x86.ActiveCfg = Release|Any CPU
 		{656DAF7D-5233-4302-9D7A-FBDF159BDD88}.Release|x86.Build.0 = Release|Any CPU
+		{8B6700FB-FDC8-40E6-B736-42E78FE68F19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B6700FB-FDC8-40E6-B736-42E78FE68F19}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B6700FB-FDC8-40E6-B736-42E78FE68F19}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{8B6700FB-FDC8-40E6-B736-42E78FE68F19}.Debug|x64.Build.0 = Debug|Any CPU
+		{8B6700FB-FDC8-40E6-B736-42E78FE68F19}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8B6700FB-FDC8-40E6-B736-42E78FE68F19}.Debug|x86.Build.0 = Debug|Any CPU
+		{8B6700FB-FDC8-40E6-B736-42E78FE68F19}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B6700FB-FDC8-40E6-B736-42E78FE68F19}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8B6700FB-FDC8-40E6-B736-42E78FE68F19}.Release|x64.ActiveCfg = Release|Any CPU
+		{8B6700FB-FDC8-40E6-B736-42E78FE68F19}.Release|x64.Build.0 = Release|Any CPU
+		{8B6700FB-FDC8-40E6-B736-42E78FE68F19}.Release|x86.ActiveCfg = Release|Any CPU
+		{8B6700FB-FDC8-40E6-B736-42E78FE68F19}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0CEC016B-D727-4AD7-9328-B20E4BB4B538} = {7C55C5AD-F569-4CDE-93F4-1514C6B76E12}
+		{F1CDDA94-C8F3-45B5-8CCE-CD4C502DFDC3} = {4CD8851E-8884-4880-A6DF-87897DE23793}
+		{FC840549-D8AF-47C6-B3DD-5A179474C506} = {475334D0-FFF7-4AC1-8E8C-D63671E8B71B}
+		{656DAF7D-5233-4302-9D7A-FBDF159BDD88} = {475334D0-FFF7-4AC1-8E8C-D63671E8B71B}
+		{8B6700FB-FDC8-40E6-B736-42E78FE68F19} = {85B378C8-47CB-4D6D-8916-18663073F943}
+		{475334D0-FFF7-4AC1-8E8C-D63671E8B71B} = {7C55C5AD-F569-4CDE-93F4-1514C6B76E12}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {33514010-0223-439A-8DA2-1435B28BD0F7}
