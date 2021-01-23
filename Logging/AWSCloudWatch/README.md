@@ -11,12 +11,12 @@ This project showcases the ability of [Serilog](https://serilog.net/) and log to
 
 ### Example Appsetting
 
-``` json
+``` jsonc
 {
     "Serilog:AWS": {
         "LogToCloudWatch": true,
 
-        //Serilog Setting
+        // Serilog Setting
         "MinimumLevel": "Information",
 
         // AWS specific settings
