@@ -5,6 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Quartz;
+using QuartzExample.Web.Jobs;
 
 namespace QuartzExample.Web
 {
@@ -53,7 +55,9 @@ namespace QuartzExample.Web
             applicationLifetime.ApplicationStarted.Register(() =>
             {
                 var logger = app.ApplicationServices.GetService<ILogger<Startup>>();
-                app.ApplicationServices.ScheduleQuartzJobs(Configuration, logger);
+                var scheduler = app.ApplicationServices.GetService<IScheduler>();
+
+                scheduler.ConfigureJobWithCronSchedule<ExampleJob1>(logger, Configuration, "BackgroundTasks:ExampleJob1CronExpression");
             });
         }
     }
