@@ -12,6 +12,7 @@ This repository's purpose is to showcase common design patterns, best practices,
 
 ### Background Jobs
 
+* [Hangfile](BackgroundJobs/Hangfire.Web/)
 * [Quartz](BackgroundJobs/QuartzExample.Web/)
 
 ### Configration
