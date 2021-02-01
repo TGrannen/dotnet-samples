@@ -19,6 +19,10 @@ This repository's purpose is to showcase common design patterns, best practices,
 
 * [Configuration](Configuration/)
 
+### Data Access
+
+* [EF Core](DataAccess/efcore.web/)
+
 ### Emailing
 
 * [FluentEmail](Emailing/FluentEmail.Web/)
@@ -48,6 +52,6 @@ This repository's purpose is to showcase common design patterns, best practices,
 
 | Section        | Item            |
 | -------------- | --------------- |
-| DataAccess     | EF Core         |
+| DataAccess     | Dapper          |
 | Object Mapping | AutoMapper      |
 | Web            | Blazor (Client) |
