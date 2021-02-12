@@ -32,6 +32,10 @@ This repository's purpose is to showcase common design patterns, best practices,
 * [Serilog](Logging/SerilogExample/)
 * [Serilog - AWS CloudWatch](Logging/AWSCloudWatch/)
 
+### Messaging
+
+* [Messaging](Messaging/)
+
 ### Templates
 
 * [Console App](Templates/ConsoleApp/)
