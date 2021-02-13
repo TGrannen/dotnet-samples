@@ -12,7 +12,7 @@ This repository's purpose is to showcase common design patterns, best practices,
 
 ### Background Jobs
 
-* [Hangfile](BackgroundJobs/Hangfire.Web/)
+* [Hangfire](BackgroundJobs/Hangfire.Web/)
 * [Quartz](BackgroundJobs/QuartzExample.Web/)
 
 ### Configration
@@ -21,7 +21,7 @@ This repository's purpose is to showcase common design patterns, best practices,
 
 ### Data Access
 
-* [EF Core](DataAccess/efcore.web/)
+* [EF Core](DataAccess/EFCore.Web/)
 
 ### Emailing
 
