@@ -4,6 +4,7 @@ using Messaging.Events.Contracts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Messaging.AmazonSQS.Producer.Controllers
@@ -56,6 +57,26 @@ namespace Messaging.AmazonSQS.Producer.Controllers
                  });
 
             _logger.LogInformation("Message Sent: {Value}", value);
+        }
+
+        [HttpPost]
+        [Route("EmitValueChangedMultipleTimes")]
+        public async Task EmitValueChangedMultipleTimes(int times = 5)
+        {
+            _logger.LogInformation("Sending IValueChanged message {Times}", times);
+
+            var endpoint = await GetTopicEndpoint();
+
+            foreach (var i in Enumerable.Range(1, times))
+            {
+                await endpoint.Send<IValueChanged>(
+                  new
+                  {
+                      Message = i
+                  });
+            }
+
+            _logger.LogInformation("Message Sent {Times} times", times);
         }
 
         private async Task<ISendEndpoint> GetTopicEndpoint()

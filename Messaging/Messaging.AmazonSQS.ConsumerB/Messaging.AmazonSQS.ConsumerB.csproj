@@ -1,22 +1,27 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net5.0</TargetFramework>
-		<UserSecretsId>42ee27df-f74a-4a5b-a437-fda0d1dc9d47</UserSecretsId>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net5</TargetFramework>
+		<UserSecretsId>a1d38530-e9bc-46fe-b560-ff39f1a20dd3</UserSecretsId>
 	</PropertyGroup>
-
 	<ItemGroup>
+		<PackageReference Include="MassTransit" Version="7.1.5" />
 		<PackageReference Include="MassTransit.AmazonSQS" Version="7.1.5" />
 		<PackageReference Include="MassTransit.AspNetCore" Version="7.1.5" />
 		<PackageReference Include="MassTransit.Extensions.DependencyInjection" Version="7.1.5" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="3.1.0" />
 		<PackageReference Include="Serilog.AspNetCore" Version="3.4.0" />
-		<PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
+		<PackageReference Include="Serilog.Extensions.Hosting" Version="3.1.0" />
 	</ItemGroup>
-
 	<ItemGroup>
-	  <ProjectReference Include="..\Messaging.AmazonSQS.Extensions\Messaging.AmazonSQS.Extensions.csproj" />
-	  <ProjectReference Include="..\Messaging.Configuration\Messaging.Configuration.csproj" />
-	  <ProjectReference Include="..\Messaging.Events.Contracts\Messaging.Events.Contracts.csproj" />
+		<ProjectReference Include="..\Messaging.AmazonSQS.Extensions\Messaging.AmazonSQS.Extensions.csproj" />
+		<ProjectReference Include="..\Messaging.Configuration\Messaging.Configuration.csproj" />
+		<ProjectReference Include="..\Messaging.Events.Contracts\Messaging.Events.Contracts.csproj" />
 	</ItemGroup>
-
+	<ItemGroup>
+		<None Update="appsettings.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
 </Project>

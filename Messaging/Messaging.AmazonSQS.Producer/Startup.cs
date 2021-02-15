@@ -1,6 +1,4 @@
 using MassTransit;
-using Messaging.AmazonSQS.Producer.Interfaces;
-using Messaging.AmazonSQS.Producer.Services;
 using Messaging.Configuration;
 using Messaging.Configuration.Models;
 using Microsoft.AspNetCore.Builder;
@@ -52,8 +50,6 @@ namespace Messaging.AmazonSQS.Producer
             });
 
             services.AddAwsSqsConfiguration(Configuration);
-
-            services.AddScoped<IFancyTopicEndpointProvider, FancyTopicEndpointProvider>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
