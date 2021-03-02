@@ -51,11 +51,3 @@ This repository's purpose is to showcase common design patterns, best practices,
 
 * [Blazor](Web/Blazor/)
 * [Health Checks](Web/HealthEndpoints/)
-
-## Remaining topics to be added to this repo
-
-| Section        | Item            |
-| -------------- | --------------- |
-| DataAccess     | Dapper          |
-| Object Mapping | AutoMapper      |
-| Web            | Blazor (Client) |
