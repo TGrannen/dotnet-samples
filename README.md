@@ -16,6 +16,10 @@ This repository's purpose is to showcase common design patterns, best practices,
 * [Quartz](BackgroundJobs/QuartzExample.Web/)
 * [Worker Service](BackgroundJobs/WorkerServiceExample/)
 
+### Benchmarks
+
+* [BenchmarkDotNet](Benchmarks/)
+
 ### Configration
 
 * [Configuration](Configuration/)
