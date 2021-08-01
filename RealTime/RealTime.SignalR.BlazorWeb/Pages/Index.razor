@@ -1,6 +1,8 @@
 ﻿@page "/"
 @using Microsoft.AspNetCore.SignalR.Client
+@using RealTime.SignalR.BlazorWeb.Configuration
 @inject NavigationManager _navigationManager
+@inject IHubConfiguration _hubConfiguration
 @implements IAsyncDisposable
 
 <div class="form-group">
@@ -35,7 +37,7 @@
     protected override async Task OnInitializedAsync()
     {
         _hubConnection = new HubConnectionBuilder()
-            .WithUrl("https://localhost:5003/chathub")
+            .WithUrl($"{_hubConfiguration?.Address}/chathub")
             .Build();
 
         _hubConnection.On<string, string>("ReceiveMessage", (user, message) =>
