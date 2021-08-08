@@ -1,3 +1,4 @@
+using Configuration.Web.Extensions;
 using Configuration.Web.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -33,19 +34,16 @@ namespace Configuration.Web
 
                 return provider.GetService<IOptionsSnapshot<Settings1>>()?.Value;
             });
+            
+            services.Configure<ISettings2, Settings2>(Configuration.GetSection("Settings2"));
         }
 
-#pragma warning disable IDE0060 // Remove unused parameter
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-#pragma warning restore IDE0060 // Remove unused parameter
         {
             app.UseRouting();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
     }
 }

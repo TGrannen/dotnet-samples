@@ -13,16 +13,19 @@ namespace Configuration.Web.Controllers
         private readonly IOptions<Settings1> _options;
         private readonly IOptionsSnapshot<Settings1> _optionsSnapshot;
         private readonly ISettings1 _settings1;
+        private readonly ISettings2 _settings2;
 
         public SettingsController(IConfiguration configuration,
             IOptions<Settings1> options,
             IOptionsSnapshot<Settings1> optionsSnapshot,
-            ISettings1 settings1)
+            ISettings1 settings1,
+            ISettings2 settings2)
         {
             _configuration = configuration;
             _options = options;
             _optionsSnapshot = optionsSnapshot;
             _settings1 = settings1;
+            _settings2 = settings2;
         }
 
         [HttpGet]
@@ -33,6 +36,7 @@ namespace Configuration.Web.Controllers
                 Options = _options.Value,
                 Snapshot = _optionsSnapshot.Value,
                 Interface = _settings1,
+                Settings2 = _settings2,
                 Value = _configuration.GetValue<string>("MySetting"),
                 FileOverrideValue = _configuration.GetValue<string>("MySetting2"),
                 DeepValue = _configuration.GetValue<string>("MySettingStructure:DeepValue"),

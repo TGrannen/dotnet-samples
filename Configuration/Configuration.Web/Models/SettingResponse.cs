@@ -11,5 +11,6 @@
         public Settings1 Options { get; set; }
         public Settings1 Snapshot { get; set; }
         public ISettings1 Interface { get; set; }
+        public ISettings2 Settings2 { get; set; }
     }
 }
