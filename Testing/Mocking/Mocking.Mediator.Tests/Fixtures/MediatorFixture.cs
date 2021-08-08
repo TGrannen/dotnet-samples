@@ -1,3 +1,4 @@
+using System;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Mocking.Mediator.Tests.Exceptions;
@@ -9,23 +10,30 @@ namespace Mocking.Mediator.Tests.Fixtures
 {
     public class MediatorFixture
     {
-        public ServiceProvider Provider { get; private set; }
-
+        private ServiceProvider _provider;
         protected ServiceCollection Services { get; } = new ServiceCollection();
+        public EventHandler<IServiceCollection> OnConfigureServices { get; set; }
 
-        public virtual void AddBindings(IServiceCollection services)
+        public ServiceProvider Provider
         {
+            get
+            {
+                if (_provider != null)
+                {
+                    return _provider;
+                }
+
+                Services.AddMockedLogging();
+                OnConfigureServices?.Invoke(this, Services);
+                Provider = Services.BuildServiceProvider();
+
+                return _provider;
+            }
+            private set => _provider = value;
         }
 
         public async Task<T> SendAsync<T>(IRequest<T> request)
         {
-            if (Provider == null)
-            {
-                Services.AddMockedLogging();
-                AddBindings(Services);
-                Provider = Services.BuildServiceProvider();
-            }
-
             var mediator = Provider.GetService<IMediator>();
 
             if (mediator == null)
@@ -35,6 +43,20 @@ namespace Mocking.Mediator.Tests.Fixtures
 
             return await mediator.Send(request);
         }
+
+
+        public async Task Publish(INotification notification)
+        {
+            var mediator = Provider.GetService<IMediator>();
+
+            if (mediator == null)
+            {
+                throw new MediatorFixtureConfigurationException();
+            }
+
+            await mediator.Publish(notification);
+        }
+
 
         public MockedILogger<T> GetMockedLogger<T>()
         {
