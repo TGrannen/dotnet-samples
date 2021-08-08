@@ -41,6 +41,10 @@ This repository's purpose is to showcase common design patterns, best practices,
 
 * [Messaging](Messaging/)
 
+### RealTime
+
+* [SignalR](RealTime/)
+
 ### Templates
 
 * [Console App](Templates/ConsoleApp/)
