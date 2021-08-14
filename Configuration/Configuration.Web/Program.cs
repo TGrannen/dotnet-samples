@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using System;
+using Configuration.Web.Providers;
+using Configuration.Web.Providers.CustomProvider;
 
 namespace Configuration.Web
 {
@@ -31,6 +33,10 @@ namespace Configuration.Web
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+                .ConfigureAppConfiguration((_, configuration) =>
+                {
+                    configuration.AddEntityConfiguration();
+                })
                 .UseSerilog()
                 .ConfigureWebHostDefaults(webBuilder =>
                 {

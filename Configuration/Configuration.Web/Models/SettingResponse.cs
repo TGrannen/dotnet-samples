@@ -1,4 +1,7 @@
-﻿namespace Configuration.Web.Models
+﻿using Configuration.Web.Providers;
+using Configuration.Web.Providers.CustomProvider;
+
+namespace Configuration.Web.Models
 {
     public class SettingResponse
     {
@@ -12,5 +15,6 @@
         public Settings1 Snapshot { get; set; }
         public ISettings1 Interface { get; set; }
         public ISettings2 Settings2 { get; set; }
+        public ISettings3 Settings3 { get; set; }
     }
 }

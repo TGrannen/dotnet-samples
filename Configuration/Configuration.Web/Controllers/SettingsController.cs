@@ -1,4 +1,6 @@
 ﻿using Configuration.Web.Models;
+using Configuration.Web.Providers;
+using Configuration.Web.Providers.CustomProvider;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
@@ -14,18 +16,21 @@ namespace Configuration.Web.Controllers
         private readonly IOptionsSnapshot<Settings1> _optionsSnapshot;
         private readonly ISettings1 _settings1;
         private readonly ISettings2 _settings2;
+        private readonly ISettings3 _settings3;
 
         public SettingsController(IConfiguration configuration,
             IOptions<Settings1> options,
             IOptionsSnapshot<Settings1> optionsSnapshot,
             ISettings1 settings1,
-            ISettings2 settings2)
+            ISettings2 settings2,
+            ISettings3 settings3)
         {
             _configuration = configuration;
             _options = options;
             _optionsSnapshot = optionsSnapshot;
             _settings1 = settings1;
             _settings2 = settings2;
+            _settings3 = settings3;
         }
 
         [HttpGet]
@@ -43,7 +48,15 @@ namespace Configuration.Web.Controllers
                 EnvironmentValue = _configuration.GetValue<string>("MySetting3:EnvironmentVar"),
                 CommandLineValue = _configuration.GetValue<string>("MySetting4"),
                 SecretValue = _configuration.GetValue<string>("MySetting5"),
+                Settings3 = _settings3,
             };
+        }
+
+        [HttpPost]
+        public IActionResult UpdateDynamicValue([FromQuery] string value)
+        {
+            CustomConfigChangeObserverSingleton.Instance.OnChanged(new ConfigChangeEventArgs { DynamicValue = value });
+            return Ok();
         }
     }
 }
