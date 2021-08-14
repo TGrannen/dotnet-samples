@@ -10,3 +10,4 @@ This is an ASP.NET Web API project that exposes a single endpoint for viewing th
 * User Secrets
 * Command-line arguments
 * Abstracted Settings from the Configuration Library
+* Custom Configuration Provider with mutable configuration at runtime
