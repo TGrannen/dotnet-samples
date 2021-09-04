@@ -34,6 +34,8 @@ namespace FeatureFlags.WebAPI
             services.AddHttpContextAccessor();
 
             services.AddScoped<IFeatureService, FeatureService>();
+
+            services.AddAzureAppConfiguration();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -47,6 +49,8 @@ namespace FeatureFlags.WebAPI
             }
 
             app.UseHttpsRedirection();
+
+            app.UseAzureAppConfiguration();
 
             app.UseRouting();
 
