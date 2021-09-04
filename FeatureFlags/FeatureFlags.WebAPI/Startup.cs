@@ -1,15 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using FeatureFlags.WebAPI.Feature;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.FeatureManagement;
 using Microsoft.FeatureManagement.FeatureFilters;
 using Microsoft.OpenApi.Models;
@@ -33,7 +27,10 @@ namespace FeatureFlags.WebAPI
 
             services.AddFeatureManagement()
                 .AddFeatureFilter<PercentageFilter>()
-                .AddFeatureFilter<TimeWindowFilter>();
+                .AddFeatureFilter<TimeWindowFilter>()
+                .AddFeatureFilter<CustomEndpointFilter>();
+
+            services.AddHttpContextAccessor();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -27,8 +27,26 @@ namespace FeatureFlags.WebAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        [Route("test1")]
+        public async Task<IActionResult> GetTest1()
         {
+            return await GetForecasts();
+        }
+
+        [HttpGet]
+        [Route("test2")]
+        public async Task<IActionResult> GetTest2()
+        {
+            return await GetForecasts();
+        }
+
+        private async Task<IActionResult> GetForecasts()
+        {
+            if (!await _featureManager.IsEnabledAsync("AllowedForEndpoint"))
+            {
+                return BadRequest();
+            }
+            
             if (!await _featureManager.IsEnabledAsync("ShowWeather"))
             {
                 return Unauthorized();
