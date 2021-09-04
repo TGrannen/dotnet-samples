@@ -32,6 +32,10 @@ This repository's purpose is to showcase common design patterns, best practices,
 
 * [FluentEmail](Emailing/FluentEmail.Web/)
 
+### Feature Flags
+
+* [Feature Flags](FeatureFlags)
+
 ### Logging
 
 * [Serilog](Logging/SerilogExample/)
