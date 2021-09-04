@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.FeatureManagement;
 
-namespace FeatureFlags.WebAPI.Feature
+namespace FeatureFlags.WebAPI.Feature.Filters
 {
     [FilterAlias("CustomEndpointFilter")]
     public class CustomEndpointFilter : IFeatureFilter

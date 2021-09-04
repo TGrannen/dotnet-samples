@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FeatureFlags.WebAPI.Feature;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Microsoft.FeatureManagement;
 
 namespace FeatureFlags.WebAPI.Controllers
@@ -17,13 +16,13 @@ namespace FeatureFlags.WebAPI.Controllers
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
 
-        private readonly ILogger<WeatherForecastController> _logger;
         private readonly IFeatureManager _featureManager;
+        private readonly IFeatureService _featureService;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger, IFeatureManager featureManager)
+        public WeatherForecastController(IFeatureManager featureManager, IFeatureService featureService)
         {
-            _logger = logger;
             _featureManager = featureManager;
+            _featureService = featureService;
         }
 
         [HttpGet]
@@ -42,18 +41,18 @@ namespace FeatureFlags.WebAPI.Controllers
 
         private async Task<IActionResult> GetForecasts()
         {
-            if (!await _featureManager.IsEnabledAsync("AllowedForEndpoint"))
-            {
-                return BadRequest();
-            }
-            
             if (!await _featureManager.IsEnabledAsync("ShowWeather"))
             {
                 return Unauthorized();
             }
 
+            if (await _featureService.IsNotEnabledAsync(Features.AllowedForEndpoint))
+            {
+                return BadRequest();
+            }
+
             var shouldBeCold = await _featureManager.IsEnabledAsync("ShouldBeSuperCold");
-            var shouldHaveOnlyOne = await _featureManager.IsEnabledAsync("ShouldHaveOnlyOne");
+            var shouldHaveOnlyOne = await _featureService.IsEnabledAsync(Features.ShouldHaveOnlyOne);
 
             var rng = new Random();
             var weatherForecasts =
