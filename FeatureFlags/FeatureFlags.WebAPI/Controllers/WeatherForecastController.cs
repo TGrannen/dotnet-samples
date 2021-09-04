@@ -34,13 +34,15 @@ namespace FeatureFlags.WebAPI.Controllers
                 return Unauthorized();
             }
 
+            var shouldBeCold = await _featureManager.IsEnabledAsync("ShouldBeSuperCold");
+
             var rng = new Random();
             var weatherForecasts =
                 Enumerable.Range(1, 5)
                     .Select(index => new WeatherForecast
                     {
                         Date = DateTime.Now.AddDays(index),
-                        TemperatureC = rng.Next(-20, 55),
+                        TemperatureC = rng.Next(-20, 55) - (shouldBeCold ? 900 : 0),
                         Summary = Summaries[rng.Next(Summaries.Length)]
                     })
                     .ToArray();

@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.FeatureManagement;
+using Microsoft.FeatureManagement.FeatureFilters;
 using Microsoft.OpenApi.Models;
 
 namespace FeatureFlags.WebAPI
@@ -30,7 +31,8 @@ namespace FeatureFlags.WebAPI
             services.AddControllers();
             services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo { Title = "FeatureFlags.WebAPI", Version = "v1" }); });
 
-            services.AddFeatureManagement();
+            services.AddFeatureManagement()
+                .AddFeatureFilter<TimeWindowFilter>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
