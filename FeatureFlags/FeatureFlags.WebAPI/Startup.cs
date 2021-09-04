@@ -32,6 +32,7 @@ namespace FeatureFlags.WebAPI
             services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo { Title = "FeatureFlags.WebAPI", Version = "v1" }); });
 
             services.AddFeatureManagement()
+                .AddFeatureFilter<PercentageFilter>()
                 .AddFeatureFilter<TimeWindowFilter>();
         }
 

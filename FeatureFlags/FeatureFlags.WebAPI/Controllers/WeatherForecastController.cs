@@ -35,10 +35,11 @@ namespace FeatureFlags.WebAPI.Controllers
             }
 
             var shouldBeCold = await _featureManager.IsEnabledAsync("ShouldBeSuperCold");
+            var shouldHaveOnlyOne = await _featureManager.IsEnabledAsync("ShouldHaveOnlyOne");
 
             var rng = new Random();
             var weatherForecasts =
-                Enumerable.Range(1, 5)
+                Enumerable.Range(1, shouldHaveOnlyOne ? 1 : 5)
                     .Select(index => new WeatherForecast
                     {
                         Date = DateTime.Now.AddDays(index),
