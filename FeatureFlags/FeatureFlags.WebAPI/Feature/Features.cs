@@ -3,6 +3,7 @@
     public enum Features
     {
         ShouldHaveOnlyOne,
-        AllowedForEndpoint
+        AllowedForEndpoint,
+        AllowForMinNumber
     }
 }

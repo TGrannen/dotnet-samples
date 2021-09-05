@@ -9,5 +9,7 @@ namespace FeatureFlags.WebAPI.Feature
     {
         Task<bool> IsEnabledAsync(Features feature);
         Task<bool> IsNotEnabledAsync(Features feature);
+        Task<bool> IsEnabledAsync<TContext>(Features feature, TContext context);
+        Task<bool> IsNotEnabledAsync<TContext>(Features feature, TContext context);
     }
 }

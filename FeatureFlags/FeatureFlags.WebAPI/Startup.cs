@@ -29,7 +29,8 @@ namespace FeatureFlags.WebAPI
             services.AddFeatureManagement()
                 .AddFeatureFilter<PercentageFilter>()
                 .AddFeatureFilter<TimeWindowFilter>()
-                .AddFeatureFilter<CustomEndpointFilter>();
+                .AddFeatureFilter<CustomEndpointFilter>()
+                .AddFeatureFilter<CustomContextualFilter>();
 
             services.AddHttpContextAccessor();
 

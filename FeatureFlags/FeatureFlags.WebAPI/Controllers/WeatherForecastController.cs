@@ -2,7 +2,9 @@
 using System.Linq;
 using System.Threading.Tasks;
 using FeatureFlags.WebAPI.Feature;
+using FeatureFlags.WebAPI.Feature.Filters;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Microsoft.FeatureManagement;
 
 namespace FeatureFlags.WebAPI.Controllers
@@ -18,11 +20,14 @@ namespace FeatureFlags.WebAPI.Controllers
 
         private readonly IFeatureManager _featureManager;
         private readonly IFeatureService _featureService;
+        private readonly ILogger<WeatherForecastController> _logger;
 
-        public WeatherForecastController(IFeatureManager featureManager, IFeatureService featureService)
+        public WeatherForecastController(IFeatureManager featureManager, IFeatureService featureService,
+            ILogger<WeatherForecastController> logger)
         {
             _featureManager = featureManager;
             _featureService = featureService;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -37,6 +42,24 @@ namespace FeatureFlags.WebAPI.Controllers
         public async Task<IActionResult> GetTest2()
         {
             return await GetForecasts();
+        }
+
+        [HttpGet]
+        [Route("testContextual")]
+        public async Task<IActionResult> GetTestContextual()
+        {
+            var rng = new Random();
+            var context = new CustomContextualFilter.FilterContext
+            {
+                RandomNumber = rng.Next(-20, 55)
+            };
+            _logger.LogInformation("Context: {@Context}", context);
+            if (await _featureService.IsNotEnabledAsync(Features.AllowForMinNumber, context))
+            {
+                return BadRequest();
+            }
+
+            return Ok(context);
         }
 
         private async Task<IActionResult> GetForecasts()
