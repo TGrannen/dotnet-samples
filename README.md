@@ -40,6 +40,10 @@ This repository's purpose is to showcase common design patterns, best practices,
 
 * [Feature Flags](FeatureFlags)
 
+### Load Testing
+
+* [NBomber](LoadTesting/)
+
 ### Logging
 
 * [Serilog](Logging/SerilogExample/)
