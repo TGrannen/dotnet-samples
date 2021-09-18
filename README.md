@@ -53,6 +53,10 @@ This repository's purpose is to showcase common design patterns, best practices,
 
 * [Messaging](Messaging/)
 
+### Rate Limiting
+
+* [Rate Limiting](RateLimiting/)
+
 ### RealTime
 
 * [SignalR](RealTime/)
