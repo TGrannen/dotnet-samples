@@ -61,6 +61,10 @@ This repository's purpose is to showcase common design patterns, best practices,
 
 * [SignalR](RealTime/)
 
+### State Machines
+
+* [Stateless](StateMachines/)
+
 ### Templates
 
 * [Console App](Templates/ConsoleApp/)
