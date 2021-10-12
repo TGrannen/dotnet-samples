@@ -19,7 +19,10 @@ namespace Refit.ConsoleApp
             {
                 serviceCollection
                     .AddRefitClient<IYesOrNoApi>()
-                    .ConfigureHttpClient(c => c.BaseAddress = new Uri("https://yesno.wtf/"));
+                    .ConfigureHttpClient(c => { c.BaseAddress = new Uri("https://yesno.wtf/"); })
+                    .AddHttpMessageHandler<HttpLoggingMessageHandler>();
+                
+                serviceCollection.AddTransient<HttpLoggingMessageHandler>();
 
                 var serviceProvider = serviceCollection.BuildServiceProvider();
 
