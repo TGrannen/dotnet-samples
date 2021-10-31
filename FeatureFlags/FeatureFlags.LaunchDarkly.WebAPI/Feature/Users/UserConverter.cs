@@ -14,10 +14,10 @@ namespace FeatureFlags.LaunchDarkly.WebAPI.Feature.Users
         private readonly Dictionary<Type, Func<IFeatureContext, User>> _typeToActionDictionary = new()
         {
             {
-                typeof(Feature2Context),
+                typeof(UserWithNameContext),
                 o =>
                 {
-                    var context = o as Feature2Context;
+                    var context = o as UserWithNameContext;
                     var user = User.Builder(context.Id)
                         .Name(context.Name)
                         .Build();

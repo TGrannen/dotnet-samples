@@ -14,7 +14,8 @@ namespace FeatureFlags.LaunchDarkly.WebAPI.Feature
     {
         public static IServiceCollection AddLaunchDarkly(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddTransient<IBoolFeatureService, LaunchDarklyFeatureService>();
+            services.AddTransient<IBoolFeatureService, LaunchDarklyBoolFeatureService>();
+            services.AddTransient<IJsonFeatureService, LaunchDarklyJsonFeatureService>();
             services.AddTransient<IFeatureKeyConverter, FeatureKeyConverter>();
             services.AddTransient<IUserConverter, UserConverter>();
             services.AddScoped<IUserProvider, UserProvider>();
