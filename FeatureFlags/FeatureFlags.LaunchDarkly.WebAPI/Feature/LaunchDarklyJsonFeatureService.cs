@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
+using FeatureFlags.LaunchDarkly.WebAPI.Feature.Extensions;
 using FeatureFlags.LaunchDarkly.WebAPI.Feature.Keys;
 using FeatureFlags.LaunchDarkly.WebAPI.Feature.Users;
 using LaunchDarkly.Sdk;
 using LaunchDarkly.Sdk.Server.Interfaces;
-using Newtonsoft.Json;
 
 namespace FeatureFlags.LaunchDarkly.WebAPI.Feature
 {
@@ -28,15 +28,15 @@ namespace FeatureFlags.LaunchDarkly.WebAPI.Feature
         public Task<T> GetFeatureConfigurationAsync<T>(Features feature)
         {
             var key = _keyConverter.ConvertToKey(feature);
-            var result = _client.JsonVariation(key, _userProvider.GetUser(), new LdValue());
-            return Task.FromResult(JsonConvert.DeserializeObject<T>(result.ToJsonString()));
+            var result = _client.JsonVariation<T>(key, _userProvider.GetUser(), new LdValue());
+            return Task.FromResult(result);
         }
 
         public Task<T> GetFeatureConfigurationAsync<T>(Features feature, IFeatureContext context)
         {
             var key = _keyConverter.ConvertToKey(feature);
-            var result = _client.JsonVariation(key, _userConverter.Convert(context), new LdValue());
-            return Task.FromResult(JsonConvert.DeserializeObject<T>(result.ToJsonString()));
+            var result = _client.JsonVariation<T>(key, _userConverter.Convert(context), new LdValue());
+            return Task.FromResult(result);
         }
     }
 }
