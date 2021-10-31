@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+        <UserSecretsId>499d5f75-4739-4c60-a0b6-a9b8e5260309</UserSecretsId>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="LaunchDarkly.ServerSdk" Version="6.3.1" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
+        <PackageReference Include="Serilog.AspNetCore" Version="3.4.0"/>
+    </ItemGroup>
+
+</Project>
