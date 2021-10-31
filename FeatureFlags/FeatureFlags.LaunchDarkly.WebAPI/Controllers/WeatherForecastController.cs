@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FeatureFlags.LaunchDarkly.WebAPI.Feature;
 using FeatureFlags.LaunchDarkly.WebAPI.Feature.Context;
-using FeatureFlags.LaunchDarkly.WebAPI.Feature.Queries;
-using MediatR;
+using FeatureFlags.LaunchDarkly.WebAPI.Feature.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FeatureFlags.LaunchDarkly.WebAPI.Controllers
@@ -28,20 +28,19 @@ namespace FeatureFlags.LaunchDarkly.WebAPI.Controllers
             "1321", "5412", "76534", "3424",
         };
 
-        private readonly IMediator _mediator;
+        private readonly IFeatureService _featureService;
+        private readonly IJsonFeatureService _jsonFeatureService;
 
-        public WeatherForecastController(IMediator mediator)
+        public WeatherForecastController(IFeatureService featureService, IJsonFeatureService jsonFeatureService)
         {
-            _mediator = mediator;
+            _featureService = featureService;
+            _jsonFeatureService = jsonFeatureService;
         }
 
         [HttpGet]
         public async Task<IEnumerable<WeatherForecast>> Get()
         {
-            var enabled = await _mediator.Send(new IsFeatureEnabledQuery
-            {
-                Key = "demo-sample-feature"
-            });
+            var enabled = await _featureService.IsEnabledAsync("demo-sample-feature");
             var rng = new Random();
             return Enumerable.Range(1, enabled ? 10 : 0).Select(index => new WeatherForecast
                 {
@@ -58,14 +57,10 @@ namespace FeatureFlags.LaunchDarkly.WebAPI.Controllers
         public async Task<IActionResult> GetContextual()
         {
             var (id, name) = GetUser();
-            var enabled = await _mediator.Send(new IsFeatureEnabledQuery
+            var enabled = await _featureService.IsEnabledAsync("demo-sample-feature-2", new UserWithNameContext
             {
-                Key = "demo-sample-feature-2",
-                Context = new UserWithNameContext
-                {
-                    Key = id,
-                    Name = name
-                }
+                Key = id,
+                Name = name
             });
 
             return Ok(new
@@ -81,13 +76,10 @@ namespace FeatureFlags.LaunchDarkly.WebAPI.Controllers
         public async Task<IActionResult> JsonFeature()
         {
             var (id, name) = GetUser();
-            var result = await _mediator.Send(new GetFeature3ConfigQuery
+            var result = await _jsonFeatureService.GetJsonConfiguration<Feature3Dto>("demo-json-feature", new UserWithNameContext
             {
-                Context = new UserWithNameContext
-                {
-                    Key = id,
-                    Name = name
-                }
+                Key = id,
+                Name = name
             });
             return Ok(new
             {
