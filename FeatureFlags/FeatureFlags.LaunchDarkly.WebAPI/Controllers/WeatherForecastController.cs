@@ -2,11 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using FeatureFlags.LaunchDarkly.WebAPI.Feature;
 using FeatureFlags.LaunchDarkly.WebAPI.Feature.Context;
-using FeatureFlags.LaunchDarkly.WebAPI.Feature.Models;
 using FeatureFlags.LaunchDarkly.WebAPI.Feature.Queries;
-using FeatureFlags.LaunchDarkly.WebAPI.Feature.Users;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -43,7 +40,7 @@ namespace FeatureFlags.LaunchDarkly.WebAPI.Controllers
         {
             var enabled = await _mediator.Send(new IsFeatureEnabledQuery
             {
-                Feature = Features.Feature1
+                Key = "demo-sample-feature"
             });
             var rng = new Random();
             return Enumerable.Range(1, enabled ? 10 : 0).Select(index => new WeatherForecast
@@ -63,7 +60,7 @@ namespace FeatureFlags.LaunchDarkly.WebAPI.Controllers
             var (id, name) = GetUser();
             var enabled = await _mediator.Send(new IsFeatureEnabledQuery
             {
-                Feature = Features.Feature2,
+                Key = "demo-sample-feature-2",
                 Context = new UserWithNameContext
                 {
                     Key = id,
