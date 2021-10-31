@@ -1,4 +1,4 @@
-﻿    namespace FeatureFlags.LaunchDarkly.WebAPI.Feature
+﻿    namespace FeatureFlags.LaunchDarkly.WebAPI.Feature.Models
 {
     public enum Features
     {

@@ -1,8 +1,8 @@
-﻿using FeatureFlags.LaunchDarkly.WebAPI.Feature.Keys;
-using FeatureFlags.LaunchDarkly.WebAPI.Feature.Users;
+﻿using FeatureFlags.LaunchDarkly.WebAPI.Feature.Users;
 using LaunchDarkly.Logging;
 using LaunchDarkly.Sdk.Server;
 using LaunchDarkly.Sdk.Server.Interfaces;
+using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -14,10 +14,6 @@ namespace FeatureFlags.LaunchDarkly.WebAPI.Feature
     {
         public static IServiceCollection AddLaunchDarkly(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddTransient<IBoolFeatureService, LaunchDarklyBoolFeatureService>();
-            services.AddTransient<IJsonFeatureService, LaunchDarklyJsonFeatureService>();
-            services.AddTransient<IFeatureKeyConverter, FeatureKeyConverter>();
-            services.AddTransient<IUserConverter, UserConverter>();
             services.AddScoped<IUserProvider, UserProvider>();
 
             services.Configure<LaunchDarklyConfig>(configuration.GetSection("Feature:LaunchDarkly"));
@@ -30,6 +26,9 @@ namespace FeatureFlags.LaunchDarkly.WebAPI.Feature
                     .Build();
                 return new LdClient(ldConfig);
             });
+
+            services.AddMediatR(typeof(Startup));
+
             return services;
         }
 
