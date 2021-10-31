@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
-using FeatureFlags.LaunchDarkly.WebAPI.Feature.Context;
 
-namespace FeatureFlags.LaunchDarkly.WebAPI.Feature
+namespace FeatureFlags.LaunchDarkly.Library
 {
     public interface IFeatureService
     {

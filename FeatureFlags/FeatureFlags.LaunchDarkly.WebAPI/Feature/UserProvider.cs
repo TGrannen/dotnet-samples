@@ -1,6 +1,7 @@
-﻿using LaunchDarkly.Sdk;
+﻿using FeatureFlags.LaunchDarkly.Library;
+using LaunchDarkly.Sdk;
 
-namespace FeatureFlags.LaunchDarkly.WebAPI.Feature.Users
+namespace FeatureFlags.LaunchDarkly.WebAPI.Feature
 {
     class UserProvider : IUserProvider
     {

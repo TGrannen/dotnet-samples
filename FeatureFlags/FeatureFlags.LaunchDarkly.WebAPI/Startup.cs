@@ -1,3 +1,4 @@
+using FeatureFlags.LaunchDarkly.Library;
 using FeatureFlags.LaunchDarkly.WebAPI.Feature;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -20,7 +21,7 @@ namespace FeatureFlags.LaunchDarkly.WebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddLaunchDarkly(Configuration);
+            services.AddLaunchDarkly(Configuration, () => { services.AddScoped<IUserProvider, UserProvider>(); });
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {

@@ -1,6 +1,6 @@
 ﻿using LaunchDarkly.Sdk;
 
-namespace FeatureFlags.LaunchDarkly.WebAPI.Feature.Users
+namespace FeatureFlags.LaunchDarkly.Library
 {
     public interface IUserProvider
     {

@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FeatureFlags.LaunchDarkly.Library;
 using FeatureFlags.LaunchDarkly.WebAPI.Feature;
-using FeatureFlags.LaunchDarkly.WebAPI.Feature.Context;
 using FeatureFlags.LaunchDarkly.WebAPI.Feature.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -76,11 +76,12 @@ namespace FeatureFlags.LaunchDarkly.WebAPI.Controllers
         public async Task<IActionResult> JsonFeature()
         {
             var (id, name) = GetUser();
-            var result = await _jsonFeatureService.GetJsonConfiguration<Feature3Dto>("demo-json-feature", new UserWithNameContext
-            {
-                Key = id,
-                Name = name
-            });
+            var result = await _jsonFeatureService.GetJsonConfiguration<Feature3Dto>("demo-json-feature",
+                new UserWithNameContext
+                {
+                    Key = id,
+                    Name = name
+                });
             return Ok(new
             {
                 Id = id,

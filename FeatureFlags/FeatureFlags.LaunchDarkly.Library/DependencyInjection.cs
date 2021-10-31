@@ -1,4 +1,4 @@
-﻿using FeatureFlags.LaunchDarkly.WebAPI.Feature.Users;
+﻿using System;
 using LaunchDarkly.Logging;
 using LaunchDarkly.Sdk.Server;
 using LaunchDarkly.Sdk.Server.Interfaces;
@@ -7,15 +7,18 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace FeatureFlags.LaunchDarkly.WebAPI.Feature
+namespace FeatureFlags.LaunchDarkly.Library
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddLaunchDarkly(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddLaunchDarkly(this IServiceCollection services,
+            IConfiguration configuration,
+            Action userProviderSetup)
         {
             services.AddTransient<IFeatureService, FeatureService>();
             services.AddTransient<IJsonFeatureService, FeatureService>();
-            services.AddScoped<IUserProvider, UserProvider>();
+
+            userProviderSetup();
 
             services.Configure<LaunchDarklyConfig>(configuration.GetSection("Feature:LaunchDarkly"));
             services.AddSingleton<ILdClient>(provider =>

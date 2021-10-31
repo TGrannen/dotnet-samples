@@ -1,13 +1,11 @@
 ﻿using System.Threading.Tasks;
-using FeatureFlags.LaunchDarkly.WebAPI.Feature.Context;
-using FeatureFlags.LaunchDarkly.WebAPI.Feature.Users;
 using LaunchDarkly.Sdk;
 using LaunchDarkly.Sdk.Server.Interfaces;
 using Newtonsoft.Json;
 
-namespace FeatureFlags.LaunchDarkly.WebAPI.Feature
+namespace FeatureFlags.LaunchDarkly.Library
 {
-    class FeatureService : IFeatureService,IJsonFeatureService
+    class FeatureService : IFeatureService, IJsonFeatureService
     {
         private readonly IUserProvider _provider;
         private readonly ILdClient _client;

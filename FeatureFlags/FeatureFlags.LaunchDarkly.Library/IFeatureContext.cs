@@ -1,6 +1,6 @@
 ﻿using LaunchDarkly.Sdk;
 
-namespace FeatureFlags.LaunchDarkly.WebAPI.Feature.Context
+namespace FeatureFlags.LaunchDarkly.Library
 {
     public interface IFeatureContext
     {
