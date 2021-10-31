@@ -1,8 +1,10 @@
 ﻿using System.Threading.Tasks;
 using FeatureFlags.LaunchDarkly.WebAPI.Feature.Config;
 using FeatureFlags.LaunchDarkly.WebAPI.Feature.Keys;
+using LaunchDarkly.Logging;
 using LaunchDarkly.Sdk;
 using LaunchDarkly.Sdk.Server;
+using Microsoft.Extensions.Logging;
 
 namespace FeatureFlags.LaunchDarkly.WebAPI.Feature
 {
@@ -11,10 +13,13 @@ namespace FeatureFlags.LaunchDarkly.WebAPI.Feature
         private readonly IFeatureKeyConverter _keyConverter;
         private readonly LdClient _client;
 
-        public LaunchDarklyFeatureService(IFeatureKeyConverter keyConverter, ILaunchDarklyConfig config)
+        public LaunchDarklyFeatureService(IFeatureKeyConverter keyConverter, ILaunchDarklyConfig config, ILoggerFactory loggerFactory)
         {
             _keyConverter = keyConverter;
-            _client = new LdClient(config.SdkKey);
+            var ldConfig = Configuration.Builder(config.SdkKey)
+                .Logging(LdMicrosoftLogging.Adapter(loggerFactory))
+                .Build();
+            _client = new LdClient(ldConfig);
         }
 
         public Task<bool> IsEnabledAsync(Features feature)
