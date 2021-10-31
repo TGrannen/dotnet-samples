@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FeatureFlags.LaunchDarkly.Library;
-using FeatureFlags.LaunchDarkly.WebAPI.Feature;
+using FeatureFlags.LaunchDarkly.Library.Context;
 using FeatureFlags.LaunchDarkly.WebAPI.Feature.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -57,10 +57,10 @@ namespace FeatureFlags.LaunchDarkly.WebAPI.Controllers
         public async Task<IActionResult> GetContextual()
         {
             var (id, name) = GetUser();
-            var enabled = await _featureService.IsEnabledAsync("demo-sample-feature-2", new UserWithNameContext
+            var enabled = await _featureService.IsEnabledAsync("demo-sample-feature-2", new FeatureContext
             {
                 Key = id,
-                Name = name
+                Name = new ContextAttribute<string>(name)
             });
 
             return Ok(new
@@ -77,10 +77,10 @@ namespace FeatureFlags.LaunchDarkly.WebAPI.Controllers
         {
             var (id, name) = GetUser();
             var result = await _jsonFeatureService.GetJsonConfiguration<Feature3Dto>("demo-json-feature",
-                new UserWithNameContext
+                new FeatureContext
                 {
                     Key = id,
-                    Name = name
+                    Name = new ContextAttribute<string>(name)
                 });
             return Ok(new
             {
@@ -97,6 +97,24 @@ namespace FeatureFlags.LaunchDarkly.WebAPI.Controllers
             var name = Names[index];
             var id = Id[index];
             return (id, name);
+        }
+
+        [HttpGet]
+        [Route("CustomContext")]
+        public async Task<IActionResult> CustomContext()
+        {
+            var enabled = await _featureService.IsEnabledAsync("demo-sample-feature", new FeatureContext
+            {
+                Key = "TEST",
+                CustomContextAttributes = new List<CustomContextAttribute<string>>
+                {
+                    new("My Data Stuff", "My fancy value")
+                }
+            });
+            return Ok(new
+            {
+                Enabled = enabled,
+            });
         }
     }
 }
