@@ -1,25 +1,19 @@
 ﻿using System.Threading.Tasks;
-using FeatureFlags.LaunchDarkly.WebAPI.Feature.Config;
 using FeatureFlags.LaunchDarkly.WebAPI.Feature.Keys;
-using LaunchDarkly.Logging;
 using LaunchDarkly.Sdk;
-using LaunchDarkly.Sdk.Server;
-using Microsoft.Extensions.Logging;
+using LaunchDarkly.Sdk.Server.Interfaces;
 
 namespace FeatureFlags.LaunchDarkly.WebAPI.Feature
 {
-    class LaunchDarklyFeatureService : IFeatureService
+    class LaunchDarklyFeatureService : IBoolFeatureService
     {
         private readonly IFeatureKeyConverter _keyConverter;
-        private readonly LdClient _client;
+        private readonly ILdClient _client;
 
-        public LaunchDarklyFeatureService(IFeatureKeyConverter keyConverter, ILaunchDarklyConfig config, ILoggerFactory loggerFactory)
+        public LaunchDarklyFeatureService(IFeatureKeyConverter keyConverter, ILdClient client)
         {
             _keyConverter = keyConverter;
-            var ldConfig = Configuration.Builder(config.SdkKey)
-                .Logging(LdMicrosoftLogging.Adapter(loggerFactory))
-                .Build();
-            _client = new LdClient(ldConfig);
+            _client = client;
         }
 
         public Task<bool> IsEnabledAsync(Features feature)
@@ -27,25 +21,13 @@ namespace FeatureFlags.LaunchDarkly.WebAPI.Feature
             var result = GetBoolVariation(feature);
             return Task.FromResult(result);
         }
-
-        public Task<bool> IsNotEnabledAsync(Features feature)
-        {
-            var result = GetBoolVariation(feature);
-            return Task.FromResult(!result);
-        }
-
+        
         public Task<bool> IsEnabledAsync<TContext>(Features feature, TContext context)
         {
             var result = GetBoolVariation<TContext>(feature);
             return Task.FromResult(result);
         }
-
-        public Task<bool> IsNotEnabledAsync<TContext>(Features feature, TContext context)
-        {
-            var result = GetBoolVariation<TContext>(feature);
-            return Task.FromResult(!result);
-        }
-
+        
         private bool GetBoolVariation(Features feature)
         {
             var key = _keyConverter.ConvertToKey(feature);

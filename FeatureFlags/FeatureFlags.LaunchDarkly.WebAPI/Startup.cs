@@ -1,19 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using FeatureFlags.LaunchDarkly.WebAPI.Feature;
-using FeatureFlags.LaunchDarkly.WebAPI.Feature.Config;
-using FeatureFlags.LaunchDarkly.WebAPI.Feature.Keys;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 
 namespace FeatureFlags.LaunchDarkly.WebAPI
@@ -30,10 +20,7 @@ namespace FeatureFlags.LaunchDarkly.WebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<IFeatureService, LaunchDarklyFeatureService>();
-            services.AddTransient<IFeatureKeyConverter, FeatureKeyConverter>();
-            services.Configure<LaunchDarklyConfig>(Configuration.GetSection("Feature:LaunchDarkly"));
-            services.AddTransient<ILaunchDarklyConfig>(provider => provider.GetRequiredService<IOptions<LaunchDarklyConfig>>().Value);
+            services.AddLaunchDarkly(Configuration);
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
