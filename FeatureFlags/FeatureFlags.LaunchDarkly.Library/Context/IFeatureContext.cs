@@ -7,16 +7,17 @@ namespace FeatureFlags.LaunchDarkly.Library.Context
         /// <summary>
         /// Required
         /// </summary>
-        public string Key { get; init; }
-        public bool Anonymous { get; init; }
-        public ContextAttribute<string> Avatar { get; init; }
-        public ContextAttribute<string> Secondary { get; init; }
-        public ContextAttribute<string> IPAddress { get; init; }
-        public ContextAttribute<string> Country { get; init; }
-        public ContextAttribute<string> FirstName { get; init; }
-        public ContextAttribute<string> LastName { get; init; }
-        public ContextAttribute<string> Name { get; init; }
-        public ContextAttribute<string> Email { get; init; }
-        public List<CustomContextAttribute<string>> CustomContextAttributes { get; init; }
+        public string Key { get; }
+
+        public bool Anonymous { get; }
+        public ContextAttribute<string> Avatar { get; }
+        public ContextAttribute<string> Secondary { get; }
+        public ContextAttribute<string> IPAddress { get; }
+        public ContextAttribute<string> Country { get; }
+        public ContextAttribute<string> FirstName { get; }
+        public ContextAttribute<string> LastName { get; }
+        public ContextAttribute<string> Name { get; }
+        public ContextAttribute<string> Email { get; }
+        public List<CustomContextAttribute<string>> CustomContextAttributes { get; }
     }
 }
