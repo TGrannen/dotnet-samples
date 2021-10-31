@@ -6,13 +6,12 @@ namespace FeatureFlags.LaunchDarkly.WebAPI.Feature.Keys
     {
         public string ConvertToKey(Features feature)
         {
-            switch (feature)
+            return feature switch
             {
-                case Features.Feature1:
-                    return "demo-sample-feature";
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(feature), feature, null);
-            }
+                Features.Feature1 => "demo-sample-feature",
+                Features.Feature2 => "demo-sample-feature-2",
+                _ => throw new ArgumentOutOfRangeException(nameof(feature), feature, null)
+            };
         }
     }
 }

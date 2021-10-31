@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using FeatureFlags.LaunchDarkly.WebAPI.Feature.Users;
 
 namespace FeatureFlags.LaunchDarkly.WebAPI.Feature
 {
@@ -8,6 +9,6 @@ namespace FeatureFlags.LaunchDarkly.WebAPI.Feature
     public interface IBoolFeatureService
     {
         Task<bool> IsEnabledAsync(Features feature);
-        Task<bool> IsEnabledAsync<TContext>(Features feature, TContext context);
+        Task<bool> IsEnabledAsync(Features feature, IFeatureContext context);
     }
 }

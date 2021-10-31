@@ -1,4 +1,5 @@
 ﻿using FeatureFlags.LaunchDarkly.WebAPI.Feature.Keys;
+using FeatureFlags.LaunchDarkly.WebAPI.Feature.Users;
 using LaunchDarkly.Logging;
 using LaunchDarkly.Sdk.Server;
 using LaunchDarkly.Sdk.Server.Interfaces;
@@ -15,6 +16,7 @@ namespace FeatureFlags.LaunchDarkly.WebAPI.Feature
         {
             services.AddSingleton<IBoolFeatureService, LaunchDarklyFeatureService>();
             services.AddTransient<IFeatureKeyConverter, FeatureKeyConverter>();
+            services.AddTransient<IUserConverter, UserConverter>();
 
             services.Configure<LaunchDarklyConfig>(configuration.GetSection("Feature:LaunchDarkly"));
             services.AddSingleton<ILdClient>(provider =>
