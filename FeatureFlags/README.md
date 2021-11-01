@@ -15,7 +15,9 @@ if (await _featureManager.IsEnabledAsync("ShowWeather"))
     // Whatever you do when the feature is enabled
 }
 ```
+
 appsettings.json
+
 ```json
 {
   "FeatureManagement": {
@@ -35,3 +37,10 @@ appsettings.json
 * [Azure App Configuration](https://azure.microsoft.com/en-us/services/app-configuration/#overview) Feature Management
   integration
 
+## LaunchDarkly Example & Library
+
+[LaunchDarkly](https://launchdarkly.com) is a feature management platform that allows software development teams to
+deliver to their customers. They provide a dotnet SDK to integrate with their
+platform ([Docs](https://docs.launchdarkly.com/sdk/server-side/dotnet)). The included example project uses a second
+library project to abstract away the Launch Darkly SDK just in case another feature management service is to be used in
+the future. 
