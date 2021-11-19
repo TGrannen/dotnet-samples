@@ -7,11 +7,13 @@ The `Server` project shows off the following:
 * Custom Razor Components
 * Integrating Component Libraries
 * Redux within Blazor
+* Testing Blazor Components with bUnit
 
 ## Nuget Packages
 
 * [MudBlazor](https://github.com/Garderoben/MudBlazor)
 * [Fluxor](https://github.com/mrpmorris/Fluxor)
+* [bUnit](https://github.com/bUnit-dev/bUnit) ([Docs](https://bunit.dev/))
 
 ## Great Documentation
 
