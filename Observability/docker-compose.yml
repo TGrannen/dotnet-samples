@@ -16,3 +16,26 @@ services:
       - "5555:80" # ui
     environment:
       ACCEPT_EULA: "Y"
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus:latest
+    volumes:
+      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - 9090:9090
+  grafana:
+    image: grafana/grafana:7.4.5-ubuntu
+    container_name: grafana
+    volumes:
+      - ./config/grafana.ini:/etc/grafana/grafana.ini
+      - ./config/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yaml
+    ports:
+      - 3000:3000
+    links:
+      - prometheus
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: monitoring_node_exporter
+    restart: unless-stopped
+    expose:
+      - 9100
