@@ -1,5 +1,6 @@
 ﻿using App.Metrics;
 using App.Metrics.Counter;
+using App.Metrics.Histogram;
 
 namespace Observability.WebAPI.Services
 {
@@ -9,7 +10,14 @@ namespace Observability.WebAPI.Services
 
         private static readonly CounterOptions CounterOptions = new()
         {
-            Name = "Forecasts Calls",
+            Name = "forecast_requests",
+            Context = "TestApi",
+            MeasurementUnit = Unit.Requests
+        };
+
+        private static readonly HistogramOptions HistogramOptions = new()
+        {
+            Name = "forecast_calls",
             Context = "TestApi",
             MeasurementUnit = Unit.Requests
         };
@@ -22,6 +30,11 @@ namespace Observability.WebAPI.Services
         public void WeatherForecastIncrement()
         {
             _metrics.Measure.Counter.Increment(CounterOptions);
+        }
+
+        public void WeatherForecastReturned(int value)
+        {
+            _metrics.Measure.Histogram.Update(HistogramOptions, value);
         }
     }
 }

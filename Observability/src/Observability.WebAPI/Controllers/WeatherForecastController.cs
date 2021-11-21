@@ -18,6 +18,7 @@ namespace Observability.WebAPI.Controllers
 
         private readonly MetricService _metricService;
         private readonly ILogger<WeatherForecastController> _logger;
+        private readonly Random _random = new Random();
 
         public WeatherForecastController(MetricService metricService, ILogger<WeatherForecastController> logger)
         {
@@ -31,7 +32,10 @@ namespace Observability.WebAPI.Controllers
             _logger.LogWarning("Getting Weather Forecasts");
             _metricService.WeatherForecastIncrement();
 
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+            var number = _random.Next(2, 10);
+            _metricService.WeatherForecastReturned(number);
+
+            return Enumerable.Range(1, number).Select(index => new WeatherForecast
                 {
                     Date = DateTime.Now.AddDays(index),
                     TemperatureC = Random.Shared.Next(-20, 55),
