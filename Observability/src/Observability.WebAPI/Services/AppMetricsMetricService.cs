@@ -4,7 +4,7 @@ using App.Metrics.Histogram;
 
 namespace Observability.WebAPI.Services
 {
-    public class MetricService
+    public class AppMetricsMetricService
     {
         private readonly IMetrics _metrics;
 
@@ -22,7 +22,7 @@ namespace Observability.WebAPI.Services
             MeasurementUnit = Unit.Requests
         };
 
-        public MetricService(IMetrics metrics)
+        public AppMetricsMetricService(IMetrics metrics)
         {
             _metrics = metrics;
         }

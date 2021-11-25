@@ -17,32 +17,57 @@ namespace Observability.WebAPI.Controllers
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
 
-        private readonly MetricService _metricService;
+        private readonly AppMetricsMetricService _appMetricsMetricService;
         private readonly ILogger<WeatherForecastController> _logger;
         private readonly ActivityService _service;
-        private readonly Random _random = new Random();
+        private readonly OtelMetricService _metricService;
+        private readonly Random _random = new();
 
-        public WeatherForecastController(MetricService metricService, ILogger<WeatherForecastController> logger, ActivityService service)
+        public WeatherForecastController(AppMetricsMetricService appMetricsMetricService,
+            ILogger<WeatherForecastController> logger,
+            ActivityService service,
+            OtelMetricService metricService)
         {
-            _metricService = metricService;
+            _appMetricsMetricService = appMetricsMetricService;
             _logger = logger;
             _service = service;
+            _metricService = metricService;
         }
 
-        [HttpGet(Name = "GetWeatherForecast")]
-        public async Task<IEnumerable<WeatherForecast>> Get()
+        [HttpGet]
+        [Route(nameof(GetWeatherForecastMetrics))]
+        public async Task<IEnumerable<WeatherForecast>> GetWeatherForecastMetrics()
         {
-            _logger.LogWarning("Getting Weather Forecasts");
-            _metricService.WeatherForecastIncrement();
+            _logger.LogWarning("Getting Weather Forecasts - Metrics");
+            _appMetricsMetricService.WeatherForecastIncrement();
 
             var number = _random.Next(2, 10);
-            _metricService.WeatherForecastReturned(number);
+            _appMetricsMetricService.WeatherForecastReturned(number);
+
+            _metricService.RandomFruitAmount();
+
+            await _metricService.RandomDelay();
+
+            return Enumerable.Range(1, number).Select(index => new WeatherForecast
+                {
+                    Date = DateTime.Now.AddDays(index),
+                    TemperatureC = Random.Shared.Next(-20, 55),
+                    Summary = Summaries[Random.Shared.Next(Summaries.Length)]
+                })
+                .ToArray();
+        }
+
+        [HttpGet]
+        [Route(nameof(GetWeatherForecastTrace))]
+        public async Task<IEnumerable<WeatherForecast>> GetWeatherForecastTrace()
+        {
+            _logger.LogWarning("Getting Weather Forecasts - Trace");
 
             await _service.Hello();
             await Task.Delay(400);
             await _service.Goodbye();
 
-            return Enumerable.Range(1, number).Select(index => new WeatherForecast
+            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
                 {
                     Date = DateTime.Now.AddDays(index),
                     TemperatureC = Random.Shared.Next(-20, 55),
