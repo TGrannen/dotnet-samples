@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Observability.WebAPI.Services;
@@ -18,22 +19,28 @@ namespace Observability.WebAPI.Controllers
 
         private readonly MetricService _metricService;
         private readonly ILogger<WeatherForecastController> _logger;
+        private readonly ActivityService _service;
         private readonly Random _random = new Random();
 
-        public WeatherForecastController(MetricService metricService, ILogger<WeatherForecastController> logger)
+        public WeatherForecastController(MetricService metricService, ILogger<WeatherForecastController> logger, ActivityService service)
         {
             _metricService = metricService;
             _logger = logger;
+            _service = service;
         }
 
         [HttpGet(Name = "GetWeatherForecast")]
-        public IEnumerable<WeatherForecast> Get()
+        public async Task<IEnumerable<WeatherForecast>> Get()
         {
             _logger.LogWarning("Getting Weather Forecasts");
             _metricService.WeatherForecastIncrement();
 
             var number = _random.Next(2, 10);
             _metricService.WeatherForecastReturned(number);
+
+            await _service.Hello();
+            await Task.Delay(400);
+            await _service.Goodbye();
 
             return Enumerable.Range(1, number).Select(index => new WeatherForecast
                 {

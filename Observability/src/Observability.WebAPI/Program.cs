@@ -17,12 +17,14 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddSingleton<MetricService>();
+builder.Services.AddSingleton<ActivityService>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddOpenTelemetryTracing((telemetryBuilder) => telemetryBuilder
     .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(builder.Configuration.GetValue<string>("Zipkin:ServiceName")))
+    .AddSource(ActivityService.Name)
     .AddAspNetCoreInstrumentation()
     .AddHttpClientInstrumentation()
     .AddZipkinExporter());
