@@ -18,6 +18,14 @@ ProjectSection(SolutionItems) = preProject
 	config\prometheus.yml = config\prometheus.yml
 EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "grafana", "grafana", "{D439123B-0DC2-4AF1-BAC5-E8011F29546C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dashboards", "dashboards", "{6658B42A-59B0-4566-88E5-2E13FE3241B4}"
+ProjectSection(SolutionItems) = preProject
+	config\grafana\dashboards\AppMetrics-WebMonitoring-Prometheus.json = config\grafana\dashboards\AppMetrics-WebMonitoring-Prometheus.json
+	config\grafana\dashboards\ObservabilityDashboard.json = config\grafana\dashboards\ObservabilityDashboard.json
+EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -34,5 +42,7 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{A13C64CA-FD08-4482-B332-F9771E1329BE} = {4BAF8CC8-8AF0-48AA-9F84-DC47A3AA7ECD}
+		{D439123B-0DC2-4AF1-BAC5-E8011F29546C} = {A13C64CA-FD08-4482-B332-F9771E1329BE}
+		{6658B42A-59B0-4566-88E5-2E13FE3241B4} = {D439123B-0DC2-4AF1-BAC5-E8011F29546C}
 	EndGlobalSection
 EndGlobal
