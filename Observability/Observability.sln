@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30114.105
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{4BAF8CC8-8AF0-48AA-9F84-DC47A3AA7ECD}"
+ProjectSection(SolutionItems) = preProject
+	docker-compose.yml = docker-compose.yml
+	README.md = README.md
+EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Observability.WebAPI", "src\Observability.WebAPI\Observability.WebAPI.csproj", "{2497FAB7-AB08-4B2E-8D94-388A9F9B4B34}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "config", "config", "{A13C64CA-FD08-4482-B332-F9771E1329BE}"
+ProjectSection(SolutionItems) = preProject
+	config\datasource.yml = config\datasource.yml
+	config\grafana.ini = config\grafana.ini
+	config\prometheus.yml = config\prometheus.yml
+EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2497FAB7-AB08-4B2E-8D94-388A9F9B4B34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2497FAB7-AB08-4B2E-8D94-388A9F9B4B34}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2497FAB7-AB08-4B2E-8D94-388A9F9B4B34}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2497FAB7-AB08-4B2E-8D94-388A9F9B4B34}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A13C64CA-FD08-4482-B332-F9771E1329BE} = {4BAF8CC8-8AF0-48AA-9F84-DC47A3AA7ECD}
+	EndGlobalSection
+EndGlobal
