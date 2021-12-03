@@ -1,5 +1,6 @@
 using FeatureFlags.LaunchDarkly.Library;
 using FeatureFlags.LaunchDarkly.WebAPI.Feature;
+using FeatureFlags.LaunchDarkly.WebAPI.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -25,6 +26,9 @@ namespace FeatureFlags.LaunchDarkly.WebAPI
             {
                 services.AddScoped<IContextProvider, ContextProvider>();
             });
+
+            services.AddTransient<IUserService, RandomUserService>();
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {

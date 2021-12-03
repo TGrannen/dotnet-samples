@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using FeatureFlags.LaunchDarkly.Library;
 using FeatureFlags.LaunchDarkly.Library.Context;
 using FeatureFlags.LaunchDarkly.WebAPI.Feature.Models;
+using FeatureFlags.LaunchDarkly.WebAPI.Services;
+using LaunchDarkly.Sdk;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FeatureFlags.LaunchDarkly.WebAPI.Controllers
@@ -17,24 +19,16 @@ namespace FeatureFlags.LaunchDarkly.WebAPI.Controllers
         {
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
-
-        private static readonly string[] Names =
-        {
-            "James", "Sarah", "David", "Mia",
-        };
-
-        private static readonly string[] Id =
-        {
-            "1321", "5412", "76534", "3424",
-        };
-
+        
         private readonly IFeatureService _featureService;
         private readonly IJsonFeatureService _jsonFeatureService;
+        private readonly IUserService _userService;
 
-        public WeatherForecastController(IFeatureService featureService, IJsonFeatureService jsonFeatureService)
+        public WeatherForecastController(IFeatureService featureService, IJsonFeatureService jsonFeatureService, IUserService userService)
         {
             _featureService = featureService;
             _jsonFeatureService = jsonFeatureService;
+            _userService = userService;
         }
 
         [HttpGet]
@@ -51,22 +45,20 @@ namespace FeatureFlags.LaunchDarkly.WebAPI.Controllers
                 .ToArray();
         }
 
-
         [HttpGet]
         [Route("Contextual")]
         public async Task<IActionResult> GetContextual()
         {
-            var (id, name) = GetUser();
+            var user = _userService.GetUser();
             var enabled = await _featureService.IsEnabledAsync("demo-sample-feature-2", new FeatureContext
             {
-                Key = id,
-                Name = new ContextAttribute<string>(name)
+                Key = user.Id,
+                Name = new ContextAttribute<string>(user.Name)
             });
 
             return Ok(new
             {
-                Id = id,
-                Name = name,
+                User = user,
                 Enabled = enabled,
             });
         }
@@ -75,29 +67,20 @@ namespace FeatureFlags.LaunchDarkly.WebAPI.Controllers
         [Route("JsonFeature")]
         public async Task<IActionResult> JsonFeature()
         {
-            var (id, name) = GetUser();
+            var user = _userService.GetUser();
             var result = await _jsonFeatureService.GetJsonConfiguration<Feature3Dto>("demo-json-feature",
                 new FeatureContext
                 {
-                    Key = id,
-                    Name = new ContextAttribute<string>(name)
+                    Key = user.Id,
+                    Name = new ContextAttribute<string>(user.Name)
                 });
             return Ok(new
             {
-                Id = id,
-                Name = name,
+                User = user,
                 Result = result,
             });
         }
 
-        private (string id, string name) GetUser()
-        {
-            var rng = new Random();
-            var index = rng.Next(0, 3);
-            var name = Names[index];
-            var id = Id[index];
-            return (id, name);
-        }
 
         [HttpGet]
         [Route("CustomContext")]
