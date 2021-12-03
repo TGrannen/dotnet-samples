@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using FeatureFlags.LaunchDarkly.Library.Context;
 using LaunchDarkly.Sdk;
@@ -21,17 +22,17 @@ namespace FeatureFlags.LaunchDarkly.Library
             _converter = new Converter();
         }
 
-        public Task<bool> IsEnabledAsync(string key, IFeatureContext context = null)
+        public Task<bool> IsEnabledAsync(string key, IFeatureContext context = null, bool defaultValue = false)
         {
             var user = _converter.Convert(context ?? GetProvider().GetUser());
-            var result = _client.BoolVariation(key, user);
+            var result = _client.BoolVariation(key, user, defaultValue);
             return Task.FromResult(result);
         }
 
-        public Task<T> GetJsonConfiguration<T>(string key, IFeatureContext context = null)
+        public Task<T> GetConfiguration<T>(string key, IFeatureContext context = null, T defaultValue = default) where T : class
         {
             var user = _converter.Convert(context ?? GetProvider().GetUser());
-            var json = _client.JsonVariation(key, user, new LdValue());
+            var json = _client.JsonVariation(key, user, GetGenericDefaultValue(defaultValue));
             return Task.FromResult(JsonConvert.DeserializeObject<T>(json.ToJsonString()));
         }
 
@@ -44,6 +45,14 @@ namespace FeatureFlags.LaunchDarkly.Library
             }
 
             return contextProvider;
+        }
+
+        private static LdValue GetGenericDefaultValue<T>(T defaultValue) where T : class
+        {
+            var ldDefault = EqualityComparer<T>.Default.Equals(defaultValue, default)
+                ? LdValue.Null
+                : LdValue.Parse(JsonConvert.SerializeObject(defaultValue));
+            return ldDefault;
         }
     }
 }

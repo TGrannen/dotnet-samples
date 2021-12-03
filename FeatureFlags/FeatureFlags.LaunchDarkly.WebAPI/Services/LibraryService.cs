@@ -39,7 +39,7 @@ namespace FeatureFlags.LaunchDarkly.WebAPI.Services
 
         public async Task<Feature3Dto> JsonSample(TestUser user)
         {
-            return await _jsonFeatureService.GetJsonConfiguration<Feature3Dto>("demo-json-feature",
+            return await _jsonFeatureService.GetConfiguration<Feature3Dto>("demo-json-feature",
                 new FeatureContext
                 {
                     Key = user.Id,

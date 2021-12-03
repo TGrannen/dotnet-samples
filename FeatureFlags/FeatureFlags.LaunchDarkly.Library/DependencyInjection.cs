@@ -18,8 +18,7 @@ namespace FeatureFlags.LaunchDarkly.Library
         {
             applicationLifetime.ApplicationStopped.Register(_ =>
             {
-                var provider = builder.ApplicationServices;
-                var client = provider.GetService<ILdClient>() as LdClient;
+                var client = builder.ApplicationServices.GetService<ILdClient>() as LdClient;
                 client?.Dispose();
             }, null);
             return builder;
@@ -35,6 +34,7 @@ namespace FeatureFlags.LaunchDarkly.Library
             userProviderSetup();
 
             services.Configure<LaunchDarklyConfig>(configuration.GetSection("Feature:LaunchDarkly"));
+            
             services.AddSingleton<ILdClient>(provider =>
             {
                 var config = provider.GetRequiredService<IOptions<LaunchDarklyConfig>>().Value;
