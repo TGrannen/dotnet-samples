@@ -33,9 +33,9 @@ namespace FeatureFlags.LaunchDarkly.WebAPI.Services
             return _client.JsonVariation("demo-sample-feature-2", contextUser, LdValue.Null);
         }
 
-        public bool IsSampleOneEnabledCustom(TestUser user)
+        public bool IsSampleOneEnabledCustom()
         {
-            var builder = User.Builder(user.Id).Name(user.Name);
+            var builder = User.Builder("TEST");
 
             builder.Custom("My Data Stuff", "My fancy value");
 

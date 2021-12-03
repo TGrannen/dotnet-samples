@@ -3,33 +3,22 @@ using FeatureFlags.LaunchDarkly.WebAPI.Models;
 
 namespace FeatureFlags.LaunchDarkly.WebAPI.Services
 {
-    public interface IUserService
-    {
-        TestUser GetUser();
-    }
-
     public class RandomUserService : IUserService
     {
-        private static readonly string[] Id =
+        private static readonly Random Rng = new();
+
+        private static readonly TestUser[] Users =
         {
-            "1321", "5412", "76534", "3424",
+            new() { Id = "1321", Name = "James" },
+            new() { Id = "5412", Name = "Sarah" },
+            new() { Id = "76534", Name = "David" },
+            new() { Id = "3424", Name = "Mia" },
         };
-        private static readonly string[] Names =
-        {
-            "James", "Sarah", "David", "Mia",
-        };
-        
+
         public TestUser GetUser()
         {
-            var rng = new Random();
-            var index = rng.Next(0, 3);
-            var name = Names[index];
-            var id = Id[index];
-            return new TestUser
-            {
-                Id = id,
-                Name = name
-            };
+            var index = Rng.Next(0, Users.Length - 1);
+            return Users[index];
         }
     }
 }
