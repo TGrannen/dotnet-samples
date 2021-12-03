@@ -30,7 +30,7 @@ namespace FeatureFlags.LaunchDarkly.WebAPI.Services
         public LdValue JsonSample(TestUser user)
         {
             var contextUser = User.Builder(user.Id).Name(user.Name).Build();
-            return _client.JsonVariation("demo-sample-feature-2", contextUser, LdValue.Null);
+            return _client.JsonVariation("demo-json-feature", contextUser, LdValue.Null);
         }
 
         public bool IsSampleOneEnabledCustom()
