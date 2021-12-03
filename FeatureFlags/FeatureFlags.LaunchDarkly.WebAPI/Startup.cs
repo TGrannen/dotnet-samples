@@ -28,6 +28,8 @@ namespace FeatureFlags.LaunchDarkly.WebAPI
             });
 
             services.AddTransient<IUserService, RandomUserService>();
+            services.AddTransient<LibraryService>();
+            services.AddTransient<LaunchDarklyDirectService>();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
