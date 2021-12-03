@@ -22,18 +22,18 @@ namespace FeatureFlags.LaunchDarkly.Library
             _converter = new Converter();
         }
 
-        public Task<bool> IsEnabledAsync(string key, IFeatureContext context = null, bool defaultValue = false)
+        public async Task<bool> IsEnabledAsync(string key, IFeatureContext context = null, bool defaultValue = false)
         {
-            var user = _converter.Convert(context ?? GetProvider().GetUser());
+            var user = _converter.Convert(context ?? await GetProvider().GetUserAsync());
             var result = _client.BoolVariation(key, user, defaultValue);
-            return Task.FromResult(result);
+            return result;
         }
 
-        public Task<T> GetConfiguration<T>(string key, IFeatureContext context = null, T defaultValue = default) where T : class
+        public async Task<T> GetConfiguration<T>(string key, IFeatureContext context = null, T defaultValue = default) where T : class
         {
-            var user = _converter.Convert(context ?? GetProvider().GetUser());
+            var user = _converter.Convert(context ?? await GetProvider().GetUserAsync());
             var json = _client.JsonVariation(key, user, GetGenericDefaultValue(defaultValue));
-            return Task.FromResult(JsonConvert.DeserializeObject<T>(json.ToJsonString()));
+            return JsonConvert.DeserializeObject<T>(json.ToJsonString());
         }
 
         private IContextProvider GetProvider()

@@ -1,9 +1,10 @@
-﻿using FeatureFlags.LaunchDarkly.Library.Context;
+﻿using System.Threading.Tasks;
+using FeatureFlags.LaunchDarkly.Library.Context;
 
 namespace FeatureFlags.LaunchDarkly.Library
 {
     public interface IContextProvider
     {
-        IFeatureContext GetUser();
+        Task<IFeatureContext> GetUserAsync();
     }
 }
