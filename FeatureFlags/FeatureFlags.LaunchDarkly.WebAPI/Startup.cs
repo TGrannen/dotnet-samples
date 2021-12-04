@@ -1,6 +1,4 @@
-using FeatureFlags.LaunchDarkly.WebAPI.Features.Providers;
 using FeatureFlags.LaunchDarkly.WebAPI.Services;
-using FeatureFlags.Library.Core.Context;
 using FeatureFlags.Library.LaunchDarkly;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -23,10 +21,9 @@ namespace FeatureFlags.LaunchDarkly.WebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddLaunchDarkly(Configuration, () =>
+            services.AddLaunchDarkly(ldConfig =>
             {
-                services.AddScoped<IContextProvider, HardCodedTestContextProvider>();
-                // services.AddScoped<IContextProvider, UserContextProvider>();
+                ldConfig.SdkKey = Configuration.GetValue<string>("Feature:LaunchDarkly:SdkKey");
             });
 
             services.AddTransient<IUserService, RandomUserService>();
