@@ -1,4 +1,5 @@
 using FeatureFlags.LaunchDarkly.WebAPI.Features;
+using FeatureFlags.LaunchDarkly.WebAPI.Features.Providers;
 using FeatureFlags.LaunchDarkly.WebAPI.Services;
 using FeatureFlags.Library.Core;
 using FeatureFlags.Library.Core.Context;
@@ -26,7 +27,8 @@ namespace FeatureFlags.LaunchDarkly.WebAPI
         {
             services.AddLaunchDarkly(Configuration, () =>
             {
-                services.AddScoped<IContextProvider, ContextProvider>();
+                services.AddScoped<IContextProvider, HardCodedTestContextProvider>();
+                // services.AddScoped<IContextProvider, UserContextProvider>();
             });
 
             services.AddTransient<IUserService, RandomUserService>();

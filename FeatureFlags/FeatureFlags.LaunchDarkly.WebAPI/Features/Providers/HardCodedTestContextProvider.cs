@@ -1,10 +1,9 @@
 ﻿using System.Threading.Tasks;
-using FeatureFlags.Library.Core;
 using FeatureFlags.Library.Core.Context;
 
-namespace FeatureFlags.LaunchDarkly.WebAPI.Features
+namespace FeatureFlags.LaunchDarkly.WebAPI.Features.Providers
 {
-    class ContextProvider : IContextProvider
+    class HardCodedTestContextProvider : IContextProvider
     {
         public Task<IFeatureContext> GetUserAsync()
         {
