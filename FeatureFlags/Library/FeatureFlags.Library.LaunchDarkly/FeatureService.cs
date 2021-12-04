@@ -23,18 +23,43 @@ namespace FeatureFlags.Library.LaunchDarkly
             _converter = converter;
         }
 
-        public async Task<bool> IsEnabledAsync(string key, IFeatureContext context = null, bool defaultValue = false)
+        public async Task<bool> IsEnabledAsync(string key)
         {
-            var user = _converter.Convert(context ?? await GetProvider().GetUserAsync());
-            var result = _client.BoolVariation(key, user, defaultValue);
-            return result;
+            var context = await GetProvider().GetUserAsync();
+            return await IsEnabledAsync(key, context);
         }
 
-        public async Task<T> GetConfiguration<T>(string key, IFeatureContext context = null, T defaultValue = default) where T : class
+        public async Task<bool> IsEnabledAsync(string key, bool defaultValue)
         {
-            var user = _converter.Convert(context ?? await GetProvider().GetUserAsync());
+            var context = await GetProvider().GetUserAsync();
+            return await IsEnabledAsync(key, context, defaultValue);
+        }
+
+        public Task<bool> IsEnabledAsync(string key, IFeatureContext context, bool defaultValue = false)
+        {
+            var user = _converter.Convert(context);
+            var result = _client.BoolVariation(key, user, defaultValue);
+            return Task.FromResult(result);
+        }
+
+        public async Task<T> GetConfiguration<T>(string key) where T : class
+        {
+            var context = await GetProvider().GetUserAsync();
+            return await GetConfiguration(key, context, default(T));
+        }
+
+        public async Task<T> GetConfiguration<T>(string key, T defaultValue) where T : class
+        {
+            var context = await GetProvider().GetUserAsync();
+            return await GetConfiguration(key, context, defaultValue);
+        }
+
+        public Task<T> GetConfiguration<T>(string key, IFeatureContext context, T defaultValue = default) where T : class
+        {
+            var user = _converter.Convert(context);
             var json = _client.JsonVariation(key, user, GetGenericDefaultValue(defaultValue));
-            return JsonConvert.DeserializeObject<T>(json.ToJsonString());
+            var result = JsonConvert.DeserializeObject<T>(json.ToJsonString());
+            return Task.FromResult(result);
         }
 
         private IContextProvider GetProvider()
