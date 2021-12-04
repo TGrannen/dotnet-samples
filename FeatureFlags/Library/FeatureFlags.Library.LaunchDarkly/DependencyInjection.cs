@@ -1,4 +1,5 @@
 ﻿using System;
+using FeatureFlags.Library.Core;
 using LaunchDarkly.Logging;
 using LaunchDarkly.Sdk.Server;
 using LaunchDarkly.Sdk.Server.Interfaces;
@@ -9,7 +10,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace FeatureFlags.LaunchDarkly.Library
+namespace FeatureFlags.Library.LaunchDarkly
 {
     public static class DependencyInjection
     {
@@ -18,8 +19,7 @@ namespace FeatureFlags.LaunchDarkly.Library
         {
             applicationLifetime.ApplicationStopped.Register(_ =>
             {
-                var provider = builder.ApplicationServices;
-                var client = provider.GetService<ILdClient>() as LdClient;
+                var client = builder.ApplicationServices.GetService<ILdClient>() as LdClient;
                 client?.Dispose();
             }, null);
             return builder;
@@ -27,14 +27,16 @@ namespace FeatureFlags.LaunchDarkly.Library
 
         public static IServiceCollection AddLaunchDarkly(this IServiceCollection services,
             IConfiguration configuration,
-            Action userProviderSetup)
+            Action contextProviderSetup = null)
         {
             services.AddTransient<IFeatureService, FeatureService>();
             services.AddTransient<IJsonFeatureService, FeatureService>();
+            services.AddTransient<Converter>();
 
-            userProviderSetup();
+            contextProviderSetup?.Invoke();
 
             services.Configure<LaunchDarklyConfig>(configuration.GetSection("Feature:LaunchDarkly"));
+
             services.AddSingleton<ILdClient>(provider =>
             {
                 var config = provider.GetRequiredService<IOptions<LaunchDarklyConfig>>().Value;

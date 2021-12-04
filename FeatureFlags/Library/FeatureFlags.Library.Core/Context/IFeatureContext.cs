@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace FeatureFlags.LaunchDarkly.Library.Context
+namespace FeatureFlags.Library.Core.Context
 {
     public interface IFeatureContext
     {
@@ -8,7 +8,6 @@ namespace FeatureFlags.LaunchDarkly.Library.Context
         /// Required
         /// </summary>
         public string Key { get; }
-
         public bool Anonymous { get; }
         public ContextAttribute<string> Avatar { get; }
         public ContextAttribute<string> Secondary { get; }

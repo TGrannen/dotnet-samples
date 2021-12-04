@@ -1,4 +1,4 @@
-﻿namespace FeatureFlags.LaunchDarkly.WebAPI.Feature.Models
+﻿namespace FeatureFlags.LaunchDarkly.WebAPI.Features.Models
 {
     public class Feature3Dto
     {

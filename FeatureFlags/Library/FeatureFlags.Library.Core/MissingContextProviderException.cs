@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FeatureFlags.LaunchDarkly.Library
+namespace FeatureFlags.Library.Core
 {
     public class MissingContextProviderException : Exception
     {

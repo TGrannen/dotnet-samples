@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Linq;
+using FeatureFlags.Library.Core.Context;
 using LaunchDarkly.Sdk;
 
-namespace FeatureFlags.LaunchDarkly.Library.Context
+namespace FeatureFlags.Library.LaunchDarkly
 {
     public class Converter
     {

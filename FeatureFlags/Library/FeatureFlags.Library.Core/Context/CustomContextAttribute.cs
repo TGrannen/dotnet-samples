@@ -1,4 +1,4 @@
-﻿namespace FeatureFlags.LaunchDarkly.Library.Context
+﻿namespace FeatureFlags.Library.Core.Context
 {
     public class CustomContextAttribute<T> : ContextAttribute<T>
     {

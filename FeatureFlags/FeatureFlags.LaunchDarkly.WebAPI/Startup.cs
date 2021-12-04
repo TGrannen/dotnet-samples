@@ -1,5 +1,7 @@
-using FeatureFlags.LaunchDarkly.Library;
-using FeatureFlags.LaunchDarkly.WebAPI.Feature;
+using FeatureFlags.LaunchDarkly.WebAPI.Features.Providers;
+using FeatureFlags.LaunchDarkly.WebAPI.Services;
+using FeatureFlags.Library.Core.Context;
+using FeatureFlags.Library.LaunchDarkly;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -23,8 +25,14 @@ namespace FeatureFlags.LaunchDarkly.WebAPI
         {
             services.AddLaunchDarkly(Configuration, () =>
             {
-                services.AddScoped<IContextProvider, ContextProvider>();
+                services.AddScoped<IContextProvider, HardCodedTestContextProvider>();
+                // services.AddScoped<IContextProvider, UserContextProvider>();
             });
+
+            services.AddTransient<IUserService, RandomUserService>();
+            services.AddTransient<LibraryService>();
+            services.AddTransient<LaunchDarklyDirectService>();
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
