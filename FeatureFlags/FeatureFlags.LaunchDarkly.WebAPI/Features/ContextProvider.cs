@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
-using FeatureFlags.LaunchDarkly.Library;
-using FeatureFlags.LaunchDarkly.Library.Context;
+using FeatureFlags.Library.Core;
+using FeatureFlags.Library.Core.Context;
 
-namespace FeatureFlags.LaunchDarkly.WebAPI.Feature
+namespace FeatureFlags.LaunchDarkly.WebAPI.Features
 {
     class ContextProvider : IContextProvider
     {

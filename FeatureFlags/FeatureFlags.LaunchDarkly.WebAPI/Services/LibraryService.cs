@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using FeatureFlags.LaunchDarkly.Library;
-using FeatureFlags.LaunchDarkly.Library.Context;
-using FeatureFlags.LaunchDarkly.WebAPI.Feature.Models;
-using FeatureFlags.LaunchDarkly.WebAPI.Models;
+using FeatureFlags.LaunchDarkly.WebAPI.Features;
+using FeatureFlags.LaunchDarkly.WebAPI.Features.Models;
+using FeatureFlags.Library.Core;
+using FeatureFlags.Library.Core.Context;
 
 namespace FeatureFlags.LaunchDarkly.WebAPI.Services
 {
@@ -14,13 +14,11 @@ namespace FeatureFlags.LaunchDarkly.WebAPI.Services
     {
         private readonly IFeatureService _featureService;
         private readonly IJsonFeatureService _jsonFeatureService;
-        private readonly IUserService _userService;
 
-        public LibraryService(IFeatureService featureService, IJsonFeatureService jsonFeatureService, IUserService userService)
+        public LibraryService(IFeatureService featureService, IJsonFeatureService jsonFeatureService)
         {
             _featureService = featureService;
             _jsonFeatureService = jsonFeatureService;
-            _userService = userService;
         }
 
         public async Task<bool> IsSampleOneEnabled()

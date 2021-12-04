@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
-using FeatureFlags.LaunchDarkly.Library.Context;
+using FeatureFlags.Library.Core.Context;
 
-namespace FeatureFlags.LaunchDarkly.Library
+namespace FeatureFlags.Library.Core
 {
     public interface IJsonFeatureService
     {

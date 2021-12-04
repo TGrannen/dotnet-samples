@@ -1,4 +1,4 @@
-namespace FeatureFlags.LaunchDarkly.WebAPI.Models
+namespace FeatureFlags.LaunchDarkly.WebAPI.Features
 {
     public class TestUser
     {

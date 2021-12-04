@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace FeatureFlags.LaunchDarkly.Library.Context
+namespace FeatureFlags.Library.Core.Context
 {
     public class FeatureContext : IFeatureContext
     {

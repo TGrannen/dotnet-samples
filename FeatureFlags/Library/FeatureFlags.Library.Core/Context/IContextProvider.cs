@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
-using FeatureFlags.LaunchDarkly.Library.Context;
 
-namespace FeatureFlags.LaunchDarkly.Library
+namespace FeatureFlags.Library.Core.Context
 {
     public interface IContextProvider
     {

@@ -1,5 +1,5 @@
 ﻿using System;
-using FeatureFlags.LaunchDarkly.WebAPI.Models;
+using FeatureFlags.LaunchDarkly.WebAPI.Features;
 
 namespace FeatureFlags.LaunchDarkly.WebAPI.Services
 {
