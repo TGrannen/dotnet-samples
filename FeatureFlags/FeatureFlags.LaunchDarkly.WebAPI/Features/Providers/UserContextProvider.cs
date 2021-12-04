@@ -9,8 +9,9 @@ namespace FeatureFlags.LaunchDarkly.WebAPI.Features.Providers
     {
         private readonly IUserService _userService;
         private readonly ILogger<UserContextProvider> _logger;
+        private TestUser _user;
 
-        public UserContextProvider(IUserService userService,ILogger<UserContextProvider> logger)
+        public UserContextProvider(IUserService userService, ILogger<UserContextProvider> logger)
         {
             _userService = userService;
             _logger = logger;
@@ -18,12 +19,13 @@ namespace FeatureFlags.LaunchDarkly.WebAPI.Features.Providers
 
         public Task<IFeatureContext> GetUserAsync()
         {
-            var user = _userService.GetUser();
-            _logger.LogInformation("User Provided: {@User}", user);
+            _user ??= _userService.GetUser();
+            
+            _logger.LogInformation("User Provided: {@User}", _user);
             var context = new FeatureContext
             {
-                Key = user.Id,
-                Name = new ContextAttribute<string>(user.Name)
+                Key = _user.Id,
+                Name = new ContextAttribute<string>(_user.Name)
             };
             return Task.FromResult((IFeatureContext) context);
         }
