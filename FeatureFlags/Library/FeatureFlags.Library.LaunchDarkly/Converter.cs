@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using FeatureFlags.Library.Core;
 using FeatureFlags.Library.Core.Context;
 using LaunchDarkly.Sdk;
 

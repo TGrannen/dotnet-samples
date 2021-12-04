@@ -1,7 +1,5 @@
-using FeatureFlags.LaunchDarkly.WebAPI.Features;
 using FeatureFlags.LaunchDarkly.WebAPI.Features.Providers;
 using FeatureFlags.LaunchDarkly.WebAPI.Services;
-using FeatureFlags.Library.Core;
 using FeatureFlags.Library.Core.Context;
 using FeatureFlags.Library.LaunchDarkly;
 using Microsoft.AspNetCore.Builder;
