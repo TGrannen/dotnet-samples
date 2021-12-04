@@ -4,11 +4,9 @@ using LaunchDarkly.Logging;
 using LaunchDarkly.Sdk.Server;
 using LaunchDarkly.Sdk.Server.Interfaces;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
 namespace FeatureFlags.Library.LaunchDarkly
 {
@@ -19,6 +17,8 @@ namespace FeatureFlags.Library.LaunchDarkly
         {
             applicationLifetime.ApplicationStopped.Register(_ =>
             {
+                // To ensure that the client flushes all remaining tracking events before shutting down
+                // https://docs.launchdarkly.com/sdk/features/shutdown
                 var client = builder.ApplicationServices.GetService<ILdClient>() as LdClient;
                 client?.Dispose();
             }, null);
@@ -26,21 +26,18 @@ namespace FeatureFlags.Library.LaunchDarkly
         }
 
         public static IServiceCollection AddLaunchDarkly(this IServiceCollection services,
-            IConfiguration configuration,
-            Action contextProviderSetup = null)
+            Action<LaunchDarklyConfig> configAction)
         {
             services.AddTransient<IFeatureService, FeatureService>();
             services.AddTransient<IJsonFeatureService, FeatureService>();
             services.AddTransient<Converter>();
 
-            contextProviderSetup?.Invoke();
-
-            services.Configure<LaunchDarklyConfig>(configuration.GetSection("Feature:LaunchDarkly"));
-
             services.AddSingleton<ILdClient>(provider =>
             {
-                var config = provider.GetRequiredService<IOptions<LaunchDarklyConfig>>().Value;
+                var config = new LaunchDarklyConfig();
+                configAction.Invoke(config);
                 var loggerFactory = provider.GetRequiredService<ILoggerFactory>();
+                
                 var ldConfig = Configuration.Builder(config.SdkKey)
                     .Logging(LdMicrosoftLogging.Adapter(loggerFactory))
                     .Build();
@@ -48,11 +45,6 @@ namespace FeatureFlags.Library.LaunchDarkly
             });
 
             return services;
-        }
-
-        private class LaunchDarklyConfig
-        {
-            public string SdkKey { get; set; }
         }
     }
 }
