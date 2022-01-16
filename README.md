@@ -20,6 +20,10 @@ This repository's purpose is to showcase common design patterns, best practices,
 
 * [BenchmarkDotNet](Benchmarks/)
 
+### Caching
+
+* [Caching](Caching/)
+
 ### Configration
 
 * [Configuration](Configuration/)
