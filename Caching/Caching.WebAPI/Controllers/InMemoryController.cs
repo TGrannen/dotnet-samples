@@ -1,4 +1,5 @@
 ﻿using System;
+using Caching.WebAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 
@@ -9,7 +10,7 @@ namespace Caching.WebAPI.Controllers
     public class InMemoryController : ControllerBase
     {
         private readonly IMemoryCache _cache;
-        
+
         public InMemoryController(IMemoryCache cache)
         {
             _cache = cache;
@@ -47,12 +48,6 @@ namespace Caching.WebAPI.Controllers
             }
 
             return Ok();
-        }
-
-        public class CacheEntryModel
-        {
-            public string Key { get; set; }
-            public DateTime Created { get; set; }
         }
     }
 }
