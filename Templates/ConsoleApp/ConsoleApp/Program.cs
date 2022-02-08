@@ -1,40 +1,51 @@
-﻿using ConsoleApp.Commands;
-using ConsoleApp.Setup;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using System;
+using Cocona;
+using McMaster.Extensions.CommandLineUtils;
+using Microsoft.Extensions.Logging;
 
-namespace ConsoleApp
+var config = InitConfig();
+
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(config)
+    .CreateLogger();
+
+var builder = CoconaApp.CreateBuilder();
+builder.Services.AddLogging(loggingBuilder => loggingBuilder.ClearProviders().AddSerilog());
+
+var app = builder.Build();
+
+app.AddCommand("test", (string name, int count, [FromService] ILogger<Program> logger) =>
 {
-    internal class Program
+    if (count > 1)
     {
-        public static int Main(string[] args)
+        var continueWithMultiple = Prompt.GetYesNo($"Are you sure that you want to run this {count} times?", true, ConsoleColor.Yellow);
+        if (!continueWithMultiple)
         {
-            var config = InitConfig();
-
-            Log.Logger = new LoggerConfiguration()
-                .ReadFrom.Configuration(config)
-                .CreateLogger();
-
-            var serviceProvider = new ServiceCollection()
-                .AddLogging(configure => configure.AddSerilog())
-                .AddSingleton<ICommand, HelloWorldCommand>()
-                .BuildServiceProvider();
-
-            var commandLineApp = new CommandLineApplicationWithDI(serviceProvider);
-            return commandLineApp.Execute(args);
-        }
-
-        private static IConfigurationRoot InitConfig()
-        {
-            var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-            var builder = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json", true, true)
-                .AddJsonFile($"appsettings.{env}.json", true, true)
-                .AddEnvironmentVariables();
-
-            return builder.Build();
+            logger.LogInformation("Cancelling {Name} command", "test");
+            return 1;
         }
     }
+
+    for (var i = 0; i < count; i++)
+    {
+        logger.LogInformation("Hello {Name}", name ?? "world");
+    }
+
+    return 0;
+});
+
+app.Run();
+
+static IConfigurationRoot InitConfig()
+{
+    var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+    var builder = new ConfigurationBuilder()
+        .AddJsonFile("appsettings.json", true, true)
+        .AddJsonFile($"appsettings.{env}.json", true, true)
+        .AddEnvironmentVariables();
+
+    return builder.Build();
 }
