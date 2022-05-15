@@ -1,0 +1,106 @@
+﻿@page "/"
+@using Microsoft.AspNetCore.SignalR.Client
+@inject IHubConfiguration HubConfiguration
+@inject ILogger<Index> Logger
+@implements IAsyncDisposable
+
+@if (_hubConnection != null)
+{
+    <div class="form-group">
+        <div>Connection Status: @_hubConnection.State</div>
+        <div>ConnectionId: @_hubConnection.ConnectionId</div>
+    </div>
+}
+<div class="form-group">
+    <label>
+        User:
+        <input @bind="_userInput"/>
+    </label>
+</div>
+<div class="form-group">
+    <label>
+        Message:
+        <input @bind="_messageInput" size="50"/>
+    </label>
+</div>
+<button @onclick="Send" disabled="@(!IsConnected)">Send</button>
+
+<hr>
+
+<ul id="messagesList">
+    @foreach (var message in _messages)
+    {
+        <li>@message</li>
+    }
+</ul>
+
+@code {
+    private HubConnection _hubConnection;
+    private readonly List<string> _messages = new List<string>();
+    private string _userInput;
+    private string _messageInput;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Logger.LogInformation("Hub Address: {Address}", HubConfiguration.Address);
+        AddMessage("Connection: Initializing");
+        _hubConnection = new HubConnectionBuilder()
+            .WithUrl($"{HubConfiguration?.Address}/chathub")
+            .WithAutomaticReconnect(new RetryPolicy())
+            .Build();
+
+        _hubConnection.On<string, string>("ReceiveMessage", (user, message) =>
+        {
+            var encodedMsg = $"{user}: {message}";
+            AddMessage(encodedMsg);
+        });
+
+        _hubConnection.Closed += exception =>
+        {
+            AddMessage($"Connection: {_hubConnection.State} Error: {exception.Message}");
+            return Task.CompletedTask;
+        };
+
+        _hubConnection.Reconnected += message =>
+        {
+            AddMessage($"Connection: {_hubConnection.State} Reconnected {message}");
+            return Task.CompletedTask;
+        };
+
+        _hubConnection.Reconnecting += message =>
+        {
+            AddMessage($"Connection: {_hubConnection.State} Reconnecting {message}");
+            return Task.CompletedTask;
+        };
+
+        await _hubConnection.StartAsync();
+    }
+
+    public class RetryPolicy : IRetryPolicy
+    {
+        public TimeSpan? NextRetryDelay(RetryContext retryContext)
+        {
+            return TimeSpan.FromSeconds(5);
+        }
+    }
+
+    private void AddMessage(string item)
+    {
+        _messages.Add(item);
+        StateHasChanged();
+    }
+
+    async Task Send() =>
+        await _hubConnection.SendAsync("SendMessage", _userInput, _messageInput);
+
+    private bool IsConnected => _hubConnection.State == HubConnectionState.Connected;
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_hubConnection is not null)
+        {
+            await _hubConnection.DisposeAsync();
+        }
+    }
+
+}

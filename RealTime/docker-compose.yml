@@ -1,0 +1,36 @@
+﻿version: '3.8'
+services:
+  server:
+    image: backplane-test-server:dummy
+    build: 
+      dockerfile: ./RealTime.SignalRBackplane.Server/Dockerfile
+      context: .
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "4000:80"
+    networks:
+      - dummy
+  redis:
+    container_name: redis
+    image: redis:6.2-alpine
+    restart: always
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1 --loglevel warning --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
+    volumes:
+      - cache:/data
+    networks:
+      - dummy
+  redisinsight:
+    image: redislabs/redisinsight:latest
+    ports:
+      - '8001:8001'
+    networks:
+      - dummy
+volumes:
+  cache:
+    driver: local
+networks:
+  dummy:
+    name: TEST

@@ -16,6 +16,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealTime.SignalR.Angular", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealTime.SignalR.React", "RealTime.SignalR.React\RealTime.SignalR.React.csproj", "{E327D483-DBEF-4712-A12C-7FD22C680423}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Backplane", "Backplane", "{AAEFDB98-A801-4573-8466-39D5E761BC68}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yml = docker-compose.yml
+		kube-deploy\service_deployment.yml = kube-deploy\service_deployment.yml
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealTime.SignalRBackplane.BlazorWeb", "RealTime.SignalRBackplane.BlazorWeb\RealTime.SignalRBackplane.BlazorWeb.csproj", "{869C675A-2CB8-4A09-BD75-DFF04F66CC0C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealTime.SignalRBackplane.Server", "RealTime.SignalRBackplane.Server\RealTime.SignalRBackplane.Server.csproj", "{43890E0F-26BF-430E-BA86-600544454442}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -77,5 +87,33 @@ Global
 		{E327D483-DBEF-4712-A12C-7FD22C680423}.Release|x64.Build.0 = Release|Any CPU
 		{E327D483-DBEF-4712-A12C-7FD22C680423}.Release|x86.ActiveCfg = Release|Any CPU
 		{E327D483-DBEF-4712-A12C-7FD22C680423}.Release|x86.Build.0 = Release|Any CPU
+		{869C675A-2CB8-4A09-BD75-DFF04F66CC0C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{869C675A-2CB8-4A09-BD75-DFF04F66CC0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{869C675A-2CB8-4A09-BD75-DFF04F66CC0C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{869C675A-2CB8-4A09-BD75-DFF04F66CC0C}.Debug|x64.Build.0 = Debug|Any CPU
+		{869C675A-2CB8-4A09-BD75-DFF04F66CC0C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{869C675A-2CB8-4A09-BD75-DFF04F66CC0C}.Debug|x86.Build.0 = Debug|Any CPU
+		{869C675A-2CB8-4A09-BD75-DFF04F66CC0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{869C675A-2CB8-4A09-BD75-DFF04F66CC0C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{869C675A-2CB8-4A09-BD75-DFF04F66CC0C}.Release|x64.ActiveCfg = Release|Any CPU
+		{869C675A-2CB8-4A09-BD75-DFF04F66CC0C}.Release|x64.Build.0 = Release|Any CPU
+		{869C675A-2CB8-4A09-BD75-DFF04F66CC0C}.Release|x86.ActiveCfg = Release|Any CPU
+		{869C675A-2CB8-4A09-BD75-DFF04F66CC0C}.Release|x86.Build.0 = Release|Any CPU
+		{43890E0F-26BF-430E-BA86-600544454442}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43890E0F-26BF-430E-BA86-600544454442}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43890E0F-26BF-430E-BA86-600544454442}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{43890E0F-26BF-430E-BA86-600544454442}.Debug|x64.Build.0 = Debug|Any CPU
+		{43890E0F-26BF-430E-BA86-600544454442}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{43890E0F-26BF-430E-BA86-600544454442}.Debug|x86.Build.0 = Debug|Any CPU
+		{43890E0F-26BF-430E-BA86-600544454442}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43890E0F-26BF-430E-BA86-600544454442}.Release|Any CPU.Build.0 = Release|Any CPU
+		{43890E0F-26BF-430E-BA86-600544454442}.Release|x64.ActiveCfg = Release|Any CPU
+		{43890E0F-26BF-430E-BA86-600544454442}.Release|x64.Build.0 = Release|Any CPU
+		{43890E0F-26BF-430E-BA86-600544454442}.Release|x86.ActiveCfg = Release|Any CPU
+		{43890E0F-26BF-430E-BA86-600544454442}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{869C675A-2CB8-4A09-BD75-DFF04F66CC0C} = {AAEFDB98-A801-4573-8466-39D5E761BC68}
+		{43890E0F-26BF-430E-BA86-600544454442} = {AAEFDB98-A801-4573-8466-39D5E761BC68}
 	EndGlobalSection
 EndGlobal
