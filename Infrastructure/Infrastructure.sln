@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.ConsoleApp", "Infrastructure.ConsoleApp\Infrastructure.ConsoleApp.csproj", "{B0C7E65B-5BF6-4D40-ABC5-1FAC621255EC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.BlazorServer", "Infrastructure.BlazorServer\Infrastructure.BlazorServer.csproj", "{B29466D4-9769-4AE4-9B51-CB251955D1B4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{B0C7E65B-5BF6-4D40-ABC5-1FAC621255EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B0C7E65B-5BF6-4D40-ABC5-1FAC621255EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B0C7E65B-5BF6-4D40-ABC5-1FAC621255EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B29466D4-9769-4AE4-9B51-CB251955D1B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B29466D4-9769-4AE4-9B51-CB251955D1B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B29466D4-9769-4AE4-9B51-CB251955D1B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B29466D4-9769-4AE4-9B51-CB251955D1B4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -19,7 +19,7 @@ public class KubeService
                 {
                     ContainerPortValue = service.ContainerPort
                 },
-            },
+            }
         };
 
         var deployment = new Pulumi.Kubernetes.Apps.V1.Deployment(service.Name, new DeploymentArgs
