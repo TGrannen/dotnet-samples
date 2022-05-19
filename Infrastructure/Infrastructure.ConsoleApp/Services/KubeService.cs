@@ -1,9 +1,4 @@
-﻿using System.Collections.Immutable;
-using Infrastructure.ConsoleApp.Models;
-using Pulumi.Kubernetes.Types.Outputs.Core.V1;
-using Service = Pulumi.Kubernetes.Core.V1.Service;
-
-namespace Infrastructure.ConsoleApp.Services;
+﻿namespace Infrastructure.ConsoleApp.Services;
 
 public class KubeService
 {
@@ -11,12 +6,12 @@ public class KubeService
     {
         var appLabels = new InputMap<string>
         {
-            { "app", service.AppName },
+            { "app", service.Name },
         };
 
         var containerArgs = new ContainerArgs
         {
-            Name = service.AppName,
+            Name = service.Name,
             Image = service.Image,
             Ports =
             {
@@ -27,7 +22,7 @@ public class KubeService
             },
         };
 
-        var deployment = new Pulumi.Kubernetes.Apps.V1.Deployment(service.AppName, new DeploymentArgs
+        var deployment = new Pulumi.Kubernetes.Apps.V1.Deployment(service.Name, new DeploymentArgs
         {
             Spec = new DeploymentSpecArgs
             {
@@ -53,7 +48,7 @@ public class KubeService
             },
         });
 
-        var frontend = new Service(service.AppName, new ServiceArgs
+        var frontend = new Service(service.Name, new ServiceArgs
         {
             Metadata = new ObjectMetaArgs
             {
@@ -75,14 +70,12 @@ public class KubeService
             }
         });
 
-        IP = frontend.Status.Apply(status =>
+        UrlAddress = frontend.Status.Apply(status =>
         {
             var ingress = status.LoadBalancer.Ingress[0];
-            return ingress.Ip ?? ingress.Hostname;
+            return $"{ingress.Ip ?? ingress.Hostname}:{service.NodePort}";
         });
-        NodePort = frontend.Status.Apply(_ => service.NodePort);
     }
 
-    [Output("ip")] public Output<string> IP { get; set; }
-    [Output("port")] public Output<int> NodePort { get; set; }
+    [Output("ip")] public Output<string> UrlAddress { get; set; }
 }
