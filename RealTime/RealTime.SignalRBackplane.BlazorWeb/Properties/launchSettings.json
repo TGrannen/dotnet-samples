@@ -1,0 +1,32 @@
+{
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:55174",
+      "sslPort": 44383
+    }
+  },
+  "profiles": {
+    "Local": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": true,
+      "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}",
+      "applicationUrl": "https://localhost:7251;http://localhost:5251",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "Kubernetes": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": true,
+      "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}",
+      "applicationUrl": "https://localhost:7251;http://localhost:5251",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Kubernetes"
+      }
+    }
+  }
+}
