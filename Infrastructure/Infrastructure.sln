@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Pulumi.ConsoleApp", "Infrastructure.Pulumi.ConsoleApp\Infrastructure.Pulumi.ConsoleApp.csproj", "{BBBFC46B-B243-424B-B22F-AE9B7E4EDDAE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.ConsoleApp", "Infrastructure.ConsoleApp\Infrastructure.ConsoleApp.csproj", "{B0C7E65B-5BF6-4D40-ABC5-1FAC621255EC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -14,9 +14,9 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{BBBFC46B-B243-424B-B22F-AE9B7E4EDDAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BBBFC46B-B243-424B-B22F-AE9B7E4EDDAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BBBFC46B-B243-424B-B22F-AE9B7E4EDDAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BBBFC46B-B243-424B-B22F-AE9B7E4EDDAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0C7E65B-5BF6-4D40-ABC5-1FAC621255EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0C7E65B-5BF6-4D40-ABC5-1FAC621255EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0C7E65B-5BF6-4D40-ABC5-1FAC621255EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0C7E65B-5BF6-4D40-ABC5-1FAC621255EC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

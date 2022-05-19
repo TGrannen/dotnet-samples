@@ -1,31 +1,33 @@
-﻿using Pulumi.Kubernetes.Core.V1;
+﻿using System.Collections.Immutable;
+using Infrastructure.ConsoleApp.Models;
+using Pulumi.Kubernetes.Types.Outputs.Core.V1;
+using Service = Pulumi.Kubernetes.Core.V1.Service;
 
-class MyStack : Stack
+namespace Infrastructure.ConsoleApp.Services;
+
+public class KubeService
 {
-    public MyStack()
+    public KubeService(LocalService service)
     {
-        var config = new Config();
-        var isMinikube = config.GetBoolean("isMinikube") ?? false;
-
-        var appName = "nginx";
-
-        var appLabels = new InputMap<string>{
-            { "app", appName },
+        var appLabels = new InputMap<string>
+        {
+            { "app", service.AppName },
         };
 
         var containerArgs = new ContainerArgs
         {
-            Name = appName,
-            Image = "nginx",
+            Name = service.AppName,
+            Image = service.Image,
             Ports =
             {
                 new ContainerPortArgs
                 {
-                    ContainerPortValue = 80
+                    ContainerPortValue = service.ContainerPort
                 },
             },
         };
-        var deployment = new Pulumi.Kubernetes.Apps.V1.Deployment(appName, new DeploymentArgs
+
+        var deployment = new Pulumi.Kubernetes.Apps.V1.Deployment(service.AppName, new DeploymentArgs
         {
             Spec = new DeploymentSpecArgs
             {
@@ -51,7 +53,7 @@ class MyStack : Stack
             },
         });
 
-        var frontend = new Service(appName, new ServiceArgs
+        var frontend = new Service(service.AppName, new ServiceArgs
         {
             Metadata = new ObjectMetaArgs
             {
@@ -65,23 +67,22 @@ class MyStack : Stack
                 Selector = appLabels,
                 Ports = new ServicePortArgs
                 {
-                    Port = 80,
-                    TargetPort = 80,
+                    Port = service.ContainerPort,
+                    TargetPort = service.ContainerPort,
                     Protocol = "TCP",
-                    NodePort = 31001
+                    NodePort = service.NodePort
                 },
             }
         });
 
-        IP = isMinikube
-            ? frontend.Spec.Apply(spec => spec.ClusterIP)
-            : frontend.Status.Apply(status =>
-            {
-                var ingress = status.LoadBalancer.Ingress[0];
-                return ingress.Ip ?? ingress.Hostname;
-            });
+        IP = frontend.Status.Apply(status =>
+        {
+            var ingress = status.LoadBalancer.Ingress[0];
+            return ingress.Ip ?? ingress.Hostname;
+        });
+        NodePort = frontend.Status.Apply(_ => service.NodePort);
     }
 
-    [Output("ip")]
-    public Output<string> IP { get; set; }
+    [Output("ip")] public Output<string> IP { get; set; }
+    [Output("port")] public Output<int> NodePort { get; set; }
 }
