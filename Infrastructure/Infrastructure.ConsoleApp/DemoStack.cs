@@ -1,43 +1,84 @@
-﻿using Docker = Pulumi.Docker;
+﻿namespace Infrastructure.ConsoleApp;
 
-namespace Infrastructure.ConsoleApp;
-
-class DemoStack : Stack
+public class DemoStack : Stack
 {
+    [Output("ip")] public Output<string> IP { get; set; }
+
     public DemoStack()
     {
-        // var appImage = new Docker.Image("AppImage", new Docker.ImageArgs
-        // {
-        //     Build = new Docker.DockerBuild
-        //     {
-        //         Context = "../",
-        //         Dockerfile = "../Infrastructure.BlazorServer/Dockerfile"
-        //     },
-        //     ImageName = "blazor-server",
-        //     SkipPush = true
-        // });
-        //
-        // appImage.ImageName.Apply(s =>
-        // {
-        //     // new KubeService(new LocalService
-        //     // {
-        //     //     Image = "blazor-server",
-        //     //     Name = "blazor-test",
-        //     //     ContainerPort = 80,
-        //     //     NodePort = 31111
-        //     // });
-        //     return "";
-        // });
+        var config = new Config();
+        var isMinikube = config.GetBoolean("isMinikube") ?? false;
 
-        var builder = new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json", optional: false);
-        IConfiguration config = builder.Build();
+        var appName = "nginx";
 
-        var list = config.GetSection("Services").Get<List<LocalService>>();
-        var services = list.Select(service => new KubeService(service)).ToList();
-        UrlAddresses = Output.All(services.Select(x => x.UrlAddress));
+        var appLabels = new InputMap<string>
+        {
+            { "app", appName },
+        };
+
+        var deployment = new Pulumi.Kubernetes.Apps.V1.Deployment(appName, new DeploymentArgs
+        {
+            Spec = new DeploymentSpecArgs
+            {
+                Selector = new LabelSelectorArgs
+                {
+                    MatchLabels = appLabels,
+                },
+                Replicas = 1,
+                Template = new PodTemplateSpecArgs
+                {
+                    Metadata = new ObjectMetaArgs
+                    {
+                        Labels = appLabels,
+                    },
+                    Spec = new PodSpecArgs
+                    {
+                        Containers =
+                        {
+                            new ContainerArgs
+                            {
+                                Name = appName,
+                                Image = "nginx",
+                                Ports =
+                                {
+                                    new ContainerPortArgs
+                                    {
+                                        ContainerPortValue = 80
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        });
+
+        var frontend = new Service(appName, new ServiceArgs
+        {
+            Metadata = new ObjectMetaArgs
+            {
+                Labels = deployment.Spec.Apply(spec =>
+                    spec.Template.Metadata.Labels
+                ),
+            },
+            Spec = new ServiceSpecArgs
+            {
+                Type = "NodePort",
+                Selector = appLabels,
+                Ports = new ServicePortArgs
+                {
+                    Port = 80,
+                    TargetPort = 80,
+                    Protocol = "TCP",
+                    NodePort = 31014
+                },
+            }
+        });
+
+        IP = frontend.Status.Apply(status =>
+        {
+            var ingress = status.LoadBalancer.Ingress[0];
+            return ingress.Ip ?? ingress.Hostname;
+        });
     }
-
-    [Output] public Output<ImmutableArray<string>> UrlAddresses { get; set; }
 }

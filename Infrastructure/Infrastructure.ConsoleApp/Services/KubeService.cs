@@ -2,7 +2,9 @@
 
 public class KubeService
 {
-    public KubeService(LocalService service)
+    [Output("ip")] public Output<string> UrlAddress { get; set; }
+
+    public KubeService(LocalService service, CustomResourceOptions customResourceOptions = null)
     {
         var appLabels = new InputMap<string>
         {
@@ -13,6 +15,7 @@ public class KubeService
         {
             Name = service.Name,
             Image = service.Image,
+            ImagePullPolicy = service.ImagePullPolicy,
             Ports =
             {
                 new ContainerPortArgs
@@ -46,7 +49,7 @@ public class KubeService
                     },
                 },
             },
-        });
+        }, customResourceOptions);
 
         var frontend = new Service(service.Name, new ServiceArgs
         {
@@ -72,10 +75,8 @@ public class KubeService
 
         UrlAddress = frontend.Status.Apply(status =>
         {
-            var ingress = status.LoadBalancer.Ingress[0];
-            return $"{ingress.Ip ?? ingress.Hostname}:{service.NodePort}";
+            var ingress = status?.LoadBalancer?.Ingress[0];
+            return $"{service.Name}:  {ingress?.Ip ?? ingress?.Hostname}:{service.NodePort}";
         });
     }
-
-    [Output("ip")] public Output<string> UrlAddress { get; set; }
 }
