@@ -1,0 +1,9 @@
+﻿global using Pulumi;
+global using Pulumi.Kubernetes.Types.Inputs.Apps.V1;
+global using Pulumi.Kubernetes.Types.Inputs.Core.V1;
+global using Pulumi.Kubernetes.Core.V1;
+global using Pulumi.Kubernetes.Types.Inputs.Meta.V1;
+global using System.Collections.Immutable;
+global using Infrastructure.ConsoleApp.Models;
+global using Infrastructure.ConsoleApp.Services;
+global using Microsoft.Extensions.Configuration;
