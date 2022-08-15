@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using Nest;
+using Serilog;
 
 namespace FullTextSearch.ElasticSearch.Web.Controllers;
 
@@ -12,10 +14,12 @@ public class WeatherForecastController : ControllerBase
     };
 
     private readonly ILogger<WeatherForecastController> _logger;
+    private readonly ElasticClient _client;
 
-    public WeatherForecastController(ILogger<WeatherForecastController> logger)
+    public WeatherForecastController(ILogger<WeatherForecastController> logger, ElasticClient client)
     {
         _logger = logger;
+        _client = client;
     }
 
     [HttpGet(Name = "GetWeatherForecast")]
@@ -28,5 +32,17 @@ public class WeatherForecastController : ControllerBase
                 Summary = Summaries[Random.Shared.Next(Summaries.Length)]
             })
             .ToArray();
+    }
+
+    [HttpGet("test", Name = "test")]
+    public async Task<IActionResult> Get(string? searchStr)
+    {
+        var searchResponse = await _client.SearchAsync<LogDocument>(s => s
+            .Size(10)
+            .Query(q => q.QueryString(qs => qs
+                .Query(searchStr)
+                .AllowLeadingWildcard(true)))
+        );
+        return Ok(searchResponse.Documents);
     }
 }
