@@ -1,4 +1,4 @@
-﻿using Dapper.CleanArchitecture.Application.Employees.Queries;
+using Dapper.CleanArchitecture.Application.Employees.Queries;
 using MediatR;
 
 namespace Dapper.CleanArchitecture.Web.Controllers;
@@ -25,7 +25,7 @@ public class CleanController : ControllerBase
     [HttpGet("Get")]
     public async Task<IActionResult> GetById(int employeeNumber)
     {
-        var vm = await _mediator.Send(new GetAllEmployeesQuery());
+        var vm = await _mediator.Send(new GetEmployeeByIdQuery { EmployeeNumber = employeeNumber });
         return Ok(vm);
     }
 

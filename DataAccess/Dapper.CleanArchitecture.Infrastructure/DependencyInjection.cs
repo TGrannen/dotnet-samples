@@ -1,5 +1,4 @@
-﻿using Dapper.CleanArchitecture.Domain.Common.Interfaces;
-using Dapper.CleanArchitecture.Infrastructure.DataAccess;
+﻿using Dapper.CleanArchitecture.Infrastructure.DataAccess;
 using Dapper.CleanArchitecture.Infrastructure.DataAccess.Interfaces;
 using Dapper.CleanArchitecture.Infrastructure.DataAccess.Seed;
 using Microsoft.Extensions.DependencyInjection;
