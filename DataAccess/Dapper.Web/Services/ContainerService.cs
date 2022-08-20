@@ -31,7 +31,7 @@ public class ContainerService : IContainerService
             .WithDatabase(new PostgreSqlTestcontainerConfiguration
             {
                 Database = "dapperdb",
-                Username = "test",
+                Username = "postgres",
                 Password = "test-password",
             })
             .WithName("postgres-dotnet-samples");
@@ -39,7 +39,14 @@ public class ContainerService : IContainerService
         _logger.LogInformation("Building Container");
         Container = containersBuilder.Build();
         _logger.LogInformation("Starting Container");
-        await Container.StartAsync();
+        await Container!.StartAsync();
+        _logger.LogInformation("Postgres container started with properties: {@Properties}", new
+        {
+            Container.Port,
+            Container.Database,
+            Container.Username,
+            Container.Password,
+        });
     }
 
     public async Task StopContainer()
