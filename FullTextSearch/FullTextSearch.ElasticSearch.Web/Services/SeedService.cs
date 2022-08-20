@@ -53,7 +53,7 @@ public class SeedService
         timer.Start();
 
         var createIndexResponse = await _client.Indices.CreateAsync(indexName, c => c.Map<LogDocument>(m => m.AutoMap<LogDocument>()));
-        _logger.LogInformation("Index Created in {Elapsed}ms. Response: {@Response}", timer.Elapsed, createIndexResponse);
+        _logger.LogInformation("Index Created in {Elapsed}ms. Successful: {@Response}", timer.Elapsed, createIndexResponse.ApiCall.Success);
         timer.Stop();
     }
 }
