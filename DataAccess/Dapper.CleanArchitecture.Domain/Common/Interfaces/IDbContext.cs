@@ -1,7 +1,9 @@
 ﻿namespace Dapper.CleanArchitecture.Domain.Common.Interfaces;
 
-public interface IDbContext : IDbReadContext
+public interface IDbContext
 {
+    public IDbTransaction Transaction { get; }
+
     /// <summary>
     /// Add events to a temporary collection to be fired once all changes have been successfully saved
     /// </summary>
