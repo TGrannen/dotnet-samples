@@ -11,7 +11,11 @@ public static class DependencyInjection
     public static IServiceCollection AddInfrastructure(this IServiceCollection services)
     {
         services.AddScoped<SeedService>();
-        services.AddScoped<IDbContext, DbContext>();
+
+        services.AddScoped<DbContext>();
+        services.AddScoped<IDbContext>(provider => provider.GetRequiredService<DbContext>());
+        services.AddScoped<IDbReadContext>(provider => provider.GetRequiredService<DbContext>());
+
         services.AddScoped<IDbConnection>(provider =>
         {
             var service = provider.GetRequiredService<IDbConnectionStringProvider>();
