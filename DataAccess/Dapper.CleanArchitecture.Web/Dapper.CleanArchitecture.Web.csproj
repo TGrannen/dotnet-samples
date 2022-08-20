@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Serilog.AspNetCore" Version="6.0.1" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+        <PackageReference Include="Testcontainers" Version="2.1.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Remove="Services\Scripts\DBCreationScript.sql" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Dapper.CleanArchitecture.Application\Dapper.CleanArchitecture.Application.csproj" />
+      <ProjectReference Include="..\Dapper.CleanArchitecture.Infrastructure\Dapper.CleanArchitecture.Infrastructure.csproj" />
+    </ItemGroup>
+
+</Project>
