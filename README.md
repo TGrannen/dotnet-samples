@@ -32,6 +32,8 @@ This repository's purpose is to showcase common design patterns, best practices,
 
 * [EF Core](DataAccess/EFCore.Web/)
 
+* [Dapper](DataAccess/Dapper.Web/)
+
 ### Docker
 
 * [FluentDocker](Docker/)
