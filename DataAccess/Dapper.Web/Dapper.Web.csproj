@@ -7,9 +7,18 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Dapper" Version="2.0.123" />
+        <PackageReference Include="Npgsql" Version="6.0.6" />
         <PackageReference Include="Serilog.AspNetCore" Version="6.0.1" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
         <PackageReference Include="Testcontainers" Version="2.1.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Services\Scripts\DBCreationScript.sql" />
+      <Content Include="Services\Scripts\DBCreationScript.sql">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
     </ItemGroup>
 
 </Project>
