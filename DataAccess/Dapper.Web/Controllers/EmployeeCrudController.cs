@@ -1,16 +1,14 @@
-﻿using Dapper.Web.Services;
-
-namespace Dapper.Web.Controllers;
+﻿namespace Dapper.Web.Controllers;
 
 [ApiController]
 [Route("[controller]")]
 public class EmployeeCrudController : ControllerBase
 {
-    private readonly IConnectionProvider _connectionProvider;
+    private readonly IDbConnection _connection;
 
-    public EmployeeCrudController(IConnectionProvider connectionProvider)
+    public EmployeeCrudController(IDbConnection connection)
     {
-        _connectionProvider = connectionProvider;
+        _connection = connection;
     }
 
     [HttpGet("GetAll")]
@@ -19,7 +17,7 @@ public class EmployeeCrudController : ControllerBase
         var sql = @"
 Select emp_no AS EmpNo,birth_date AS BirthDate,first_name AS FirstName,last_name AS LastName,gender AS gender,hire_date AS HireDate 
 from employees";
-        var employee = await _connectionProvider.Connection.QueryAsync<Employee>(sql);
+        var employee = await _connection.QueryAsync<Employee>(sql);
         return Ok(employee);
     }
 
@@ -31,7 +29,7 @@ Select emp_no AS EmpNo,birth_date AS BirthDate,first_name AS FirstName,last_name
 from employees
 WHERE emp_no = @EmployeeNumber";
         var employee =
-            await _connectionProvider.Connection.QueryFirstOrDefaultAsync<Employee>(sql, new { EmployeeNumber = employeeNumber });
+            await _connection.QueryFirstOrDefaultAsync<Employee>(sql, new { EmployeeNumber = employeeNumber });
         return Ok(employee);
     }
 
@@ -42,7 +40,7 @@ WHERE emp_no = @EmployeeNumber";
 INSERT INTO employees (emp_no, birth_date, first_name, last_name, gender, hire_date)
 VALUES(@EmpNo,@BirthDate,@FirstName,@LastName, 'M',@HireDate)
 RETURNING emp_no";
-        var id = await _connectionProvider.Connection.ExecuteScalarAsync<int>(sql, new
+        var id = await _connection.ExecuteScalarAsync<int>(sql, new
         {
             EmpNo = employee.EmpNo,
             BirthDate = employee.BirthDate,
@@ -65,7 +63,7 @@ UPDATE employees SET
      hire_date = @HireDate
 WHERE emp_no = @EmpNo
 RETURNING emp_no";
-        var saved = await _connectionProvider.Connection.ExecuteScalarAsync<int>(sql, new
+        var saved = await _connection.ExecuteScalarAsync<int>(sql, new
         {
             EmpNo = employee.EmpNo,
             BirthDate = employee.BirthDate,
@@ -83,7 +81,7 @@ RETURNING emp_no";
 DELETE FROM employees
 WHERE emp_no = @EmployeeNumber
 RETURNING emp_no";
-        var id = await _connectionProvider.Connection.ExecuteScalarAsync<int>(sql, new { EmployeeNumber = employeeNumber });
+        var id = await _connection.ExecuteScalarAsync<int>(sql, new { EmployeeNumber = employeeNumber });
         return Ok(id);
     }
 

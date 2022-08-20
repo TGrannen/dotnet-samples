@@ -9,7 +9,7 @@ namespace Dapper.Web.Services;
 /// </summary>
 public interface IContainerService
 {
-    public PostgreSqlTestcontainer? Container { get; }
+    public PostgreSqlTestcontainer Container { get; }
     Task RunContainer();
     Task StopContainer();
 }
@@ -23,7 +23,7 @@ public class ContainerService : IContainerService
         _logger = logger;
     }
 
-    public PostgreSqlTestcontainer? Container { get; private set; }
+    public PostgreSqlTestcontainer Container { get; private set; }
 
     public async Task RunContainer()
     {

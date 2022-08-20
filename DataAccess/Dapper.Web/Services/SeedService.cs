@@ -2,12 +2,12 @@
 
 public class SeedService
 {
-    private readonly IConnectionProvider _connectionProvider;
+    private readonly IDbConnection _connection;
     private readonly ILogger<SeedService> _logger;
 
-    public SeedService(IConnectionProvider connectionProvider, ILogger<SeedService> logger)
+    public SeedService(IDbConnection connection, ILogger<SeedService> logger)
     {
-        _connectionProvider = connectionProvider;
+        _connection = connection;
         _logger = logger;
     }
 
@@ -15,7 +15,7 @@ public class SeedService
     {
         var path = "./Services/Scripts/DBCreationScript.sql";
         var sql = await File.ReadAllTextAsync(path);
-        await _connectionProvider.Connection.ExecuteReaderAsync(sql);
+        await _connection.ExecuteReaderAsync(sql);
         _logger.LogInformation("Database has been created and seeded");
     }
 }
