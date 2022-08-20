@@ -44,6 +44,10 @@ This repository's purpose is to showcase common design patterns, best practices,
 
 * [Feature Flags](FeatureFlags)
 
+### Full Text Search
+
+* [ElasticSearch](FullTextSearch)
+
 ### Infrastructure
 
 * [Infrastructure](Infrastructure)
