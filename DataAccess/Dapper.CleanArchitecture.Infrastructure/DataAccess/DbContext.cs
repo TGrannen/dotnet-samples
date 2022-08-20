@@ -1,23 +1,28 @@
-﻿using Dapper.CleanArchitecture.Domain.Common.Interfaces;
-
-namespace Dapper.CleanArchitecture.Infrastructure.DataAccess;
+﻿namespace Dapper.CleanArchitecture.Infrastructure.DataAccess;
 
 public class DbContext : IDbContext
 {
-    public DbContext(IDbConnection connection)
+    private readonly IPublisher _publisher;
+    private readonly List<IDomainEvent> _events = new();
+
+    public DbContext(IDbConnection connection, IPublisher publisher)
     {
+        _publisher = publisher;
         Connection = connection;
     }
 
     public IDbConnection Connection { get; }
 
-    public void AddEvent(IDomainEvent @event)
+    public void AddEvent(IDomainEvent domainEvent)
     {
-        throw new NotImplementedException();
+        _events.Add(domainEvent);
     }
 
-    public Task SaveChangesAsync(CancellationToken token = default)
+    public async Task SaveChangesAsync(CancellationToken token = default)
     {
-        throw new NotImplementedException();
+        foreach (var domainEvent in _events)
+        {
+            await _publisher.Publish(domainEvent, token);
+        }
     }
 }

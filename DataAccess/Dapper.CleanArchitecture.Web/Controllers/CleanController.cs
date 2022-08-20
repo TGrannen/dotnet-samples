@@ -1,3 +1,4 @@
+﻿using Dapper.CleanArchitecture.Application.Employees.Commands;
 using Dapper.CleanArchitecture.Application.Employees.Queries;
 using MediatR;
 
@@ -47,7 +48,7 @@ public class CleanController : ControllerBase
     [HttpDelete("Delete")]
     public async Task<IActionResult> DeleteById(int employeeNumber)
     {
-        var vm = await _mediator.Send(new GetAllEmployeesQuery());
+        var vm = await _mediator.Send(new DeleteEmployeeCommand { EmployeeNumber = employeeNumber });
         return Ok(vm);
     }
 }
