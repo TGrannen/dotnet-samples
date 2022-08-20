@@ -13,12 +13,16 @@ builder.Services.AddSwaggerGen();
 Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration).CreateLogger();
 builder.Host.UseSerilog();
 
-var index = "my-index";
-var settings = new ConnectionSettings(new Uri("http://localhost:9200")).DefaultMappingFor<LogDocument>(m => m.IndexName(index));
-settings.EnableApiVersioningHeader();
-var client = new ElasticClient(settings);
+var index = builder.Configuration.GetValue("Elastic:IndexName", "my-index");
+var connectionString = builder.Configuration.GetValue("Elastic:ConnectionString", "http://localhost:9200");
 
-builder.Services.AddSingleton(client);
+builder.Services.AddSingleton<ElasticClient>(_ =>
+{
+    var settings = new ConnectionSettings(new Uri(connectionString)).DefaultMappingFor<LogDocument>(m => m.IndexName(index));
+    settings.EnableApiVersioningHeader();
+    return new ElasticClient(settings);
+});
+
 builder.Services.AddSingleton<ContainerService>();
 builder.Services.AddSingleton<SeedService>();
 
