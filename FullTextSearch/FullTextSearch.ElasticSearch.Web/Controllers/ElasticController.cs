@@ -1,3 +1,4 @@
+using FullTextSearch.ElasticSearch.Web.Services;
 using Microsoft.AspNetCore.Mvc;
 using Nest;
 
@@ -8,14 +9,16 @@ namespace FullTextSearch.ElasticSearch.Web.Controllers;
 public class ElasticController : ControllerBase
 {
     private readonly ElasticClient _client;
+    private readonly SeedService _seedService;
 
-    public ElasticController(ElasticClient client)
+    public ElasticController(ElasticClient client, SeedService seedService)
     {
         _client = client;
+        _seedService = seedService;
     }
 
-    [HttpGet("search", Name = "test")]
-    public async Task<IActionResult> Get(string? searchStr)
+    [HttpGet("search")]
+    public async Task<IActionResult> Search(string? searchStr)
     {
         var searchResponse = await _client.SearchAsync<LogDocument>(s => s
             .Size(10)
@@ -24,5 +27,22 @@ public class ElasticController : ControllerBase
                 .AllowLeadingWildcard(true)))
         );
         return Ok(searchResponse.Documents);
+    }
+
+    [HttpPost("create")]
+    public async Task<IActionResult> Get(string body)
+    {
+        var response = await _client.CreateDocumentAsync(new LogDocument()
+        {
+            Body = body.Trim()
+        });
+        return Ok(response.Id);
+    }
+
+    [HttpPost("random")]
+    public async Task<IActionResult> Random(int count, CancellationToken token)
+    {
+        await _seedService.SeedData(count, token);
+        return Ok();
     }
 }

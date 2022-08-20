@@ -20,23 +20,30 @@ public class SeedService
             .RuleFor(o => o.Body, f => f.Random.Words());
     }
 
-    public async Task SeedData(int count)
+    public async Task SeedData(int count, CancellationToken token = default)
     {
+        var documents = _logsFaker.Generate(count);
+
         var timer = new Stopwatch();
         timer.Start();
 
         _logger.LogInformation("Writing Documents");
-        var documents = _logsFaker.Generate(count);
+        int created = 0;
         foreach (var document in documents)
         {
-            await _client.CreateDocumentAsync(new LogDocument()
+            await _client.CreateDocumentAsync(new LogDocument
             {
                 Body = document.Body.Trim()
-            });
+            }, token);
+            created++;
+            if (token.IsCancellationRequested)
+            {
+                break;
+            }
         }
 
         timer.Stop();
-        _logger.LogInformation("Documents created in {Elapsed}ms with {Count} element", timer.Elapsed, documents.Count);
+        _logger.LogInformation("{Count} Documents created in {Elapsed}ms", created, timer.Elapsed);
     }
 
     public async Task CreateIndex(string indexName)
