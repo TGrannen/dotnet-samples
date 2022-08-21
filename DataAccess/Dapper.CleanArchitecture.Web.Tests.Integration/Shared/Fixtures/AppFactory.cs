@@ -1,5 +1,4 @@
 ﻿using Dapper.CleanArchitecture.Infrastructure.DataAccess.Interfaces;
-using Dapper.CleanArchitecture.Infrastructure.DataAccess.Seed;
 using Dapper.CleanArchitecture.Web.Services;
 using Dapper.CleanArchitecture.Web.Tests.Integration.Shared.Providers;
 using DotNet.Testcontainers.Builders;
@@ -30,13 +29,8 @@ public class AppFactory : WebApplicationFactory<Program>, IAsyncLifetime
                 ConnectionString = _container.ConnectionString
             });
             services.RemoveAll(typeof(IContainerService));
-            services.AddSingleton<IContainerService>(_ => new DummyContainerService
-            {
-                Container = _container
-            });
         }).UseEnvironment("Testing");
     }
-
 
     public async Task InitializeAsync()
     {

@@ -36,11 +36,16 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-var containerService = app.Services.GetRequiredService<IContainerService>();
+var containerService = app.Services.GetService<IContainerService>();
+var runContainers = app.Configuration.GetValue("RunContainer", true);
 
 try
 {
-    await containerService.RunContainer();
+    if (runContainers && containerService != null)
+    {
+        await containerService.RunContainer();
+    }
+
     var seeder = app.Services.CreateScope().ServiceProvider.GetService<ISeedService>();
     if (seeder != null)
     {
@@ -55,7 +60,10 @@ catch (Exception e)
 }
 finally
 {
-    await containerService.StopContainer();
+    if (containerService != null)
+    {
+        await containerService.StopContainer();
+    }
 }
 
 public abstract partial class Program
