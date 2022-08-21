@@ -1,6 +1,6 @@
 ﻿namespace Dapper.CleanArchitecture.Infrastructure.DataAccess.Interfaces;
 
-public interface IDbConnectionProvider
+public interface IDbConnectionFactory
 {
-    IDbConnection Connection { get; }
+    IDbConnection CreateDbConnection();
 }

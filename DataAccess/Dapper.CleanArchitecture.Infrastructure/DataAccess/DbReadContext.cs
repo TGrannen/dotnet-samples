@@ -2,9 +2,9 @@
 
 public class DbReadContext : IDbReadContext
 {
-    public DbReadContext(IDbConnectionProvider connection)
+    public DbReadContext(IDbConnectionFactory connection)
     {
-        Connection = connection.Connection;
+        Connection = connection.CreateDbConnection();
     }
 
     public IDbConnection Connection { get; }

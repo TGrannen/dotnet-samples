@@ -41,9 +41,11 @@ var containerService = app.Services.GetRequiredService<IContainerService>();
 try
 {
     await containerService.RunContainer();
-
-    var seeder = app.Services.CreateScope().ServiceProvider.GetRequiredService<SeedService>();
-    await seeder.CreateDatabase();
+    var seeder = app.Services.CreateScope().ServiceProvider.GetService<ISeedService>();
+    if (seeder != null)
+    {
+        await seeder.CreateDatabase();
+    }
 
     app.Run();
 }
@@ -54,4 +56,8 @@ catch (Exception e)
 finally
 {
     await containerService.StopContainer();
+}
+
+public abstract partial class Program
+{
 }

@@ -2,15 +2,15 @@
 
 public class DbContext : IDbContext, IDisposable
 {
-    private readonly IDbConnection _connection;
+    private readonly IDbConnectionFactory _connectionFactory;
     private readonly IPublisher _publisher;
     private readonly ILogger<DbContext> _logger;
     private readonly List<IDomainEvent> _events = new();
     private IDbTransaction _transaction = null;
 
-    public DbContext(IDbConnectionProvider connection, IPublisher publisher, ILogger<DbContext> logger)
+    public DbContext(IDbConnectionFactory connectionFactory, IPublisher publisher, ILogger<DbContext> logger)
     {
-        _connection = connection.Connection;
+        _connectionFactory = connectionFactory;
         _publisher = publisher;
         _logger = logger;
     }
@@ -23,7 +23,8 @@ public class DbContext : IDbContext, IDisposable
                 return _transaction.Connection;
 
             _logger.LogDebug("Creating new DB Transaction");
-            _transaction = _connection.BeginTransaction();
+            var connection = _connectionFactory.CreateDbConnection();
+            _transaction = connection.BeginTransaction();
 
             return _transaction.Connection;
         }
