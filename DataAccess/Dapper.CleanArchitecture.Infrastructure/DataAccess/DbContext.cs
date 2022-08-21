@@ -7,6 +7,7 @@ public class DbContext : IDbContext, IDisposable
     private readonly ILogger<DbContext> _logger;
     private readonly List<IDomainEvent> _events = new();
     private IDbTransaction _transaction = null;
+    private IDbConnection _connection = null;
 
     public DbContext(IDbConnectionFactory connectionFactory, IPublisher publisher, ILogger<DbContext> logger)
     {
@@ -19,12 +20,12 @@ public class DbContext : IDbContext, IDisposable
     {
         get
         {
+            _connection ??= _connectionFactory.CreateDbConnection();
             if (_transaction != null)
                 return _transaction.Connection;
 
             _logger.LogDebug("Creating new DB Transaction");
-            var connection = _connectionFactory.CreateDbConnection();
-            _transaction = connection.BeginTransaction();
+            _transaction = _connection.BeginTransaction();
 
             return _transaction.Connection;
         }
