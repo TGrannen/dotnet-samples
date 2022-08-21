@@ -13,6 +13,7 @@ public class CreateEmployeeCommandHandler : IRequestHandler<CreateEmployeeComman
 {
     private readonly IDbContext _context;
 
+
     public CreateEmployeeCommandHandler(IDbContext context)
     {
         _context = context;
@@ -20,11 +21,7 @@ public class CreateEmployeeCommandHandler : IRequestHandler<CreateEmployeeComman
 
     public async Task<CreateEmployeeCommandVm> Handle(CreateEmployeeCommand request, CancellationToken cancellationToken)
     {
-        var sql = @"
-INSERT INTO employees (emp_no, birth_date, first_name, last_name, gender, hire_date)
-VALUES(@EmpNo,@BirthDate,@FirstName,@LastName, 'M',@HireDate)
-RETURNING emp_no";
-        var id = await _context.Connection.ExecuteScalarAsync<int>(sql, new
+        var employeeNumber = await _context.Connection.ExecuteScalarAsync<int>(CreateSql, new
         {
             EmpNo = request.EmployeeNumber,
             BirthDate = request.BirthDate,
@@ -35,9 +32,14 @@ RETURNING emp_no";
         await _context.SaveChangesAsync(cancellationToken);
         return new CreateEmployeeCommandVm
         {
-            EmployeeNumber = id
+            EmployeeNumber = employeeNumber
         };
     }
+
+    private const string CreateSql = @"
+INSERT INTO employees (emp_no, birth_date, first_name, last_name, gender, hire_date)
+VALUES(@EmpNo,@BirthDate,@FirstName,@LastName, 'M',@HireDate)
+RETURNING emp_no";
 }
 
 public record CreateEmployeeCommandVm

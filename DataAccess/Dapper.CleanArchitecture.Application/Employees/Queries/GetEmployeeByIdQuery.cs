@@ -18,13 +18,14 @@ public class GetEmployeeByIdQueryHandler : IRequestHandler<GetEmployeeByIdQuery,
 
     public async Task<Employee> Handle(GetEmployeeByIdQuery request, CancellationToken cancellationToken)
     {
-        var sql = @"
-Select emp_no AS EmpNo,birth_date AS BirthDate,first_name AS FirstName,last_name AS LastName,gender AS gender,hire_date AS HireDate 
-from employees
-WHERE emp_no = @EmployeeNumber";
-        return await _context.Connection.QueryFirstOrDefaultAsync<Employee>(sql, new
+        return await _context.Connection.QueryFirstOrDefaultAsync<Employee>(QuerySql, new
         {
             EmployeeNumber = request.EmployeeNumber
         });
     }
+
+    private const string QuerySql = @"
+     Select emp_no AS EmpNo,birth_date AS BirthDate,first_name AS FirstName,last_name AS LastName,gender AS gender,hire_date AS HireDate 
+     from employees
+     WHERE emp_no = @EmployeeNumber";
 }

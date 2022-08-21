@@ -22,15 +22,7 @@ public class UpdateEmployeeCommandHandler : IRequestHandler<UpdateEmployeeComman
 
     public async Task<UpdateEmployeeCommandVm> Handle(UpdateEmployeeCommand request, CancellationToken cancellationToken)
     {
-        var sql = @"
-UPDATE employees SET 
-     birth_date = @BirthDate,
-     first_name = @FirstName,
-     last_name = @LastName,
-     hire_date = @HireDate
-WHERE emp_no = @EmpNo
-RETURNING emp_no";
-        var saved = await _context.Connection.ExecuteScalarAsync<int>(sql, new
+        var employeeNumber = await _context.Connection.ExecuteScalarAsync<int>(UpdateSql, new
         {
             EmpNo = request.EmployeeNumber,
             BirthDate = request.BirthDate,
@@ -40,8 +32,17 @@ RETURNING emp_no";
         });
         _context.AddEvent(new EmployeeUpdatedEvent { EmployeeNumber = request.EmployeeNumber });
         await _context.SaveChangesAsync(cancellationToken);
-        return new UpdateEmployeeCommandVm { Success = saved == request.EmployeeNumber };
+        return new UpdateEmployeeCommandVm { Success = employeeNumber == request.EmployeeNumber };
     }
+
+    private const string UpdateSql = @"
+UPDATE employees SET 
+     birth_date = @BirthDate,
+     first_name = @FirstName,
+     last_name = @LastName,
+     hire_date = @HireDate
+WHERE emp_no = @EmpNo
+RETURNING emp_no";
 }
 
 public record UpdateEmployeeCommandVm
