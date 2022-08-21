@@ -15,17 +15,17 @@ public class DbContext : IDbContext
         _logger = logger;
     }
 
-    public IDbTransaction Transaction
+    public IDbConnection Connection
     {
         get
         {
             if (_transaction != null)
-                return _transaction;
-            else
-            {
-                _logger.LogDebug("Creating new DB Transaction");
-                return _transaction = _connection.BeginTransaction();
-            }
+                return _transaction.Connection;
+
+            _logger.LogDebug("Creating new DB Transaction");
+            _transaction = _connection.BeginTransaction();
+
+            return _transaction.Connection;
         }
     }
 

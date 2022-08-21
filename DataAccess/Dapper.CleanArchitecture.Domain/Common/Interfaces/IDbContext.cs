@@ -2,7 +2,10 @@
 
 public interface IDbContext
 {
-    public IDbTransaction Transaction { get; }
+    /// <summary>
+    /// Connection tied to a transaction that is not committed until SaveChangesAsync is called
+    /// </summary>
+    public IDbConnection Connection { get; }
 
     /// <summary>
     /// Add events to a temporary collection to be fired once all changes have been successfully saved
