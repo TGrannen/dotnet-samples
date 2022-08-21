@@ -13,7 +13,6 @@ public class CreateEmployeeCommandHandler : IRequestHandler<CreateEmployeeComman
 {
     private readonly IDbContext _context;
 
-
     public CreateEmployeeCommandHandler(IDbContext context)
     {
         _context = context;
