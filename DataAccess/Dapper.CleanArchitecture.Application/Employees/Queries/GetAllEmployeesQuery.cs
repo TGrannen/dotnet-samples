@@ -19,7 +19,8 @@ public class GetAllEmployeesHandler : IRequestHandler<GetAllEmployeesQuery, List
     {
         var sql = @"
 Select emp_no AS EmpNo,birth_date AS BirthDate,first_name AS FirstName,last_name AS LastName,gender AS gender,hire_date AS HireDate 
-from employees";
+from employees
+order by emp_no";
         var employees = await _context.Connection.QueryAsync<Employee>(sql);
         return employees.ToList();
     }

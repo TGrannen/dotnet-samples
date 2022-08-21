@@ -31,17 +31,17 @@ public class CleanController : ControllerBase
     }
 
     [HttpPost("Create")]
-    public async Task<IActionResult> Create(int employee)
+    public async Task<IActionResult> Create(CreateEmployeeCommand command)
     {
-        var vm = await _mediator.Send(new GetAllEmployeesQuery());
+        var vm = await _mediator.Send(command);
         return Ok(vm);
     }
 
 
     [HttpPatch("Update")]
-    public async Task<IActionResult> Update(int employee)
+    public async Task<IActionResult> Update(UpdateEmployeeCommand command)
     {
-        var vm = await _mediator.Send(new GetAllEmployeesQuery());
+        var vm = await _mediator.Send(command);
         return Ok(vm);
     }
 

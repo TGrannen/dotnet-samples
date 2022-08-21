@@ -47,6 +47,7 @@ public class DbContext : IDbContext
             _logger.LogDebug("Committing DB Transaction");
             _transaction.Commit();
             _transaction = null;
+            _logger.LogDebug("DB Transaction committed successfully");
         }
         catch (Exception e)
         {
@@ -55,8 +56,20 @@ public class DbContext : IDbContext
             throw;
         }
 
+        if (_events.Any())
+        {
+            await PublishEvents(token);
+        }
+    }
+
+    private async Task PublishEvents(CancellationToken token)
+    {
         _logger.LogDebug("Firing off Domain Events: {@Events}", _events);
-        foreach (var domainEvent in _events)
+
+        var publishList = _events.ToList();
+        _events.Clear();
+
+        foreach (var domainEvent in publishList)
         {
             await _publisher.Publish(domainEvent, token);
         }
