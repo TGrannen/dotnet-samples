@@ -1,4 +1,6 @@
-﻿namespace Dapper.CleanArchitecture.Application.Employees.Commands;
+﻿using Dapper.CleanArchitecture.Domain.Employees.Notifications;
+
+namespace Dapper.CleanArchitecture.Application.Employees.Commands;
 
 public record UpdateEmployeeCommand : IRequest<UpdateEmployeeCommandVm>
 {
@@ -36,6 +38,7 @@ RETURNING emp_no";
             LastName = request.LastName,
             HireDate = request.HireDate,
         });
+        _context.AddEvent(new EmployeeUpdatedEvent { EmployeeNumber = request.EmployeeNumber });
         await _context.SaveChangesAsync(cancellationToken);
         return new UpdateEmployeeCommandVm { Success = saved == request.EmployeeNumber };
     }

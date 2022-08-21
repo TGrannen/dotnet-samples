@@ -1,16 +1,16 @@
 ﻿namespace Dapper.CleanArchitecture.Infrastructure.DataAccess;
 
-public class DbContext : IDbContext
+public class DbContext : IDbContext, IDisposable
 {
     private readonly IDbConnection _connection;
     private readonly IPublisher _publisher;
     private readonly ILogger<DbContext> _logger;
     private readonly List<IDomainEvent> _events = new();
-    private IDbTransaction _transaction;
+    private IDbTransaction _transaction = null;
 
-    public DbContext(IDbConnection connection, IPublisher publisher, ILogger<DbContext> logger)
+    public DbContext(IDbConnectionProvider connection, IPublisher publisher, ILogger<DbContext> logger)
     {
-        _connection = connection;
+        _connection = connection.Connection;
         _publisher = publisher;
         _logger = logger;
     }
@@ -46,6 +46,7 @@ public class DbContext : IDbContext
         {
             _logger.LogDebug("Committing DB Transaction");
             _transaction.Commit();
+            _transaction.Dispose();
             _transaction = null;
             _logger.LogDebug("DB Transaction committed successfully");
         }
@@ -73,5 +74,17 @@ public class DbContext : IDbContext
         {
             await _publisher.Publish(domainEvent, token);
         }
+    }
+
+    public void Dispose()
+    {
+        if (_transaction == null)
+        {
+            return;
+        }
+
+        _logger.LogDebug("Disposing of DB Transaction");
+        _transaction.Dispose();
+        GC.SuppressFinalize(this);
     }
 }

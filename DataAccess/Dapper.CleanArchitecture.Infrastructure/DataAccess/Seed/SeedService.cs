@@ -2,12 +2,12 @@
 
 public class SeedService
 {
-    private readonly IDbConnection _connection;
+    private readonly IDbConnectionProvider _context;
     private readonly ILogger<SeedService> _logger;
 
-    public SeedService(IDbConnection connection, ILogger<SeedService> logger)
+    public SeedService(IDbConnectionProvider context, ILogger<SeedService> logger)
     {
-        _connection = connection;
+        _context = context;
         _logger = logger;
     }
 
@@ -15,7 +15,7 @@ public class SeedService
     {
         var path = "../Dapper.CleanArchitecture.Infrastructure/DataAccess/Seed/Scripts/DBCreationScript.sql";
         var sql = await File.ReadAllTextAsync(path);
-        await _connection.ExecuteReaderAsync(sql);
+        await _context.Connection.ExecuteReaderAsync(sql);
         _logger.LogInformation("Database has been created and seeded");
     }
 }
