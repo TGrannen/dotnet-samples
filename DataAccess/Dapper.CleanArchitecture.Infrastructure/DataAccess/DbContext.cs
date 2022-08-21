@@ -67,6 +67,9 @@ public class DbContext : IDbContext, IDisposable
     {
         _logger.LogDebug("Firing off Domain Events: {@Events}", _events);
 
+        // Prevents adding to the same collection while it's being iterated over.
+        // Another solution could be creating separate scopes for each Notification Publish but then
+        // they would each get their own DB connection
         var publishList = _events.ToList();
         _events.Clear();
 
