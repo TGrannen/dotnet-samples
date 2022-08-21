@@ -1,13 +1,13 @@
 ﻿namespace Dapper.CleanArchitecture.Infrastructure.DataAccess;
 
-public class DbContext : IDbContext, IDisposable
+public sealed class DbContext : IDbContext, IDisposable
 {
     private readonly IDbConnectionFactory _connectionFactory;
     private readonly IPublisher _publisher;
     private readonly ILogger<DbContext> _logger;
     private readonly List<IDomainEvent> _events = new();
-    private IDbTransaction _transaction = null;
-    private IDbConnection _connection = null;
+    private IDbTransaction _transaction;
+    private IDbConnection _connection;
 
     public DbContext(IDbConnectionFactory connectionFactory, IPublisher publisher, ILogger<DbContext> logger)
     {
@@ -48,9 +48,9 @@ public class DbContext : IDbContext, IDisposable
         {
             _logger.LogDebug("Committing DB Transaction");
             _transaction.Commit();
-            _transaction.Dispose();
-            _transaction = null;
             _logger.LogDebug("DB Transaction committed successfully");
+
+            ResetTransaction();
         }
         catch (Exception e)
         {
@@ -83,6 +83,19 @@ public class DbContext : IDbContext, IDisposable
 
     public void Dispose()
     {
+        ResetTransaction();
+
+        if (_connection == null)
+        {
+            return;
+        }
+
+        _logger.LogDebug("Disposing of DB Connection");
+        _connection.Dispose();
+    }
+
+    private void ResetTransaction()
+    {
         if (_transaction == null)
         {
             return;
@@ -90,6 +103,6 @@ public class DbContext : IDbContext, IDisposable
 
         _logger.LogDebug("Disposing of DB Transaction");
         _transaction.Dispose();
-        GC.SuppressFinalize(this);
+        _transaction = null;
     }
 }
