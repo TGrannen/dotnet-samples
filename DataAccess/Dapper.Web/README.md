@@ -18,3 +18,7 @@ https://github.com/vrajmohan/pgsql-sample-data/tree/master/employee
 * [Dapper](https://github.com/DapperLib/Dapper)
 * [Npgsql](https://www.npgsql.org/)
 * [Testcontainers](https://github.com/testcontainers/testcontainers-dotnet)
+
+## Clean Architecture Example
+
+[ReadMe](../Dapper.CleanArchitecture.Web)

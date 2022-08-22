@@ -32,7 +32,7 @@ This repository's purpose is to showcase common design patterns, best practices,
 
 * [EF Core](DataAccess/EFCore.Web/)
 
-* [Dapper](DataAccess/Dapper.Web/)
+* [Dapper](DataAccess/Dapper.Web/) - [Clean Architecture Example](DataAccess/Dapper.CleanArchitecture.Web/)
 
 ### Docker
 
