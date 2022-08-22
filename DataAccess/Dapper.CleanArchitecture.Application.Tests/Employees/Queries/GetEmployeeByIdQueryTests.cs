@@ -1,5 +1,4 @@
-﻿using System;
-using Dapper.CleanArchitecture.Application.Employees.Queries;
+﻿using Dapper.CleanArchitecture.Application.Employees.Queries;
 using Dapper.CleanArchitecture.Domain.Employees;
 
 namespace Dapper.CleanArchitecture.Application.Tests.Employees.Queries;
