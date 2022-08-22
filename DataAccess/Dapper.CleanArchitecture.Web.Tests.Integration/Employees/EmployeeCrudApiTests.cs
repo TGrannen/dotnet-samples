@@ -1,14 +1,15 @@
 ﻿using Dapper.CleanArchitecture.Application.Employees.Commands;
+using Dapper.CleanArchitecture.Web.Tests.Integration.Shared;
 
 namespace Dapper.CleanArchitecture.Web.Tests.Integration.Employees;
 
 [Collection(nameof(WebFactoryCollection))]
-public class EmployeeCrudApiTests
+public class EmployeeCrudApiTests : TestsBase
 {
     private readonly HttpClient _client;
     private readonly IDbReadContext _dbService;
 
-    public EmployeeCrudApiTests(AppFactory factory)
+    public EmployeeCrudApiTests(AppFactory factory) : base(factory)
     {
         _client = factory.CreateClient(new WebApplicationFactoryClientOptions
         {
