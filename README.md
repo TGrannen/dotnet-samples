@@ -67,6 +67,10 @@ This repository's purpose is to showcase common design patterns, best practices,
 
 * [Messaging](Messaging/)
 
+### Object Mapping
+
+* [AutoMapper](ObjectMapping/)
+
 ### Observability
 
 * [Observability - OpenTelemetry](Observability/)
