@@ -27,15 +27,13 @@ public class ApplicationFixture : DbFixture
             _services.AddTransient(_ => ReadContext.Object);
             _services.AddApplication();
             OnConfigureServices?.Invoke(this, _services);
-            Provider = _services.BuildServiceProvider();
+            _provider = _services.BuildServiceProvider();
 
             return _provider;
         }
-        set => _provider = value;
     }
 
     private readonly ServiceCollection _services = new();
-
 
     public async Task<T> SendAsync<T>(IRequest<T> request)
     {
