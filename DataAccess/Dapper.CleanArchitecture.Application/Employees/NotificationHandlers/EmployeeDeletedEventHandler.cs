@@ -3,11 +3,11 @@ using Microsoft.Extensions.Logging;
 
 namespace Dapper.CleanArchitecture.Application.Employees.NotificationHandlers;
 
-public class DeleteEmployeeNotificationHandler : INotificationHandler<EmployeeDeletedEvent>
+public class EmployeeDeletedEventHandler : INotificationHandler<EmployeeDeletedEvent>
 {
-    private readonly ILogger<DeleteEmployeeNotificationHandler> _logger;
+    private readonly ILogger<EmployeeDeletedEventHandler> _logger;
 
-    public DeleteEmployeeNotificationHandler(ILogger<DeleteEmployeeNotificationHandler> logger)
+    public EmployeeDeletedEventHandler(ILogger<EmployeeDeletedEventHandler> logger)
     {
         _logger = logger;
     }

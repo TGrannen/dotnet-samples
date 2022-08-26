@@ -4,10 +4,10 @@ public sealed class DbReadContext : IDbReadContext, IDisposable
 {
     private readonly ILogger<DbReadContext> _logger;
 
-    public DbReadContext(IDbConnectionFactory connection, ILogger<DbReadContext> logger)
+    public DbReadContext(IDbConnectionFactory connectionFactory, ILogger<DbReadContext> logger)
     {
         _logger = logger;
-        Connection = connection.CreateDbConnection();
+        Connection = connectionFactory.CreateDbConnection();
     }
 
     public IDbConnection Connection { get; }
