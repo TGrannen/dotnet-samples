@@ -1,6 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
-namespace SnapshotTesting.Verify;
+namespace SnapshotTesting.Verify.Logging;
 
 [Collection("Logging Collection")]
 [UsesVerify]

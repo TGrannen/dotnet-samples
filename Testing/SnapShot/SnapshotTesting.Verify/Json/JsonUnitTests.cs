@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using Newtonsoft.Json.Linq;
 
-namespace SnapshotTesting.Verify;
+namespace SnapshotTesting.Verify.Json;
 
 [UsesVerify]
 public class JsonUnitTests

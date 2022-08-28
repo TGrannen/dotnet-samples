@@ -1,6 +1,6 @@
 ﻿using Moq;
 
-namespace SnapshotTesting.Verify;
+namespace SnapshotTesting.Verify.Moq;
 
 [Collection("Moq Collection")]
 [UsesVerify]

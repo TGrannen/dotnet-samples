@@ -2,7 +2,7 @@
 using Refit;
 using VerifyTests.Http;
 
-namespace SnapshotTesting.Verify;
+namespace SnapshotTesting.Verify.Http;
 
 [UsesVerify]
 [Collection("Http Collection")]
