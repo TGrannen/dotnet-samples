@@ -1,0 +1,20 @@
+﻿{
+  target: result,
+  logs: [
+    {
+      Level: Warning,
+      Message: The log entry
+    },
+    {
+      Message: StartScope,
+      State: The scope
+    },
+    {
+      Level: Warning,
+      Message: Entry in scope
+    },
+    {
+      Message: EndScope
+    }
+  ]
+}
