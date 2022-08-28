@@ -61,7 +61,7 @@ public class LoggingTests
 
         public string Method()
         {
-            _logger.LogWarning("The log entry");
+            _logger.LogWarning("The log entry with value {Value}", 45694);
             return "result";
         }
     }
