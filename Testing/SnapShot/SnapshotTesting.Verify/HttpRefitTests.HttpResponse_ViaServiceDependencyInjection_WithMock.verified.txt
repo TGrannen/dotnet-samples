@@ -1,0 +1,15 @@
+﻿{
+  Calls: [
+    {
+      Request: https://localhost:1234/json,
+      Response: 200 Ok
+    },
+    {
+      Request: {
+        Method: DELETE,
+        Uri: https://localhost:1234/json/4561
+      },
+      Response: 200 Ok
+    }
+  ]
+}

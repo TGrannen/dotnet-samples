@@ -1,0 +1,39 @@
+﻿[
+  {
+    RequestUri: https://httpbin.org/json,
+    RequestOptions: {
+      Refit.InterfaceType: HttpRefitTests.IHttpBinApi
+    },
+    RequestMethod: GET,
+    ResponseStatus: OK,
+    ResponseHeaders: {
+      Access-Control-Allow-Credentials: true,
+      Access-Control-Allow-Origin: *,
+      Connection: keep-alive,
+      Server: gunicorn/19.9.0
+    },
+    ResponseContent:
+{
+  "slideshow": {
+    "author": "Yours Truly", 
+    "date": "date of publication", 
+    "slides": [
+      {
+        "title": "Wake up to WonderWidgets!", 
+        "type": "all"
+      }, 
+      {
+        "items": [
+          "Why <em>WonderWidgets</em> are great", 
+          "Who <em>buys</em> WonderWidgets"
+        ], 
+        "title": "Overview", 
+        "type": "all"
+      }
+    ], 
+    "title": "Sample Slide Show"
+  }
+}
+
+  }
+]
