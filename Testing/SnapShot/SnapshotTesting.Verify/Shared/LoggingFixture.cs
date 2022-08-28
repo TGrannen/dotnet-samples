@@ -11,3 +11,8 @@ public class LoggingFixture : IDisposable
     {
     }
 }
+
+[CollectionDefinition("Logging Collection")]
+public class LoggingCollection : ICollectionFixture<LoggingFixture>
+{
+}
