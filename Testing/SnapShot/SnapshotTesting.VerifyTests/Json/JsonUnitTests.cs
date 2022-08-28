@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using Newtonsoft.Json.Linq;
 
-namespace SnapshotTesting.Verify.Json;
+namespace SnapshotTesting.VerifyTests.Json;
 
 [UsesVerify]
 public class JsonUnitTests
@@ -25,7 +25,7 @@ public class JsonUnitTests
     public Task StreamMember()
     {
         var stream = new MemoryStream(Encoding.UTF8.GetBytes("value"));
-        return Verifier.Verify(new { stream });
+        return Verify(new { stream });
     }
 
     [Fact]
@@ -33,6 +33,6 @@ public class JsonUnitTests
     {
         var json = "{'key': {'msg': 'No action taken'}}";
         var target = JToken.Parse(json);
-        return Verifier.Verify(target);
+        return Verify(target);
     }
 }

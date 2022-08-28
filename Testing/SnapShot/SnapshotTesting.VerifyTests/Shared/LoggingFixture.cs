@@ -1,4 +1,4 @@
-﻿namespace SnapshotTesting.Verify.Shared;
+﻿namespace SnapshotTesting.VerifyTests.Shared;
 
 public class LoggingFixture : IDisposable
 {

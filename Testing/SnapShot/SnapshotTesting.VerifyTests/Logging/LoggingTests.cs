@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace SnapshotTesting.Verify.Logging;
+namespace SnapshotTesting.VerifyTests.Logging;
 
 [Collection("Logging Collection")]
 [UsesVerify]
@@ -15,7 +15,7 @@ public class LoggingTests
 
         var result = target.Method();
 
-        return Verifier.Verify(result);
+        return Verify(result);
     }
 
     [Fact]
@@ -27,7 +27,7 @@ public class LoggingTests
 
         var result = target.Method();
 
-        return Verifier.Verify(result);
+        return Verify(result);
     }
 
     [Fact]
@@ -42,7 +42,7 @@ public class LoggingTests
 
         var result = myService.Method();
 
-        await Verifier.Verify(result).IgnoreMembers("Date");
+        await Verify(result).IgnoreMembers("Date");
     }
 
     class ClassThatUsesLogging

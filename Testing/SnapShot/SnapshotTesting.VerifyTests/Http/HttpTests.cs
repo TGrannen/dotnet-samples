@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using VerifyTests.Http;
 
-namespace SnapshotTesting.Verify.Http;
+namespace SnapshotTesting.VerifyTests.Http;
 
 [UsesVerify]
 [Collection("Http Collection")]
@@ -15,7 +15,7 @@ public class HttpTests
         await client.GetAsync("https://fake/get1");
         await client.GetAsync("https://fake/get2");
 
-        await Verifier.Verify(client.Calls);
+        await Verify(client.Calls);
     }
 
     [Fact]
@@ -33,7 +33,7 @@ public class HttpTests
 
         var sizeOfResponse = await myService.MethodThatDoesHttp();
 
-        await Verifier.Verify(new { sizeOfResponse, recording.Sends }).IgnoreMembers("Date");
+        await Verify(new { sizeOfResponse, recording.Sends }).IgnoreMembers("Date");
     }
 
     public class MyService

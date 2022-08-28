@@ -2,7 +2,7 @@
 using Refit;
 using VerifyTests.Http;
 
-namespace SnapshotTesting.Verify.Http;
+namespace SnapshotTesting.VerifyTests.Http;
 
 [UsesVerify]
 [Collection("Http Collection")]
@@ -23,7 +23,7 @@ public class HttpRefitTests
 
         await api.GetJson();
 
-        await Verifier.Verify(recording.Sends).IgnoreMembers("Date");
+        await Verify(recording.Sends).IgnoreMembers("Date");
     }
 
     [Fact]
@@ -38,7 +38,7 @@ public class HttpRefitTests
         await api.GetJson();
         await api.Remove(4561);
 
-        await Verifier.Verify(client).IgnoreMembers("Date");
+        await Verify(client).IgnoreMembers("Date");
     }
 
     public interface IHttpBinApi

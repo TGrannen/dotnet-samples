@@ -1,6 +1,6 @@
 ﻿using Moq;
 
-namespace SnapshotTesting.Verify.Moq;
+namespace SnapshotTesting.VerifyTests.Moq;
 
 [Collection("Moq Collection")]
 [UsesVerify]
@@ -16,7 +16,7 @@ public class MoqTests
 
         var target = mock.Object;
         target.Method(1, 2);
-        return Verifier.Verify(mock);
+        return Verify(mock);
     }
 }
 

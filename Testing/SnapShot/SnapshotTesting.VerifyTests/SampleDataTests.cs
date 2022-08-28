@@ -1,4 +1,4 @@
-namespace SnapshotTesting.Verify;
+namespace SnapshotTesting.VerifyTests;
 
 [UsesVerify]
 public class SampleDataTests
@@ -24,6 +24,6 @@ public class SampleDataTests
             }
         };
 
-        return Verifier.Verify(value);
+        return Verify(value);
     }
 }

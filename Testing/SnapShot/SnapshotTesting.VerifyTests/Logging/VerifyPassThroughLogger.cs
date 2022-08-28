@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 
-namespace SnapshotTesting.Verify.Logging;
+namespace SnapshotTesting.VerifyTests.Logging;
 
 class VerifyPassThroughLogger<T> : ILogger<T>
 {
