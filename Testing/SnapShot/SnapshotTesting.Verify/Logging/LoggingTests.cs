@@ -30,6 +30,21 @@ public class LoggingTests
         return Verifier.Verify(result);
     }
 
+    [Fact]
+    public async Task LoggingTyped_ViaServiceDependencyInjection()
+    {
+        var collection = new ServiceCollection();
+        collection.AddSingleton(LoggerRecording.Start());
+        collection.AddScoped(typeof(ILogger<>), typeof(VerifyPassThroughLogger<>));
+        collection.AddScoped<ClassThatUsesTypedLogging>();
+        await using var provider = collection.BuildServiceProvider();
+        var myService = provider.GetRequiredService<ClassThatUsesTypedLogging>();
+
+        var result = myService.Method();
+
+        await Verifier.Verify(result).IgnoreMembers("Date");
+    }
+
     class ClassThatUsesLogging
     {
         private readonly ILogger _logger;
