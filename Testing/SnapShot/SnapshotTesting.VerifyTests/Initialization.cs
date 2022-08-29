@@ -10,5 +10,6 @@ public static class Initialization
         VerifyMicrosoftLogging.Enable();
         VerifyHttp.Enable();
         VerifyMoq.Enable();
+        VerifyEntityFramework.Enable();
     }
 }
