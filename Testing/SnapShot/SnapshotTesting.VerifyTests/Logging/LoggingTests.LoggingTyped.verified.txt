@@ -1,0 +1,20 @@
+﻿{
+  target: result,
+  logs: [
+    {
+      Level: Warning,
+      Category: ClassThatUsesTypedLogging,
+      Message: The log entry with value 45694,
+      State: [
+        {
+          Key: Value,
+          Value: 45694
+        },
+        {
+          Key: {OriginalFormat},
+          Value: The log entry with value {Value}
+        }
+      ]
+    }
+  ]
+}
