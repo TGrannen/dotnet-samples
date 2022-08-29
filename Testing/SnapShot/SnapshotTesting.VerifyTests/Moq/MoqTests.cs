@@ -2,7 +2,6 @@
 
 namespace SnapshotTesting.VerifyTests.Moq;
 
-[Collection("Moq Collection")]
 [UsesVerify]
 public class MoqTests
 {

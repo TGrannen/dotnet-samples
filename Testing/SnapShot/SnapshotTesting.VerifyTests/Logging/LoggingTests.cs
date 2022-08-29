@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 
 namespace SnapshotTesting.VerifyTests.Logging;
 
-[Collection("Logging Collection")]
 [UsesVerify]
 public class LoggingTests
 {

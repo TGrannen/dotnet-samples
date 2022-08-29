@@ -5,7 +5,6 @@ using VerifyTests.Http;
 namespace SnapshotTesting.VerifyTests.Http;
 
 [UsesVerify]
-[Collection("Http Collection")]
 public class HttpRefitTests
 {
     [Fact]
