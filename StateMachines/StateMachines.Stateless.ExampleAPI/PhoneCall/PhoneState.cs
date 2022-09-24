@@ -1,11 +1,10 @@
-﻿namespace StateMachines.Stateless.ExampleAPI.PhoneCall
+﻿namespace StateMachines.Stateless.ExampleAPI.PhoneCall;
+
+public enum PhoneState
 {
-    public enum PhoneState
-    {
-        OnHook,
-        OffHook,
-        Ringing,
-        Connected,
-        OnHold
-    }
+    OnHook,
+    OffHook,
+    Ringing,
+    Connected,
+    OnHold
 }

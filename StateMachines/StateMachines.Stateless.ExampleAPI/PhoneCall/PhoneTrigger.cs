@@ -1,16 +1,15 @@
-﻿namespace StateMachines.Stateless.ExampleAPI.PhoneCall
+﻿namespace StateMachines.Stateless.ExampleAPI.PhoneCall;
+
+public enum PhoneTrigger
 {
-    public enum PhoneTrigger
-    {
         
-        CallDialled,
-        MuteMicrophone,
-        UnmuteMicrophone,
-        LeftMessage,
-        LiftPhone,
-        SlammedPhone,
-        PlacedOnHold,
-        CallConnected,
-        RemovedFromHold
-    }
+    CallDialled,
+    MuteMicrophone,
+    UnmuteMicrophone,
+    LeftMessage,
+    LiftPhone,
+    SlammedPhone,
+    PlacedOnHold,
+    CallConnected,
+    RemovedFromHold
 }
