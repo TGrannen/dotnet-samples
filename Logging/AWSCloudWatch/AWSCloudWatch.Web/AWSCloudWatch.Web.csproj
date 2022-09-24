@@ -1,14 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <UserSecretsId>244d3406-e9a2-4759-908a-2d5266550ff3</UserSecretsId>
+    <LangVersion>10</LangVersion>
+    <ImplicitUsings>true</ImplicitUsings>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
-    <PackageReference Include="Serilog.AspNetCore" Version="3.4.0" />
-    <PackageReference Include="Serilog.Sinks.AwsCloudWatch" Version="4.0.161" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3"/>
+    <PackageReference Include="Serilog.AspNetCore" Version="3.4.0"/>
+    <PackageReference Include="Serilog.Sinks.AwsCloudWatch" Version="4.0.161"/>
+    <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.4.0"/>
   </ItemGroup>
 
 </Project>
