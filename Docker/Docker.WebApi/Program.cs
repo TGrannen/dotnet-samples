@@ -1,25 +1,26 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
 using Serilog;
 
-namespace Docker.WebApi
-{
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            CreateHostBuilder(args).Build().Run();
-        }
+var builder = WebApplication.CreateBuilder(args);
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .UseSerilog((context, configuration) => { configuration.ReadFrom.Configuration(context.Configuration); })
-                .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
-    }
+builder.Services.AddControllers();
+builder.Services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo { Title = "Docker.WebApi", Version = "v1" }); });
+
+builder.Host.UseSerilog((context, configuration) => { configuration.ReadFrom.Configuration(context.Configuration); });
+
+var app = builder.Build();
+app.UseSerilogRequestLogging();
+
+if (builder.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+    app.UseSwagger();
+    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Docker.WebApi v1"));
 }
+
+app.UseHttpsRedirection();
+app.UseRouting();
+app.UseAuthorization();
+app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+
+await app.RunAsync();
