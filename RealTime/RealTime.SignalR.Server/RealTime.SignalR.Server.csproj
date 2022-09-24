@@ -3,10 +3,12 @@
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
         <UserSecretsId>aspnet-RealTime.SignalR.Server-878C933D-4143-43C3-B428-CD42EE621F8F</UserSecretsId>
+        <ImplicitUsings>true</ImplicitUsings>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="6.0.8" />
+        <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="6.0.9" />
+        <PackageReference Include="Serilog.AspNetCore" Version="6.0.1" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
     </ItemGroup>
 

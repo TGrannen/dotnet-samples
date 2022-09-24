@@ -1,5 +1,3 @@
-using System;
-
 namespace RealTime.SignalR.React
 {
     public class WeatherForecast
