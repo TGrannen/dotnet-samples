@@ -1,27 +1,18 @@
+using ConsoleApp_Microservice;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 
-namespace ConsoleApp_Microservice
-{
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            CreateHostBuilder(args).Build().Run();
-        }
+var builder = WebApplication.CreateBuilder(args);
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .UseSerilog((context, configuration) =>
-                {
-                    configuration.ReadFrom.Configuration(context.Configuration);
-                })
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseHealthEndpoints();
-                    webBuilder.UseStartup<Startup>();
-                    webBuilder.UseKestrel(options => options.AllowSynchronousIO = true);
-                });
-    }
-}
+builder.Services.AddHostedService<ExampleBackgroundService>();
+
+builder.Host.UseSerilog((context, configuration) => { configuration.ReadFrom.Configuration(context.Configuration); });
+builder.WebHost.UseHealthEndpoints();
+builder.WebHost.UseKestrel(options => options.AllowSynchronousIO = true);
+
+var app = builder.Build();
+app.UseSerilogRequestLogging();
+
+await app.RunAsync();
