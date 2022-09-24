@@ -1,7 +1,6 @@
-namespace FeatureFlags.Library.LaunchDarkly
+namespace FeatureFlags.Library.LaunchDarkly;
+
+public class LaunchDarklyConfig
 {
-    public class LaunchDarklyConfig
-    {
-        public string SdkKey { get; set; }
-    }
+    public string SdkKey { get; set; }
 }

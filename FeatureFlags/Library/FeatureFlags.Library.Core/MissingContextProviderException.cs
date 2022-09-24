@@ -1,13 +1,10 @@
-﻿using System;
+﻿namespace FeatureFlags.Library.Core;
 
-namespace FeatureFlags.Library.Core
+public class MissingContextProviderException : Exception
 {
-    public class MissingContextProviderException : Exception
+    public MissingContextProviderException() : base(
+        "Context Provider was not found via dependency injection when it was expected. " +
+        "Be sure to add an implementation of the IContextProvider during startup.")
     {
-        public MissingContextProviderException() : base(
-            "Context Provider was not found via dependency injection when it was expected. " +
-            "Be sure to add an implementation of the IContextProvider during startup.")
-        {
-        }
     }
 }

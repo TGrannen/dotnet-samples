@@ -1,9 +1,8 @@
 ﻿using FeatureFlags.LaunchDarkly.WebAPI.Features;
 
-namespace FeatureFlags.LaunchDarkly.WebAPI.Services
+namespace FeatureFlags.LaunchDarkly.WebAPI.Services;
+
+public interface IUserService
 {
-    public interface IUserService
-    {
-        TestUser GetUser();
-    }
+    TestUser GetUser();
 }
