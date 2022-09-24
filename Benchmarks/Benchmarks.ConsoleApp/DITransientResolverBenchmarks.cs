@@ -5,39 +5,38 @@ using Benchmarks.DILibrary.DIContainers;
 using Microsoft.Extensions.DependencyInjection;
 using Ninject;
 
-namespace Benchmarks.ConsoleApp
+namespace Benchmarks.ConsoleApp;
+
+[MemoryDiagnoser]
+public class DITransientResolverBenchmarks
 {
-    [MemoryDiagnoser]
-    public class DITransientResolverBenchmarks
+    private AutoFacDISetup _autoFacDI;
+    private NetCoreDISetup _netCoreDi;
+    private NinjectDISetup _ninjectDi;
+
+    [GlobalSetup]
+    public void Setup()
     {
-        private AutoFacDISetup _autoFacDI;
-        private NetCoreDISetup _netCoreDi;
-        private NinjectDISetup _ninjectDi;
+        _autoFacDI = new AutoFacDISetup();
+        _netCoreDi = new NetCoreDISetup();
+        _ninjectDi = new NinjectDISetup();
+    }
 
-        [GlobalSetup]
-        public void Setup()
-        {
-            _autoFacDI = new AutoFacDISetup();
-            _netCoreDi = new NetCoreDISetup();
-            _ninjectDi = new NinjectDISetup();
-        }
+    [Benchmark]
+    public void AutoFacDI()
+    {
+        var service = _autoFacDI.Container.Resolve<ITestService>();
+    }
 
-        [Benchmark]
-        public void AutoFacDI()
-        {
-            var service = _autoFacDI.Container.Resolve<ITestService>();
-        }
+    [Benchmark]
+    public void NetCoreDI()
+    {
+        var service = _netCoreDi.Provider.GetService<ITestService>();
+    }
 
-        [Benchmark]
-        public void NetCoreDI()
-        {
-            var service = _netCoreDi.Provider.GetService<ITestService>();
-        }
-
-        [Benchmark]
-        public void NinjectDI()
-        {
-            var service = _ninjectDi.Kernel.Get<ITestService>();
-        }
+    [Benchmark]
+    public void NinjectDI()
+    {
+        var service = _ninjectDi.Kernel.Get<ITestService>();
     }
 }

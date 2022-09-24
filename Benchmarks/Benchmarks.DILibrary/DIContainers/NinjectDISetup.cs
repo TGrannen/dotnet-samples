@@ -1,23 +1,22 @@
 ﻿using Ninject;
 
-namespace Benchmarks.DILibrary.DIContainers
-{
-    public class NinjectDISetup
-    {
-        public NinjectDISetup()
-        {
-            Kernel = new StandardKernel();
-            Kernel.Load(typeof(NinjectBindings).Assembly);
-        }
+namespace Benchmarks.DILibrary.DIContainers;
 
-        public IKernel Kernel { get; set; }
+public class NinjectDISetup
+{
+    public NinjectDISetup()
+    {
+        Kernel = new StandardKernel();
+        Kernel.Load(typeof(NinjectBindings).Assembly);
     }
 
-    public class NinjectBindings : Ninject.Modules.NinjectModule
+    public IKernel Kernel { get; set; }
+}
+
+public class NinjectBindings : Ninject.Modules.NinjectModule
+{
+    public override void Load()
     {
-        public override void Load()
-        {
-            Bind<ITestService>().To<TestService>();
-        }
+        Bind<ITestService>().To<TestService>();
     }
 }
