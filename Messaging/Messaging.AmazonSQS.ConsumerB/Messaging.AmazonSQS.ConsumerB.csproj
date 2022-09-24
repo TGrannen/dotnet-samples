@@ -2,8 +2,10 @@
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
-		<TargetFramework>net5</TargetFramework>
+		<TargetFramework>net6.0</TargetFramework>
 		<UserSecretsId>a1d38530-e9bc-46fe-b560-ff39f1a20dd3</UserSecretsId>
+		<LangVersion>10</LangVersion>
+		<ImplicitUsings>true</ImplicitUsings>
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="MassTransit" Version="7.1.5" />
