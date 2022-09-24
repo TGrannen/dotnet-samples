@@ -1,29 +1,16 @@
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Builder;
 using Serilog;
 using WorkerServiceExample.Services;
 
-namespace WorkerServiceExample
-{
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            CreateHostBuilder(args).Build().Run();
-        }
+var builder = WebApplication.CreateBuilder(args);
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .UseSerilog((context, configuration) =>
-                {
-                    configuration.ReadFrom.Configuration(context.Configuration);
-                })
-                .ConfigureServices((hostContext, services) =>
-                {
-                    services.AddHostedService<ExampleService>();
+builder.Services.AddHostedService<ExampleService>();
 
-                    services.AddHttpClient();
-                    services.AddHostedService<HttpPollExample>();
-                });
-    }
-}
+builder.Services.AddHttpClient();
+builder.Services.AddHostedService<HttpPollExample>();
+
+builder.Host.UseSerilog((context, configuration) => { configuration.ReadFrom.Configuration(context.Configuration); });
+
+var app = builder.Build();
+
+await app.RunAsync();
