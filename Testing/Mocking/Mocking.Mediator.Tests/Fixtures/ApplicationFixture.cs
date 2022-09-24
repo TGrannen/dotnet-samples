@@ -1,13 +1,12 @@
-namespace Mocking.Mediator.Tests.Fixtures
+namespace Mocking.Mediator.Tests.Fixtures;
+
+public class ApplicationFixture : MediatorFixture
 {
-    public class ApplicationFixture : MediatorFixture
+    public ApplicationFixture()
     {
-        public ApplicationFixture()
+        OnConfigureServices += (_, services) =>
         {
-            OnConfigureServices += (_, services) =>
-            {
-                services.AddApplication();
-            };
-        }
+            services.AddApplication();
+        };
     }
 }

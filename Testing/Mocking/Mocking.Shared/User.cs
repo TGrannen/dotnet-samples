@@ -1,11 +1,8 @@
-﻿using System;
+﻿namespace Mocking.Shared;
 
-namespace Mocking.Shared
+public class User
 {
-    public class User
-    {
-        public Guid Id { get; set; }
+    public Guid Id { get; set; }
 
-        public string UserName { get; set; }
-    }
+    public string UserName { get; set; }
 }
