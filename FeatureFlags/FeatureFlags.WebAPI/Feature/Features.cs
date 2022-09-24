@@ -1,9 +1,8 @@
-﻿namespace FeatureFlags.WebAPI.Feature
+﻿namespace FeatureFlags.WebAPI.Feature;
+
+public enum Features
 {
-    public enum Features
-    {
-        ShouldHaveOnlyOne,
-        AllowedForEndpoint,
-        AllowForMinNumber
-    }
+    ShouldHaveOnlyOne,
+    AllowedForEndpoint,
+    AllowForMinNumber
 }
