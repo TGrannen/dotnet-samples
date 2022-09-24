@@ -1,16 +1,13 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿namespace Configuration.Web.Providers.CustomProvider;
 
-namespace Configuration.Web.Providers.CustomProvider
+public static class ConfigurationBuilderExtensions
 {
-    public static class ConfigurationBuilderExtensions
+    public static IConfigurationBuilder AddEntityConfiguration(this IConfigurationBuilder builder)
     {
-        public static IConfigurationBuilder AddEntityConfiguration(this IConfigurationBuilder builder)
+        builder.Add(new CustomConfigurationSource
         {
-            builder.Add(new CustomConfigurationSource
-            {
-                ReloadOnChange = true
-            });
-            return builder;
-        }
+            ReloadOnChange = true
+        });
+        return builder;
     }
 }

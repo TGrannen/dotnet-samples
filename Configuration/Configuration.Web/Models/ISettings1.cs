@@ -1,7 +1,6 @@
-﻿namespace Configuration.Web.Models
+﻿namespace Configuration.Web.Models;
+
+public interface ISettings1
 {
-    public interface ISettings1
-    {
-        string Value { get; set; }
-    }
+    string Value { get; set; }
 }
