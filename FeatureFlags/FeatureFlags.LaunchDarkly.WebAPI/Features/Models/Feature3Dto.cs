@@ -1,7 +1,6 @@
-﻿namespace FeatureFlags.LaunchDarkly.WebAPI.Features.Models
+﻿namespace FeatureFlags.LaunchDarkly.WebAPI.Features.Models;
+
+public class Feature3Dto
 {
-    public class Feature3Dto
-    {
-        public string Name { get; set; }
-    }
+    public string Name { get; set; }
 }

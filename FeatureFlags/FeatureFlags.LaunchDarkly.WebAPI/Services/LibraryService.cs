@@ -1,60 +1,57 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using FeatureFlags.LaunchDarkly.WebAPI.Features;
+﻿using FeatureFlags.LaunchDarkly.WebAPI.Features;
 using FeatureFlags.LaunchDarkly.WebAPI.Features.Models;
 using FeatureFlags.Library.Core;
 using FeatureFlags.Library.Core.Context;
 
-namespace FeatureFlags.LaunchDarkly.WebAPI.Services
+namespace FeatureFlags.LaunchDarkly.WebAPI.Services;
+
+/// <summary>
+/// Shows how to use the abstracted Library project to query LaunchDarkly Feature Flags 
+/// </summary>
+public class LibraryService
 {
-    /// <summary>
-    /// Shows how to use the abstracted Library project to query LaunchDarkly Feature Flags 
-    /// </summary>
-    public class LibraryService
+    private readonly IFeatureService _featureService;
+    private readonly IJsonFeatureService _jsonFeatureService;
+
+    public LibraryService(IFeatureService featureService, IJsonFeatureService jsonFeatureService)
     {
-        private readonly IFeatureService _featureService;
-        private readonly IJsonFeatureService _jsonFeatureService;
+        _featureService = featureService;
+        _jsonFeatureService = jsonFeatureService;
+    }
 
-        public LibraryService(IFeatureService featureService, IJsonFeatureService jsonFeatureService)
-        {
-            _featureService = featureService;
-            _jsonFeatureService = jsonFeatureService;
-        }
+    public async Task<bool> IsSampleOneEnabled()
+    {
+        return await _featureService.IsEnabledAsync("demo-sample-feature");
+    }
 
-        public async Task<bool> IsSampleOneEnabled()
+    public async Task<bool> IsSampleTwoEnabled(TestUser user)
+    {
+        return await _featureService.IsEnabledAsync("demo-sample-feature-2", new FeatureContext
         {
-            return await _featureService.IsEnabledAsync("demo-sample-feature");
-        }
+            Key = user.Id,
+            Name = new ContextAttribute<string>(user.Name)
+        });
+    }
 
-        public async Task<bool> IsSampleTwoEnabled(TestUser user)
-        {
-            return await _featureService.IsEnabledAsync("demo-sample-feature-2", new FeatureContext
+    public async Task<Feature3Dto> JsonSample(TestUser user)
+    {
+        return await _jsonFeatureService.GetConfiguration<Feature3Dto>("demo-json-feature",
+            new FeatureContext
             {
                 Key = user.Id,
                 Name = new ContextAttribute<string>(user.Name)
             });
-        }
+    }
 
-        public async Task<Feature3Dto> JsonSample(TestUser user)
+    public async Task<bool> IsSampleOneEnabledCustom()
+    {
+        return await _featureService.IsEnabledAsync("demo-sample-feature", new FeatureContext
         {
-            return await _jsonFeatureService.GetConfiguration<Feature3Dto>("demo-json-feature",
-                new FeatureContext
-                {
-                    Key = user.Id,
-                    Name = new ContextAttribute<string>(user.Name)
-                });
-        }
-
-        public async Task<bool> IsSampleOneEnabledCustom()
-        {
-            return await _featureService.IsEnabledAsync("demo-sample-feature", new FeatureContext
+            Key = "TEST",
+            CustomContextAttributes = new List<CustomContextAttribute<string>>
             {
-                Key = "TEST",
-                CustomContextAttributes = new List<CustomContextAttribute<string>>
-                {
-                    new("My Data Stuff", "My fancy value")
-                }
-            });
-        }
+                new("My Data Stuff", "My fancy value")
+            }
+        });
     }
 }

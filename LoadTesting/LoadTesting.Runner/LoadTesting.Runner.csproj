@@ -1,13 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <OutputType>Exe</OutputType>
-        <TargetFramework>net5.0</TargetFramework>
-    </PropertyGroup>
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <LangVersion>10</LangVersion>
+    <ImplicitUsings>true</ImplicitUsings>
+  </PropertyGroup>
 
-    <ItemGroup>
-      <PackageReference Include="NBomber" Version="2.1.0" />
-      <PackageReference Include="NBomber.Http" Version="2.0.1" />
-    </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="NBomber" Version="3.2.1"/>
+    <PackageReference Include="NBomber.Http" Version="3.0.2"/>
+  </ItemGroup>
 
 </Project>

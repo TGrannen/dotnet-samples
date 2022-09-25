@@ -1,11 +1,8 @@
 ﻿using Polly.Shared.Models;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
-namespace Polly.Web.Services
+namespace Polly.Web.Services;
+
+public interface IGitHubService
 {
-    public interface IGitHubService
-    {
-        Task<IEnumerable<GitHubIssue>> GetAspNetDocsIssues();
-    }
+    Task<IEnumerable<GitHubIssue>> GetAspNetDocsIssues();
 }

@@ -1,37 +1,30 @@
-﻿using EFCore.Web.Models;
-using EFCore.Web.Persistence;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Mvc;
 
-namespace EFCore.Web.Controllers
+namespace EFCore.Web.Controllers;
+
+[ApiController]
+[Route("[controller]")]
+public class CourseControllerController : ControllerBase
 {
-    [ApiController]
-    [Route("[controller]")]
-    public class CourseControllerController : ControllerBase
+    private readonly SchoolContext _context;
+
+    public CourseControllerController(SchoolContext context)
     {
-        private readonly SchoolContext _context;
+        _context = context;
+    }
 
-        public CourseControllerController(SchoolContext context)
-        {
-            _context = context;
-        }
+    [HttpGet]
+    [Route("GetTopFive")]
+    public async Task<List<Course>> Get()
+    {
+        var listAsync = await _context.Courses.OrderBy(x => x.Title).Take(5).ToListAsync();
+        return listAsync;
+    }
 
-        [HttpGet]
-        [Route("GetTopFive")]
-        public async Task<List<Course>> Get()
-        {
-            var listAsync = await _context.Courses.Take(5).ToListAsync();
-            return listAsync;
-        }
-
-        [HttpGet]
-        [Route("GetById")]
-        public async Task<Course> GetById(int id)
-        {
-            return await _context.Courses.SingleAsync(b => b.CourseId == id);
-        }
+    [HttpGet]
+    [Route("GetById")]
+    public async Task<Course> GetById(int id)
+    {
+        return await _context.Courses.SingleAsync(b => b.CourseId == id);
     }
 }

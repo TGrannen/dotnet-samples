@@ -1,9 +1,8 @@
-﻿namespace StateMachines.Stateless.ExampleAPI.DynamicSM
+﻿namespace StateMachines.Stateless.ExampleAPI.DynamicSM;
+
+public class StateSetup
 {
-    public class StateSetup
-    {
-        public State CurrentState { get; set; }
-        public Trigger Trigger { get; set; }
-        public State DestinationState { get; set; }
-    }
+    public State CurrentState { get; set; }
+    public Trigger Trigger { get; set; }
+    public State DestinationState { get; set; }
 }

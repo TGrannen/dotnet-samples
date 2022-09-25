@@ -1,50 +1,46 @@
-using EFCore.Web.Persistence;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Serilog;
-using System;
+using Microsoft.OpenApi.Models;
 
-namespace EFCore.Web
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddControllers();
+builder.Services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo { Title = "EFCore.Web", Version = "v1" }); });
+
+builder.Services.AddDbContext<SchoolContext>(options => { options.UseSqlServer("name=ConnectionStrings:DefaultConnection"); });
+builder.Host.UseSerilog((context, configuration) => { configuration.ReadFrom.Configuration(context.Configuration); });
+
+var app = builder.Build();
+app.UseSerilogRequestLogging();
+
+if (builder.Environment.IsDevelopment())
 {
-    public class Program
+    app.UseDeveloperExceptionPage();
+    app.UseSwagger();
+    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "EFCore.Web v1"));
+}
+
+app.UseHttpsRedirection();
+app.UseRouting();
+app.UseAuthorization();
+app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+
+CreateDbIfNotExists(app);
+
+await app.RunAsync();
+
+static void CreateDbIfNotExists(IHost host)
+{
+    using var scope = host.Services.CreateScope();
+
+    var services = scope.ServiceProvider;
+    try
     {
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .UseSerilog((context, configuration) =>
-                {
-                    configuration.ReadFrom.Configuration(context.Configuration);
-                })
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
-
-        public static void Main(string[] args)
-        {
-            var host = CreateHostBuilder(args).Build();
-
-            CreateDbIfNotExists(host);
-
-            host.Run();
-        }
-
-        private static void CreateDbIfNotExists(IHost host)
-        {
-            using var scope = host.Services.CreateScope();
-
-            var services = scope.ServiceProvider;
-            try
-            {
-                var context = services.GetRequiredService<SchoolContext>();
-                DbInitializer.Initialize(context);
-            }
-            catch (Exception ex)
-            {
-                var logger = services.GetRequiredService<ILogger<Program>>();
-                logger.LogError(ex, "An error occurred creating the DB.");
-            }
-        }
+        var context = services.GetRequiredService<SchoolContext>();
+        DbInitializer.Initialize(context);
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred creating the DB");
     }
 }

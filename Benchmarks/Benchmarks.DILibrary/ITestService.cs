@@ -1,6 +1,5 @@
-﻿namespace Benchmarks.DILibrary
+﻿namespace Benchmarks.DILibrary;
+
+public interface ITestService
 {
-    public interface ITestService
-    {
-    }
 }

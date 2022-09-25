@@ -1,32 +1,41 @@
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
+using Microsoft.FeatureManagement;
+using Microsoft.FeatureManagement.FeatureFilters;
+using Microsoft.OpenApi.Models;
 using Serilog;
 
-namespace FeatureFlags.WebAPI
-{
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            CreateHostBuilder(args).Build().Run();
-        }
+var builder = WebApplication.CreateBuilder(args);
+builder.Host.UseSerilog((context, configuration) => { configuration.ReadFrom.Configuration(context.Configuration); });
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .UseSerilog((context, configuration) =>
-                {
-                    configuration.ReadFrom.Configuration(context.Configuration);
-                })
-                .ConfigureAppConfiguration(builder =>
-                {
-                    var settings = builder.Build();
-                    var connection = settings.GetConnectionString("AppConfig");
-                    builder.AddAzureAppConfiguration(options =>
-                    {
-                        options.Connect(connection).UseFeatureFlags();
-                    });
-                })
-                .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
-    }
+builder.Services.AddControllers();
+builder.Services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo { Title = "FeatureFlags.WebAPI", Version = "v1" }); });
+
+builder.Services.AddFeatureManagement()
+    .AddFeatureFilter<PercentageFilter>()
+    .AddFeatureFilter<TimeWindowFilter>()
+    .AddFeatureFilter<CustomEndpointFilter>()
+    .AddFeatureFilter<CustomContextualFilter>();
+
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IFeatureService, FeatureService>();
+
+var connection = builder.Configuration.GetConnectionString("AppConfig");
+builder.Services.AddAzureAppConfiguration();
+builder.Configuration.AddAzureAppConfiguration(options => { options.Connect(connection).UseFeatureFlags(); });
+
+var app = builder.Build();
+app.UseSerilogRequestLogging();
+
+if (builder.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+    app.UseSwagger();
+    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "FeatureFlags.WebAPI v1"));
 }
+
+app.UseHttpsRedirection();
+app.UseAzureAppConfiguration();
+app.UseRouting();
+app.UseAuthorization();
+app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+
+await app.RunAsync();

@@ -1,5 +1,3 @@
-using System;
-
 namespace RealTime.SignalR.Angular
 {
     public class WeatherForecast

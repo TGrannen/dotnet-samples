@@ -1,15 +1,13 @@
-﻿using MediatR;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace Mocking.Mediator
+namespace Mocking.Mediator;
+
+public static class DependencyInjection
 {
-    public static class DependencyInjection
+    public static IServiceCollection AddApplication(this IServiceCollection services)
     {
-        public static IServiceCollection AddApplication(this IServiceCollection services)
-        {
-            services.AddMediatR(typeof(DependencyInjection));
+        services.AddMediatR(typeof(DependencyInjection));
 
-            return services;
-        }
+        return services;
     }
 }

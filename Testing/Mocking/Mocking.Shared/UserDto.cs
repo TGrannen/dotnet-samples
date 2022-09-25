@@ -1,9 +1,8 @@
-﻿namespace Mocking.Shared
-{
-    public class UserDto
-    {
-        public string Id { get; set; }
+﻿namespace Mocking.Shared;
 
-        public string UserName { get; set; }
-    }
+public class UserDto
+{
+    public string Id { get; set; }
+
+    public string UserName { get; set; }
 }

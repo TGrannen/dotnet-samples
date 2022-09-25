@@ -1,9 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿namespace FeatureFlags.Library.Core.Context;
 
-namespace FeatureFlags.Library.Core.Context
+public interface IContextProvider
 {
-    public interface IContextProvider
-    {
-        Task<IFeatureContext> GetUserAsync();
-    }
+    Task<IFeatureContext> GetUserAsync();
 }

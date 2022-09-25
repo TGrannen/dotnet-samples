@@ -1,15 +1,12 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 
-namespace Configuration.Web.Extensions
+namespace Configuration.Web.Extensions;
+
+public static class ConfigurationExtensions
 {
-    public static class ConfigurationExtensions
+    public static void Configure<TI, TC>(this IServiceCollection services, IConfiguration configuration) where TC : class, TI
     {
-        public static void Configure<TI, TC>(this IServiceCollection services, IConfiguration configuration) where TC : class, TI
-        {
-            services.Configure<TC>(configuration);
-            services.AddTransient(typeof(TI), provider => provider.GetRequiredService<IOptions<TC>>().Value);
-        }
+        services.Configure<TC>(configuration);
+        services.AddTransient(typeof(TI), provider => provider.GetRequiredService<IOptions<TC>>().Value);
     }
 }

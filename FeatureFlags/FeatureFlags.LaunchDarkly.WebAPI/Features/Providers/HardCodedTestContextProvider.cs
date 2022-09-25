@@ -1,13 +1,11 @@
-﻿using System.Threading.Tasks;
-using FeatureFlags.Library.Core.Context;
+﻿using FeatureFlags.Library.Core.Context;
 
-namespace FeatureFlags.LaunchDarkly.WebAPI.Features.Providers
+namespace FeatureFlags.LaunchDarkly.WebAPI.Features.Providers;
+
+class HardCodedTestContextProvider : IContextProvider
 {
-    class HardCodedTestContextProvider : IContextProvider
+    public Task<IFeatureContext> GetUserAsync()
     {
-        public Task<IFeatureContext> GetUserAsync()
-        {
-            return Task.FromResult(new FeatureContext { Key = "TEST" } as IFeatureContext);
-        }
+        return Task.FromResult(new FeatureContext { Key = "TEST" } as IFeatureContext);
     }
 }

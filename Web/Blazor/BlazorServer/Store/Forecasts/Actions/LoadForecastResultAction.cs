@@ -2,20 +2,19 @@
 using BlazorServer.Store.Shared;
 using System.Collections.Generic;
 
-namespace BlazorServer.Store.Forecasts.Actions
+namespace BlazorServer.Store.Forecasts.Actions;
+
+public class LoadForecastResultAction : ResultAction
 {
-    public class LoadForecastResultAction : ResultAction
+    public LoadForecastResultAction(string errorMessage) : base(errorMessage)
     {
-        public LoadForecastResultAction(string errorMessage) : base(errorMessage)
-        {
-            Forecasts = null!;
-        }
-
-        public LoadForecastResultAction(IEnumerable<WeatherForecast> forecastsResponse) : base(null)
-        {
-            Forecasts = forecastsResponse;
-        }
-
-        public IEnumerable<WeatherForecast> Forecasts { get; }
+        Forecasts = null!;
     }
+
+    public LoadForecastResultAction(IEnumerable<WeatherForecast> forecastsResponse) : base(null)
+    {
+        Forecasts = forecastsResponse;
+    }
+
+    public IEnumerable<WeatherForecast> Forecasts { get; }
 }

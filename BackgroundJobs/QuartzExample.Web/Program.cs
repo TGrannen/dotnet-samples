@@ -1,25 +1,37 @@
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
+using Quartz;
+using QuartzExample.Web.Extensions;
+using QuartzExample.Web.Jobs;
 using Serilog;
 
-namespace QuartzExample.Web
-{
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            CreateHostBuilder(args).Build().Run();
-        }
+var builder = WebApplication.CreateBuilder(args);
+builder.Host.UseSerilog((context, configuration) => { configuration.ReadFrom.Configuration(context.Configuration); });
+builder.Services.AddControllers();
+builder.Services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo { Title = "QuartzExample.Web", Version = "v1" }); });
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .UseSerilog((context, configuration) =>
-                {
-                    configuration.ReadFrom.Configuration(context.Configuration);
-                })
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
-    }
+builder.Services.ConfigureQuartz(builder.Configuration);
+
+var app = builder.Build();
+app.UseSerilogRequestLogging();
+
+if (builder.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+    app.UseSwagger();
+    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "QuartzExample.Web v1"));
 }
+
+app.UseHttpsRedirection();
+app.UseRouting();
+app.UseAuthorization();
+app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+
+app.Lifetime.ApplicationStarted.Register(() =>
+{
+    var logger = app.Services.GetService<ILogger<Program>>();
+    var scheduler = app.Services.GetService<IScheduler>();
+
+    scheduler.ConfigureJobWithCronSchedule<ExampleJob1>(logger, app.Configuration, "BackgroundTasks:ExampleJob1CronExpression");
+});
+
+await app.RunAsync();

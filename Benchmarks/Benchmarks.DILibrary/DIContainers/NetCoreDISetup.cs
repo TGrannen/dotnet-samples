@@ -1,17 +1,15 @@
-﻿using System;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace Benchmarks.DILibrary.DIContainers
+namespace Benchmarks.DILibrary.DIContainers;
+
+public class NetCoreDISetup
 {
-    public class NetCoreDISetup
+    public NetCoreDISetup()
     {
-        public NetCoreDISetup()
-        {
-            var services = new ServiceCollection();
-            services.AddTransient<ITestService, TestService>();
-            Provider = services.BuildServiceProvider();
-        }
-
-        public IServiceProvider Provider { get; set; }
+        var services = new ServiceCollection();
+        services.AddTransient<ITestService, TestService>();
+        Provider = services.BuildServiceProvider();
     }
+
+    public IServiceProvider Provider { get; set; }
 }

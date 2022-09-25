@@ -1,14 +1,11 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿namespace Configuration.Web.Providers.CustomProvider;
 
-namespace Configuration.Web.Providers.CustomProvider
+public class CustomConfigurationSource : IConfigurationSource
 {
-    public class CustomConfigurationSource : IConfigurationSource
-    {
-        public bool ReloadOnChange { get; set; }
+    public bool ReloadOnChange { get; set; }
 
-        public IConfigurationProvider Build(IConfigurationBuilder builder)
-        {
-            return new CustomConfigurationProvider();
-        }
+    public IConfigurationProvider Build(IConfigurationBuilder builder)
+    {
+        return new CustomConfigurationProvider();
     }
 }

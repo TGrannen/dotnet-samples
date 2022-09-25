@@ -1,7 +1,6 @@
-namespace EFCore.Web.Models
+namespace EFCore.Web.Models;
+
+public enum Grade
 {
-    public enum Grade
-    {
-        A, B, C, D, F
-    }
+    A, B, C, D, F
 }

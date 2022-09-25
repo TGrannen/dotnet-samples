@@ -1,7 +1,6 @@
-﻿namespace Messaging.Events.Contracts
+﻿namespace Messaging.Events.Contracts;
+
+public interface IValueChanged
 {
-    public interface IValueChanged
-    {
-        string Message { get; set; }
-    }
+    string Message { get; set; }
 }

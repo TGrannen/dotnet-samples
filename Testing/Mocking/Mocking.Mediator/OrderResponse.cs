@@ -1,7 +1,6 @@
-﻿namespace Mocking.Mediator
+﻿namespace Mocking.Mediator;
+
+public class OrderResponse
 {
-    public class OrderResponse
-    {
-        public int Number { get; set; }
-    }
+    public int Number { get; set; }
 }

@@ -1,7 +1,6 @@
-﻿namespace NUnit.BusinessLogic.Interfaces
+﻿namespace NUnit.BusinessLogic.Interfaces;
+
+public interface ICalculatorService
 {
-    public interface ICalculatorService
-    {
-        double PerformOperation(double num1, double num2, string op);
-    }
+    double PerformOperation(double num1, double num2, string op);
 }

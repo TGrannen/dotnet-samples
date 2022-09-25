@@ -1,8 +1,7 @@
-namespace FluentEmail.Web.Templates
+namespace FluentEmail.Web.Templates;
+
+public class FancyEmailTemplateModel
 {
-    public class FancyEmailTemplateModel
-    {
-        public string Name { get; set; }
-        public decimal Value { get; set; }
-    }
+    public string Name { get; set; }
+    public decimal Value { get; set; }
 }

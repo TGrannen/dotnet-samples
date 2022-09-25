@@ -1,16 +1,15 @@
-﻿namespace FeatureFlags.Library.Core.Context
+﻿namespace FeatureFlags.Library.Core.Context;
+
+public class CustomContextAttribute<T> : ContextAttribute<T>
 {
-    public class CustomContextAttribute<T> : ContextAttribute<T>
+    public CustomContextAttribute()
     {
-        public CustomContextAttribute()
-        {
-        }
-
-        public CustomContextAttribute(string name, T value, bool @private = false) : base(value, @private)
-        {
-            Name = name;
-        }
-
-        public string Name { get; init; }
     }
+
+    public CustomContextAttribute(string name, T value, bool @private = false) : base(value, @private)
+    {
+        Name = name;
+    }
+
+    public string Name { get; init; }
 }

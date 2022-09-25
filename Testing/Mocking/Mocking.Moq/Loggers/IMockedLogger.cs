@@ -1,6 +1,5 @@
-﻿namespace Mocking.Moq.Loggers
+﻿namespace Mocking.Moq.Loggers;
+
+public interface IMockedLogger
 {
-    public interface IMockedLogger
-    {
-    }
 }

@@ -1,18 +1,17 @@
 ﻿using Autofac;
 
-namespace Benchmarks.DILibrary.DIContainers
+namespace Benchmarks.DILibrary.DIContainers;
+
+public class AutoFacDISetup
 {
-    public class AutoFacDISetup
+    public AutoFacDISetup()
     {
-        public AutoFacDISetup()
-        {
-            var builder = new ContainerBuilder();
+        var builder = new ContainerBuilder();
 
-            builder.RegisterType<TestService>().As<ITestService>();
+        builder.RegisterType<TestService>().As<ITestService>();
 
-            Container = builder.Build();
-        }
-
-        public IContainer Container { get; set; }
+        Container = builder.Build();
     }
+
+    public IContainer Container { get; set; }
 }
