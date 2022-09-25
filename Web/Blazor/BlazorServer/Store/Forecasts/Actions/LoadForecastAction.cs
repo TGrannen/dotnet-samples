@@ -1,6 +1,5 @@
-﻿namespace BlazorServer.Store.Forecasts.Actions
+﻿namespace BlazorServer.Store.Forecasts.Actions;
+
+public class LoadForecastAction
 {
-    public class LoadForecastAction
-    {
-    }
 }
