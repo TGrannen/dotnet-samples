@@ -1,6 +1,8 @@
 using IntegrationTesting.WebAPI.Infrastructure;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Host.UseSerilog((_, configuration) => configuration.ReadFrom.Configuration(builder.Configuration));
 
 builder.Services.AddInfrastructure();
 
