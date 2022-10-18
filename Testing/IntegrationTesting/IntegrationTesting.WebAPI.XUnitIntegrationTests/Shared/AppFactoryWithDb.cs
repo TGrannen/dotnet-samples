@@ -9,6 +9,8 @@ namespace IntegrationTesting.WebAPI.XUnitIntegrationTests.Shared;
 
 public class AppFactoryWithDb<TStartup> : AppFactory<TStartup>, IAsyncLifetime where TStartup : class
 {
+    public bool ShouldSeed { get; set; }
+
     private readonly PostgreSqlTestcontainer _container = new TestcontainersBuilder<PostgreSqlTestcontainer>()
         .WithDatabase(new PostgreSqlTestcontainerConfiguration
         {
@@ -34,11 +36,22 @@ public class AppFactoryWithDb<TStartup> : AppFactory<TStartup>, IAsyncLifetime w
     {
         await _container.StartAsync();
         await DbSeeder.CreateSchema(_container.ConnectionString);
-        await DbSeeder.SeedData(_container.ConnectionString);
+        if (ShouldSeed)
+        {
+            await DbSeeder.SeedData(_container.ConnectionString);
+        }
     }
 
     public new async Task DisposeAsync()
     {
-        await _container?.StopAsync()!;
+        await _container.StopAsync()!;
+    }
+}
+
+public class AppFactoryWithSeededDb<TStartup> : AppFactoryWithDb<TStartup>, IAsyncLifetime where TStartup : class
+{
+    public AppFactoryWithSeededDb()
+    {
+        ShouldSeed = true;
     }
 }
