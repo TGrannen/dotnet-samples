@@ -97,6 +97,7 @@ This repository's purpose is to showcase common design patterns, best practices,
 * [Mocking](Testing/Mocking/)
 * [xUnit](Testing/xUnit/)
 * [NUnit](Testing/NUnit/)
+* [Integration Testing](Testing/IntegrationTesting/)
 
 ### Web
 
