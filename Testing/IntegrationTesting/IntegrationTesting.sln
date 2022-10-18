@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationTesting.WebAPI",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationTesting.WebAPI.NUnitIntegrationTests", "IntegrationTesting.WebAPI.NUnitIntegrationTests\IntegrationTesting.WebAPI.NUnitIntegrationTests.csproj", "{DE84E117-4057-438F-A1F0-EB6F9CD8F59E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestProject1IntegrationTesting.WebAPI.XUnitIntegrationTests", "TestProject1IntegrationTesting.WebAPI.XUnitIntegrationTests\TestProject1IntegrationTesting.WebAPI.XUnitIntegrationTests.csproj", "{A0D464AF-3544-4A12-97BD-482FCF7602B9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationTesting.WebAPI.XUnitIntegrationTests", "IntegrationTesting.WebAPI.XUnitIntegrationTests\IntegrationTesting.WebAPI.XUnitIntegrationTests.csproj", "{A0D464AF-3544-4A12-97BD-482FCF7602B9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

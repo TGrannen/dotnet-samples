@@ -2,7 +2,7 @@
 using Dapper;
 using Npgsql;
 
-namespace TestProject1IntegrationTesting.WebAPI.XUnitIntegrationTests.Database;
+namespace IntegrationTesting.WebAPI.XUnitIntegrationTests.Database;
 
 public static class DbSeeder
 {

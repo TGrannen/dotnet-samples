@@ -1,11 +1,11 @@
 ﻿using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Configurations;
 using DotNet.Testcontainers.Containers;
+using IntegrationTesting.WebAPI.XUnitIntegrationTests.Database;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using TestProject1IntegrationTesting.WebAPI.XUnitIntegrationTests.Database;
 
-namespace TestProject1IntegrationTesting.WebAPI.XUnitIntegrationTests.Shared;
+namespace IntegrationTesting.WebAPI.XUnitIntegrationTests.Shared;
 
 public class AppFactoryWithDb<TStartup> : AppFactory<TStartup>, IAsyncLifetime where TStartup : class
 {

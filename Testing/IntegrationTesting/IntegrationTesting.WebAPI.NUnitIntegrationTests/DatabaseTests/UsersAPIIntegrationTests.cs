@@ -7,7 +7,7 @@ public class UsersAPIIntegrationTests
     [OneTimeSetUp]
     public void OneTimeSetUp()
     {
-        _api = new AppFactoryWithDb<Program>().CreateRefitClient<Program,IUsersAPI>();
+        _api = new AppFactoryWithDb<Program>().CreateRefitClient<Program, IUsersAPI>();
     }
 
     [Test]

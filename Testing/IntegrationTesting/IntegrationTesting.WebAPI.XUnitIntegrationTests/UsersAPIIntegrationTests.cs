@@ -1,4 +1,6 @@
-namespace TestProject1IntegrationTesting.WebAPI.XUnitIntegrationTests;
+using IntegrationTesting.WebAPI.XUnitIntegrationTests.Shared;
+
+namespace IntegrationTesting.WebAPI.XUnitIntegrationTests;
 
 [Collection(nameof(AppFactoryWithDbCollection))]
 public class UsersAPIIntegrationTests
