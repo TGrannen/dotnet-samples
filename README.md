@@ -99,6 +99,7 @@ This repository's purpose is to showcase common design patterns, best practices,
 * [xUnit](Testing/xUnit/)
 * [NUnit](Testing/NUnit/)
 * [Integration Testing](Testing/IntegrationTesting/)
+* [Playwright Testing](Testing/PlaywrightTesting/)
 
 ### Web
 
