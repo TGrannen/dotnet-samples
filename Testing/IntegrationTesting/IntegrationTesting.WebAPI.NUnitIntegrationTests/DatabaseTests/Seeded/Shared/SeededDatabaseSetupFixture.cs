@@ -2,10 +2,10 @@
 using DotNet.Testcontainers.Configurations;
 using DotNet.Testcontainers.Containers;
 
-namespace IntegrationTesting.WebAPI.NUnitIntegrationTests.DatabaseTests;
+namespace IntegrationTesting.WebAPI.NUnitIntegrationTests.DatabaseTests.Seeded;
 
 [SetUpFixture]
-public class DatabaseSetupFixture
+public class SeededDatabaseSetupFixture
 {
     private readonly PostgreSqlTestcontainer _container = new TestcontainersBuilder<PostgreSqlTestcontainer>()
         .WithDatabase(new PostgreSqlTestcontainerConfiguration
@@ -20,7 +20,8 @@ public class DatabaseSetupFixture
     {
         await _container.StartAsync();
         await DbSeeder.CreateSchema(_container.ConnectionString);
-        DatabaseSetupFixtureTestData.ConnectionString = _container.ConnectionString;
+        await DbSeeder.SeedData(_container.ConnectionString);
+        SeededDatabaseSetupFixtureTestData.ConnectionString = _container.ConnectionString;
     }
 
     [OneTimeTearDown]

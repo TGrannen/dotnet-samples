@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 
-namespace IntegrationTesting.WebAPI.NUnitIntegrationTests.DatabaseTests;
+namespace IntegrationTesting.WebAPI.NUnitIntegrationTests.DatabaseTests.Seeded;
 
-public class AppFactoryWithDb<TStartup> : WebApplicationFactory<TStartup> where TStartup : class
+public class AppFactoryWithSeededDb<TStartup> : WebApplicationFactory<TStartup> where TStartup : class
 {
     protected override IHost CreateHost(IHostBuilder builder)
     {
@@ -12,7 +12,7 @@ public class AppFactoryWithDb<TStartup> : WebApplicationFactory<TStartup> where 
             config.AddInMemoryCollection(new Dictionary<string, string>
             {
                 {
-                    "ConnectionStrings:DbConnectionString", DatabaseSetupFixtureTestData.ConnectionString
+                    "ConnectionStrings:DbConnectionString", SeededDatabaseSetupFixtureTestData.ConnectionString
                 },
             });
         });
