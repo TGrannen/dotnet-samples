@@ -112,7 +112,7 @@ public class ReloadJobServiceTests
     private async Task ExecuteWithReload(int millisecondsDelay = 10_000)
     {
         await _sut.StartAsync(_source.Token);
-        _ = Task.Run(() => { _sut.SetReload(); });
+        _ = Task.Run(() => { _sut.Reload(); });
         _source.CancelAfter(millisecondsDelay);
         await _sut.ExecuteTask;
         await _sut.StopAsync(_source.Token);

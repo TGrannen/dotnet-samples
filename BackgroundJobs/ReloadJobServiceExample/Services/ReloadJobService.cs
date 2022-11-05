@@ -5,7 +5,7 @@ namespace ReloadJobServiceExample.Services;
 
 public interface IReloadJobService
 {
-    void SetReload();
+    void Reload();
     void Stop();
 }
 
@@ -62,7 +62,7 @@ class ReloadJobService<T> : BackgroundService, IReloadJobService where T : IRelo
     }
 
 
-    public void SetReload()
+    public void Reload()
     {
         if (_stateMachine.CanFire(Trigger.Reload))
         {

@@ -19,7 +19,7 @@ app.MapPost("/reload", ([FromServices] IEnumerable<IReloadJobService> jobBases) 
 {
     foreach (var jobBase in jobBases)
     {
-        jobBase.SetReload();
+        jobBase.Reload();
     }
 
     return Task.FromResult(Results.Ok());
