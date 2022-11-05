@@ -6,6 +6,7 @@ namespace ReloadJobServiceExample.Services;
 public interface IReloadJobService
 {
     void SetReload();
+    void Stop();
 }
 
 class ReloadJobService<T> : BackgroundService, IReloadJobService where T : IReloadJob
@@ -31,6 +32,7 @@ class ReloadJobService<T> : BackgroundService, IReloadJobService where T : IRelo
         _stateMachine
             .Configure(State.Loading)
             .Permit(Trigger.Successful, State.Loaded)
+            .Permit(Trigger.Disable, State.Idle)
             .PermitReentry(Trigger.Unsuccessful)
             .Ignore(Trigger.Reload)
             .OnEntry(t =>
@@ -60,6 +62,14 @@ class ReloadJobService<T> : BackgroundService, IReloadJobService where T : IRelo
         if (_stateMachine.CanFire(Trigger.Reload))
         {
             _stateMachine.Fire(Trigger.Reload);
+        }
+    }
+    
+    public void Stop()
+    {
+        if (_stateMachine.CanFire(Trigger.Disable))
+        {
+            _stateMachine.Fire(Trigger.Disable);
         }
     }
 
@@ -114,5 +124,6 @@ class ReloadJobService<T> : BackgroundService, IReloadJobService where T : IRelo
         Reload,
         Unsuccessful,
         Successful,
+        Disable,
     }
 }

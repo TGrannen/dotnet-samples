@@ -24,12 +24,24 @@ app.MapPost("/reload", ([FromServices] IEnumerable<IReloadJobService> jobBases) 
 
     return Task.FromResult(Results.Ok());
 });
+
+app.MapPost("/stop", ([FromServices] IEnumerable<IReloadJobService> jobBases) =>
+{
+    foreach (var jobBase in jobBases)
+    {
+        jobBase.Stop();
+    }
+
+    return Task.FromResult(Results.Ok());
+});
+
 app.MapPost("/result/{value}", (bool value, [FromServices] ResultProvider resultProvider) =>
 {
     resultProvider.Result = value;
 
     return Task.FromResult(Results.Ok());
 });
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

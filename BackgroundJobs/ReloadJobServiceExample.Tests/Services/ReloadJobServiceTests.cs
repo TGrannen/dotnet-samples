@@ -92,6 +92,23 @@ public class ReloadJobServiceTests
         _job.Verify(x => x.Execute(), Times.Exactly(failureTimes + 1));
     }
 
+    [Fact]
+    public async Task ExecuteAsync_ShouldCallExecuteTwice_WhenStopHasBeenCalled()
+    {
+        _job.SetupSequence(x => x.Execute())
+            .ReturnsAsync(false)
+            .ReturnsAsync(() =>
+            {
+                _sut.Stop();
+                _source.CancelAfter(100);
+                return false;
+            });
+
+        await ExecuteWithReload();
+
+        _job.Verify(x => x.Execute(), Times.Exactly(2));
+    }
+
     private async Task ExecuteWithReload(int millisecondsDelay = 10_000)
     {
         await _sut.StartAsync(_source.Token);
