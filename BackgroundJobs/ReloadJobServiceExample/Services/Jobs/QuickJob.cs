@@ -11,9 +11,9 @@ public class QuickJob : IReloadJob
         _resultProvider = resultProvider;
     }
 
-    public async Task<bool> Execute()
+    public async Task<bool> Execute(CancellationToken token)
     {
-        await Task.Delay(TimeSpan.FromSeconds(1));
+        await Task.Delay(TimeSpan.FromSeconds(1), token);
 
         return _resultProvider.Result;
     }

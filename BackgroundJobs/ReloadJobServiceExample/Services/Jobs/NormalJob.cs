@@ -11,9 +11,9 @@ public class NormalJob : IReloadJob
         _resultProvider = resultProvider;
     }
 
-    public async Task<bool> Execute()
+    public async Task<bool> Execute(CancellationToken token)
     {
-        await Task.Delay(TimeSpan.FromSeconds(4));
+        await Task.Delay(TimeSpan.FromSeconds(4), token);
 
         return _resultProvider.Result;
     }

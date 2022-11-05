@@ -42,7 +42,7 @@ public class DependencyInjectionTests
 
 public class ReloadJob1 : IReloadJob
 {
-    public Task<bool> Execute()
+    public Task<bool> Execute(CancellationToken token)
     {
         return Task.FromResult(true);
     }
@@ -50,7 +50,7 @@ public class ReloadJob1 : IReloadJob
 
 public class ReloadJob2 : IReloadJob
 {
-    public Task<bool> Execute()
+    public Task<bool> Execute(CancellationToken token)
     {
         return Task.FromResult(true);
     }

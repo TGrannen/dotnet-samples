@@ -11,9 +11,9 @@ public class ReallyLongJob : IReloadJob
         _resultProvider = resultProvider;
     }
 
-    public async Task<bool> Execute()
+    public async Task<bool> Execute(CancellationToken token)
     {
-        await Task.Delay(TimeSpan.FromSeconds(15));
+        await Task.Delay(TimeSpan.FromSeconds(15), token);
 
         return _resultProvider.Result;
     }

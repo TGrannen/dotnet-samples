@@ -5,5 +5,5 @@
 /// </summary>
 public interface IReloadJob
 {
-    Task<bool> Execute();
+    Task<bool> Execute(CancellationToken token);
 }

@@ -24,6 +24,13 @@ class ReloadJobService<T> : BackgroundService, IReloadJobService where T : IRelo
         _logger = logger;
         _stateMachine = new StateMachine<State, Trigger>(State.Idle);
         _stateMachine.OnTransitioned(t => _logger.LogInformation("Job {Name} State Change {@Value}", typeof(T).Name, t));
+        _stateMachine.OnTransitioned(t =>
+        {
+            if (t.Trigger == Trigger.Disable)
+            {
+                _childCts.Cancel();
+            }
+        });
 
         _stateMachine
             .Configure(State.Idle)
@@ -46,9 +53,7 @@ class ReloadJobService<T> : BackgroundService, IReloadJobService where T : IRelo
                 {
                     _childCts.CancelAfter((int)Delay.TotalMilliseconds);
                 }
-            })
-            .OnExit(() => _childCts = CancellationTokenSource.CreateLinkedTokenSource(_stoppingToken))
-            ;
+            });
 
         _stateMachine
             .Configure(State.Loaded)
@@ -64,7 +69,7 @@ class ReloadJobService<T> : BackgroundService, IReloadJobService where T : IRelo
             _stateMachine.Fire(Trigger.Reload);
         }
     }
-    
+
     public void Stop()
     {
         if (_stateMachine.CanFire(Trigger.Disable))
@@ -96,6 +101,8 @@ class ReloadJobService<T> : BackgroundService, IReloadJobService where T : IRelo
             catch (TaskCanceledException)
             {
             }
+
+            _childCts = CancellationTokenSource.CreateLinkedTokenSource(_stoppingToken);
         }
     }
 
@@ -103,13 +110,18 @@ class ReloadJobService<T> : BackgroundService, IReloadJobService where T : IRelo
     {
         try
         {
-            return await job.Execute();
+            return await job.Execute(_childCts.Token);
+        }
+        catch (TaskCanceledException)
+        {
+            _logger.LogWarning("Job {Name} was cancelled during execution", typeof(T).Name);
         }
         catch (Exception e)
         {
             _logger.LogError(e, "Error during {Name} job execution", typeof(T).Name);
-            return false;
         }
+
+        return false;
     }
 
     private enum State

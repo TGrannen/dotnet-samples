@@ -11,7 +11,7 @@ public class ReloadJobServiceTests
 
     public ReloadJobServiceTests()
     {
-        _job.Setup(x => x.Execute()).ReturnsAsync(true);
+        _job.Setup(x => x.Execute(It.IsAny<CancellationToken>())).ReturnsAsync(true);
         var services = new ServiceCollection();
         services.AddSingleton(new FakeJob(_job.Object));
         var provider = services.BuildServiceProvider();
@@ -37,7 +37,7 @@ public class ReloadJobServiceTests
     {
         int callsCount = 0;
         await _sut.StartAsync(_source.Token);
-        _job.Setup(x => x.Execute()).Callback(() =>
+        _job.Setup(x => x.Execute(It.IsAny<CancellationToken>())).Callback(() =>
         {
             callsCount++;
             if (2 >= callsCount) _source.Cancel();
@@ -45,13 +45,13 @@ public class ReloadJobServiceTests
 
         await ExecuteWithReload();
 
-        _job.Verify(x => x.Execute(), Times.Once);
+        _job.Verify(x => x.Execute(It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
     public async Task ExecuteAsync_ShouldCallExecuteTwice_WhenTheFirstCallThrowsAnException()
     {
-        var sequence = _job.SetupSequence(x => x.Execute());
+        var sequence = _job.SetupSequence(x => x.Execute(It.IsAny<CancellationToken>()));
         sequence.ThrowsAsync(new Exception("TEST"));
         sequence.ReturnsAsync(() =>
         {
@@ -61,7 +61,7 @@ public class ReloadJobServiceTests
 
         await ExecuteWithReload();
 
-        _job.Verify(x => x.Execute(), Times.Exactly(2));
+        _job.Verify(x => x.Execute(It.IsAny<CancellationToken>()), Times.Exactly(2));
     }
 
     [Theory]
@@ -71,7 +71,7 @@ public class ReloadJobServiceTests
     [InlineData(100)]
     public async Task ExecuteAsync_ShouldCallExecuteUntilItSucceeds(int failureTimes)
     {
-        var sequence = _job.SetupSequence(x => x.Execute());
+        var sequence = _job.SetupSequence(x => x.Execute(It.IsAny<CancellationToken>()));
         for (var i = 0; i < failureTimes; i++)
         {
             sequence.ReturnsAsync(false);
@@ -89,13 +89,13 @@ public class ReloadJobServiceTests
 
         await ExecuteWithReload();
 
-        _job.Verify(x => x.Execute(), Times.Exactly(failureTimes + 1));
+        _job.Verify(x => x.Execute(It.IsAny<CancellationToken>()), Times.Exactly(failureTimes + 1));
     }
 
     [Fact]
     public async Task ExecuteAsync_ShouldCallExecuteTwice_WhenStopHasBeenCalled()
     {
-        _job.SetupSequence(x => x.Execute())
+        _job.SetupSequence(x => x.Execute(It.IsAny<CancellationToken>()))
             .ReturnsAsync(false)
             .ReturnsAsync(() =>
             {
@@ -106,7 +106,7 @@ public class ReloadJobServiceTests
 
         await ExecuteWithReload();
 
-        _job.Verify(x => x.Execute(), Times.Exactly(2));
+        _job.Verify(x => x.Execute(It.IsAny<CancellationToken>()), Times.Exactly(2));
     }
 
     private async Task ExecuteWithReload(int millisecondsDelay = 10_000)
@@ -127,9 +127,9 @@ public class ReloadJobServiceTests
             _reloadJob = reloadJob;
         }
 
-        public async Task<bool> Execute()
+        public async Task<bool> Execute(CancellationToken token)
         {
-            return await _reloadJob.Execute();
+            return await _reloadJob.Execute(token);
         }
     }
 }
