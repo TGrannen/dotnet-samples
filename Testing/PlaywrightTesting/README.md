@@ -3,7 +3,7 @@
 [Playwright](https://playwright.dev/dotnet) was created specifically to accommodate the needs of end-to-end testing.
 Playwright supports all modern rendering engines including Chromium, WebKit, and Firefox. Test on Windows, Linux, and
 macOS, locally or on CI, headless or headed with native mobile emulation. Playwright comes with auto-wait built in
-meaning it waits for elements to be ~~~~actionable prior to performing actions. Playwright provides the Expect function
+meaning it waits for elements to be actionable prior to performing actions. Playwright provides the Expect function
 to write assertions.
 
 ## Test Generation
