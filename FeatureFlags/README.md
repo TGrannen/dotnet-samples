@@ -43,4 +43,13 @@ appsettings.json
 deliver to their customers. They provide a dotnet SDK to integrate with their
 platform ([Docs](https://docs.launchdarkly.com/sdk/server-side/dotnet)). The included example project uses a second
 library project to abstract away the Launch Darkly SDK just in case another feature management service is to be used in
+the future.
+
+## Split Example & Library
+
+[Split](https://www.split.io/) is a unified feature flagging and experimentation platform enabling product and
+engineering teams to reduce cycle times, mitigate release risk, and maximize business impact throughout the Feature
+Delivery Lifecycle. They provide a dotnet SDK to integrate with their
+platform ([Docs](https://help.split.io/hc/en-us/articles/360020240172--NET-SDK)). The included example project uses a
+second library project to abstract away the Split SDK just in case another feature management service is to be used in
 the future. 
