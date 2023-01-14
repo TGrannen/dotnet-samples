@@ -52,4 +52,11 @@ engineering teams to reduce cycle times, mitigate release risk, and maximize bus
 Delivery Lifecycle. They provide a dotnet SDK to integrate with their
 platform ([Docs](https://help.split.io/hc/en-us/articles/360020240172--NET-SDK)). The included example project uses a
 second library project to abstract away the Split SDK just in case another feature management service is to be used in
-the future. 
+the future.
+
+## Flagsmith Example & Library
+
+[Flagsmith](https://flagsmith.com/) provides an all-in-one platform for developing, implementing, and managing your
+feature flags. They provide a dotnet SDK to integrate with their
+platform ([Docs](https://docs.flagsmith.com/clients/server-side)). The included example project uses a second library
+project to abstract away the Flagsmith SDK just in case another feature management service is to be used in the future. 
