@@ -8,7 +8,11 @@ class HardCodedTestContextProvider : IContextProvider
             new FeatureContext
             {
                 Key = "TEST",
-                Email = new ContextAttribute<string>("test@test.com")
+                Email = new ContextAttribute<string>("test@test.com"),
+                CustomContextAttributes = new List<CustomContextAttribute<string>>
+                {
+                    new("group", "admins")
+                }
             } as IFeatureContext);
     }
 }

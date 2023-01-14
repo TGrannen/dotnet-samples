@@ -15,8 +15,7 @@ internal class EnvFeatureService : IEnvFeatureService, IEnvJsonFeatureService
 
     public async Task<bool> IsEnabledAsync(string key)
     {
-        var flags = await _flagsProvider.GetFlags();
-        return await flags.IsFeatureEnabled(key);
+        return await IsEnabledAsync(key, false);
     }
 
     public async Task<bool> IsEnabledAsync(string key, bool defaultValue)

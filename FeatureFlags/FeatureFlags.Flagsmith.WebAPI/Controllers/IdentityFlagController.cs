@@ -4,12 +4,12 @@ namespace FeatureFlags.Flagsmith.WebAPI.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class TestController : ControllerBase
+public class IdentityFlagController : ControllerBase
 {
     private readonly IFeatureService _service;
     private readonly IJsonFeatureService _jsonFeatureService;
 
-    public TestController(IFeatureService service, IJsonFeatureService jsonFeatureService)
+    public IdentityFlagController(IFeatureService service, IJsonFeatureService jsonFeatureService)
     {
         _service = service;
         _jsonFeatureService = jsonFeatureService;
