@@ -1,3 +1,5 @@
+<Fluxor.Blazor.Web.StoreInitializer/>
+
 <CascadingAuthenticationState>
     <Router AppAssembly="@typeof(App).Assembly">
         <Found Context="routeData">
@@ -7,6 +9,7 @@
                     <MudText Typo="Typo.body1">Determining session state, please wait...</MudText>
                 </Authorizing>
                 <NotAuthorized>
+                    <LoginWatcher></LoginWatcher>
                     <MudText Typo="Typo.h4">Sorry</MudText>
                     <MudAlert Severity="Severity.Warning">You're not authorized to reach this page. You need to log in.</MudAlert>
                     <LoginButton></LoginButton>

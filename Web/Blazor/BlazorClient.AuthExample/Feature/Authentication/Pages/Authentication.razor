@@ -12,7 +12,10 @@
     <LoggingIn>
         <MudText Typo="Typo.h6">We're working on it</MudText>
         <MudProgressCircular Size="Size.Large" Indeterminate="true"></MudProgressCircular>
-    </LoggingIn>
+    </LoggingIn>  
+    <LogOutSucceeded>
+        <MudText Typo="Typo.h6">You're logged out</MudText>
+    </LogOutSucceeded>
     <LogOut>
         @{
             var authority = (string)Configuration["Auth0:Authority"];

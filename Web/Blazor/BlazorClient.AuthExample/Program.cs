@@ -17,6 +17,14 @@ builder.Logging.AddSerilog();
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 builder.Services.AddMudServices();
+builder.Services.AddFluxor(o =>
+{
+    o.ScanAssemblies(typeof(Program).Assembly);
+    o.UseReduxDevTools(rdt =>
+    {
+        rdt.Name = "Blazor Auth";
+    });
+});
 
 builder.Services.AddOidcAuthentication(options =>
 {

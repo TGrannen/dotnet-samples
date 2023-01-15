@@ -1,0 +1,35 @@
+﻿@inherits FluxorComponent
+@inject IDispatcher Dispatcher
+@inject ILogger<LoginWatcher> Logger
+
+@code{
+
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthenticationStateTask { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+        await RunTask();
+    }
+
+    async Task RunTask()
+    {
+        var authState = await AuthenticationStateTask;
+        var user = authState.User;
+        Logger.LogInformation("User: {@User}", user);
+        if (user.Identity?.IsAuthenticated ?? false)
+        {
+            Dispatcher.Dispatch(new LoggedIn
+            {
+                Name = user.Identity.Name ?? string.Empty,
+                Claims = user.Claims.ToArray()
+            });
+        }
+        else
+        {
+            Dispatcher.Dispatch(new LoggedOut());
+        }
+    }
+
+}
