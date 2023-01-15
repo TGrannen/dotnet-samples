@@ -20,11 +20,7 @@
         Logger.LogInformation("User: {@User}", user);
         if (user.Identity?.IsAuthenticated ?? false)
         {
-            Dispatcher.Dispatch(new LoggedIn
-            {
-                Name = user.Identity.Name ?? string.Empty,
-                Claims = user.Claims.ToArray()
-            });
+            Dispatcher.Dispatch(new LoggedIn { User = user,});
         }
         else
         {

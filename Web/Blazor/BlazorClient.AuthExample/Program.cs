@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using BlazorClient.AuthExample;
+using BlazorClient.AuthExample.Feature.Authentication.Services;
 using MudBlazor.Services;
 using Serilog;
 
@@ -31,5 +32,7 @@ builder.Services.AddOidcAuthentication(options =>
     builder.Configuration.Bind("Auth0", options.ProviderOptions);
     options.ProviderOptions.ResponseType = "code";
 });
+builder.Services.AddApiAuthorization().AddAccountClaimsPrincipalFactory<CustomUserFactory>();
+
 
 await builder.Build().RunAsync();
