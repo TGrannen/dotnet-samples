@@ -12,6 +12,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="7.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.2" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="7.0.2" />
     <PackageReference Include="MudBlazor" Version="6.1.7" />
     <PackageReference Include="Serilog.Extensions.Hosting" Version="5.0.1" />
     <PackageReference Include="Serilog.Settings.Configuration" Version="3.4.0" />
@@ -22,6 +23,7 @@
     <_ContentIncludedByDefault Remove="Shared\Components\LoginButton.razor" />
     <_ContentIncludedByDefault Remove="Shared\Components\LoginWatcher.razor" />
     <_ContentIncludedByDefault Remove="Shared\Components\UserImage.razor" />
+    <_ContentIncludedByDefault Remove="wwwroot\sample-data\weather.json" />
   </ItemGroup>
 
   <ItemGroup>

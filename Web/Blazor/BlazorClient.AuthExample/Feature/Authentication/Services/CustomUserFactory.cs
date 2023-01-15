@@ -28,8 +28,8 @@ public class CustomUserFactory : AccountClaimsPrincipalFactory<RemoteUserAccount
             if (value is JsonElement { ValueKind: JsonValueKind.Array } element)
             {
                 // Remove the Roles claim with an array value and create a separate one for each role.
-                claimsIdentity.RemoveClaim(claimsIdentity.FindFirst(prop.Key));
-                var claims = element.EnumerateArray().Select(x => new Claim(prop.Key, x.ToString()));
+                claimsIdentity.RemoveClaim(claimsIdentity.FindFirst(key));
+                var claims = element.EnumerateArray().Select(x => new Claim(key, x.ToString()));
                 claimsIdentity.AddClaims(claims);
             }
         }
