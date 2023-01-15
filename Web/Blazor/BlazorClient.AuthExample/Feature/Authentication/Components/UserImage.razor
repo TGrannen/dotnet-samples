@@ -3,7 +3,7 @@
 @inject NavigationManager NavigationManager
 @inject IState<AuthState> State
 
-@if (State.Value.IsAuthenticated)
+@if (State.Value.HasImage)
 {
     if (IsClickable)
     {
@@ -12,14 +12,14 @@
                 Height="@Height"
                 Class="rounded-circle"
                 Style="cursor: pointer"
-                Src="@GetImageSource()"
+                Src="@State.Value.ImageSrc"
                 @onclick="GoToProfile">
             </MudImage>
         </MudTooltip>
     }
     else
     {
-        <MudImage Height="@Height" Class="rounded-circle" Src="@GetImageSource()"></MudImage>
+        <MudImage Height="@Height" Class="rounded-circle" Src="@State.Value.ImageSrc"></MudImage>
     }
 }
 
@@ -30,11 +30,7 @@
 
     [Parameter]
     public bool IsClickable { get; set; } = true;
-
-    string? GetImageSource()
-    {
-        return State.Value.Claims.FirstOrDefault(x => x.Type.ToLower().Equals("picture"))?.Value;
-    }
+    
 
     private void GoToProfile()
     {

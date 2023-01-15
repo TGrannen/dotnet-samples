@@ -7,11 +7,14 @@ public class SessionStateReducers
     [ReducerMethod]
     public static AuthState Action1(AuthState state, LoggedIn action)
     {
+        var picture = action.Claims.FirstOrDefault(x => x.Type.ToLower().Equals("picture"))?.Value ?? string.Empty;
         return state with
         {
             IsAuthenticated = true,
             Name = action.Name,
-            Claims = action.Claims
+            Claims = action.Claims,
+            HasImage = !string.IsNullOrEmpty(picture),
+            ImageSrc = picture
         };
     }
 
@@ -22,7 +25,9 @@ public class SessionStateReducers
         {
             IsAuthenticated = false,
             Name = string.Empty,
-            Claims = Array.Empty<Claim>()
+            Claims = Array.Empty<Claim>(),
+            HasImage = false,
+            ImageSrc = string.Empty
         };
     }
 }

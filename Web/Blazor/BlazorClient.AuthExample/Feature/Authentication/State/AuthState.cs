@@ -7,6 +7,8 @@ public record AuthState
     public bool IsAuthenticated { get; init; }
     public string Name { get; init; }
     public Claim[] Claims { get; init; }
+    public bool HasImage { get; init; }
+    public string ImageSrc { get; init; }
 }
 
 public class AuthStateFeature : Feature<AuthState>
