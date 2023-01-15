@@ -1,0 +1,53 @@
+﻿@page "/Profile"
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@inherits FluxorComponent
+@inject NavigationManager Navigation
+@inject IState<AuthState> State
+@inject ILogger<Profile> Logger
+
+<PageTitle>Profile</PageTitle>
+
+<MudStack Row="true">
+    <MudText Typo="Typo.h3" GutterBottom="true">Profile</MudText>
+    <UserImage IsClickable="false" Height="60"></UserImage>
+    <MudButton Color="Color.Secondary" OnClick="BeginSignOut">Log out</MudButton>
+</MudStack>
+<MudStack Row="true" Class="my-4">
+    <MudTextField @bind-Value="TextValue" Label="Role" Variant="Variant.Text"></MudTextField>
+    <MudButton Color="Color.Secondary" OnClick="HasRole">Has Role</MudButton>
+</MudStack>
+
+
+<MudSimpleTable Style="overflow-x: auto;">
+    <thead>
+    <tr>
+        <th>Type</th>
+        <th>Value</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var claim in State.Value.Claims)
+    {
+        <tr>
+            <td>@claim.Type</td>
+            <td>@claim.Value</td>
+        </tr>
+    }
+    </tbody>
+</MudSimpleTable>
+
+@code {
+    public string TextValue { get; set; } = "Admin";
+
+    private void BeginSignOut(MouseEventArgs args)
+    {
+        Navigation.NavigateToLogout("authentication/logout");
+    }
+
+    private void HasRole()
+    {
+        var user = State.Value.User;
+        Logger.LogInformation("Has Role: {Role}:{Value}", TextValue, user!.IsInRole(TextValue));
+    }
+
+}

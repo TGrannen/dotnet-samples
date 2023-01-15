@@ -1,6 +1,7 @@
 # Blazor
 
-This project showcases all the flavors of Blazor and some helpful nuget packages. As of now, the `BlazoerServer` project is the only one that has any significant changes to the default project. 
+This project showcases all the flavors of Blazor and some helpful nuget packages. As of now, the `BlazoerServer` project
+is the only one that has any significant changes to the default project.
 
 The `Server` project shows off the following:
 
@@ -19,3 +20,9 @@ The `Server` project shows off the following:
 
 * [Awesome Blazor](https://github.com/AdrienTorris/awesome-blazor) - A collection of awesome Blazor resources.
 * [MudBlazor.com](https://mudblazor.com/)
+
+## Authentication
+
+### Auth0
+
+https://auth0.com/blog/securing-blazor-webassembly-apps/

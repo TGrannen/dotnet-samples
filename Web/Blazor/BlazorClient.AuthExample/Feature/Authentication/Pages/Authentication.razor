@@ -1,0 +1,34 @@
+﻿@* Client/Pages/Authentication.razor *@
+
+@page "/authentication/{action}"
+@attribute [AllowAnonymous]
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Microsoft.Extensions.Configuration
+
+@inject NavigationManager Navigation
+@inject IConfiguration Configuration
+
+<RemoteAuthenticatorView Action="@Action">
+    <LoggingIn>
+        <MudText Typo="Typo.h6">We're working on it</MudText>
+        <MudProgressCircular Size="Size.Large" Indeterminate="true"></MudProgressCircular>
+    </LoggingIn>  
+    <LogOutSucceeded>
+        <MudText Typo="Typo.h6">You're logged out</MudText>
+    </LogOutSucceeded>
+    <LogOut>
+        @{
+            var authority = (string)Configuration["Auth0:Authority"];
+            var clientId = (string)Configuration["Auth0:ClientId"];
+
+            Navigation.NavigateTo($"{authority}/v2/logout?client_id={clientId}");
+        }
+    </LogOut>
+</RemoteAuthenticatorView>
+
+@code{
+
+    [Parameter]
+    public string Action { get; set; }
+
+}
