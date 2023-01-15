@@ -1,6 +1,7 @@
 ﻿@* Client/Pages/Authentication.razor *@
 
 @page "/authentication/{action}"
+@attribute [AllowAnonymous]
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using Microsoft.Extensions.Configuration
 
@@ -8,6 +9,10 @@
 @inject IConfiguration Configuration
 
 <RemoteAuthenticatorView Action="@Action">
+    <LoggingIn>
+        <MudText Typo="Typo.h6">We're working on it</MudText>
+        <MudProgressCircular Size="Size.Large" Indeterminate="true"></MudProgressCircular>
+    </LoggingIn>
     <LogOut>
         @{
             var authority = (string)Configuration["Auth0:Authority"];
@@ -19,5 +24,8 @@
 </RemoteAuthenticatorView>
 
 @code{
-    [Parameter] public string Action { get; set; }
+
+    [Parameter]
+    public string Action { get; set; }
+
 }

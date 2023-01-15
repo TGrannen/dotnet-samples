@@ -1,0 +1,43 @@
+﻿@using System.Security.Claims
+@inject NavigationManager NavigationManager
+
+<AuthorizeView>
+    <Authorized>
+        @if (IsClickable)
+        {
+            <MudTooltip Text="Profile">
+                <MudImage
+                    Height="@Height"
+                    Class="rounded-circle"
+                    Style="cursor: pointer"
+                    Src="@GetImageSource(context.User.Claims)"
+                    @onclick="GoToProfile">
+                </MudImage>
+            </MudTooltip>
+        }
+        else
+        {
+            <MudImage Height="@Height" Class="rounded-circle" Src="@GetImageSource(context.User.Claims)"></MudImage>
+        }
+    </Authorized>
+</AuthorizeView>
+
+@code{
+
+    [Parameter]
+    public int Height { get; set; } = 40;
+
+    [Parameter]
+    public bool IsClickable { get; set; } = true;
+
+    string? GetImageSource(IEnumerable<Claim> claims)
+    {
+        return claims.FirstOrDefault(x => x.Type.ToLower().Equals("picture"))?.Value;
+    }
+
+    private void GoToProfile()
+    {
+        NavigationManager.NavigateTo("/profile");
+    }
+
+}
