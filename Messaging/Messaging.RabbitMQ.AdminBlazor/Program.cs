@@ -18,6 +18,7 @@ builder.Services.AddMassTransit(x =>
 {
     // x.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter("dev", false));
 
+    x.AddInMemoryInboxOutbox();
     x.UsingRabbitMq((context, cfg) =>
     {
         cfg.Host("localhost", "/", h =>

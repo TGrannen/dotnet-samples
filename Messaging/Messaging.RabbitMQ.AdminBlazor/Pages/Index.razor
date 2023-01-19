@@ -11,6 +11,7 @@
     <MudSwitch @bind-Checked="@Config.ShouldPublish" Color="Color.Primary" Label="Run continual message sending"/>
     <MudNumericField @bind-Value="@Config.RateSeconds" Label="Repeat Rate (sec)" Variant="Variant.Text" Min="0" Max="60"/>
     <MudNumericField @bind-Value="@Config.DelayMilliSeconds" Label="Consumer Delay (millisec)" Variant="Variant.Text" Min="0" Max="60"/>
+    <MudCheckBox @bind-Checked="@Config.Fail" Label="Fail Consumption"></MudCheckBox>
 </MudStack>
 
 <MudCheckBox @bind-Checked="@ToFail" Label="Fail Consumption"></MudCheckBox>

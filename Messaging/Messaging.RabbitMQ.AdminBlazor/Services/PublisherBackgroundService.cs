@@ -3,8 +3,9 @@
 public class PublisherBackgroundServiceConfig
 {
     public bool ShouldPublish { get; set; } = false;
+    public bool Fail { get; set; } = false;
     public int RateSeconds { get; set; } = 2;
-    public int DelayMilliSeconds { get; set; } = 2000;
+    public int DelayMilliSeconds { get; set; } = 500;
 }
 
 public class PublisherBackgroundService : BackgroundService
@@ -30,7 +31,8 @@ public class PublisherBackgroundService : BackgroundService
                 {
                     MyId = Guid.NewGuid(),
                     Time = DateTime.Now,
-                    Delay = TimeSpan.FromMilliseconds(_config.DelayMilliSeconds)
+                    Delay = TimeSpan.FromMilliseconds(_config.DelayMilliSeconds),
+                    ToFail = _config.Fail
                 };
                 _logger.LogInformation("Publishing message {@Message}", message);
                 await _bus.Publish(message, stoppingToken);
