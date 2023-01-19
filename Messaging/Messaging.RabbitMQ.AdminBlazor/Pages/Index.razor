@@ -32,7 +32,7 @@
                 Delay = TimeSpan.FromMilliseconds(Config.DelayMilliSeconds)
             };
             Logger.LogInformation("Publishing message from click {@Message}", message);
-            await Publisher.InvokeAsync(message, CancellationToken.None);
+            await Publisher.PublishAsync(message);
             Snackbar.Add("Message sent", Severity.Success, options =>
             {
                 options.HideTransitionDuration = 300;

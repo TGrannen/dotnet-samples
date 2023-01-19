@@ -35,7 +35,7 @@ public class PublisherBackgroundService : BackgroundService
                     ToFail = _config.Fail
                 };
                 _logger.LogInformation("Publishing message {@Message}", message);
-                await _publisher.InvokeAsync(message, stoppingToken);
+                await _publisher.PublishAsync(message);
             }
 
             await Task.Delay(TimeSpan.FromSeconds(_config.RateSeconds), stoppingToken);

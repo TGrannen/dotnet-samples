@@ -1,6 +1,8 @@
 using Messaging.RabbitMQ.AdminBlazor.Services;
 using MudBlazor.Services;
 using Serilog;
+using Wolverine;
+using Wolverine.RabbitMQ;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,24 +16,40 @@ builder.Services.AddMudServices();
 builder.Services.AddSingleton<PublisherBackgroundServiceConfig>();
 builder.Services.AddHostedService<PublisherBackgroundService>();
 
-builder.Services.AddTransient<IPublisher, MassTransitPublisher>();
-
-builder.Services.AddMassTransit(x =>
+var rabbitHost = builder.Configuration.GetValue<string>("RabbitMQ:Host");
+bool useWolverine = builder.Configuration.GetValue("UseWolverine", false);
+if (useWolverine)
 {
-    // x.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter("dev", false));
-
-    x.AddInMemoryInboxOutbox();
-    x.UsingRabbitMq((context, cfg) =>
+    builder.Services.AddTransient<IPublisher, WolverinePublisher>();
+    builder.Host.UseWolverine(opts =>
     {
-        cfg.Host(builder.Configuration.GetValue<string>("RabbitMQ:Host"), "/", h =>
-        {
-            h.Username("guest");
-            h.Password("guest");
-        });
+        opts.PublishMessage<TestMessage>().ToRabbitExchange("test-message");
+        
+        // Configure Rabbit MQ connection properties programmatically
+        // against a ConnectionFactory
+        opts.UseRabbitMq(rabbit =>
+            {
+                // Using a local installation of Rabbit MQ
+                // via a running Docker image
+                rabbit.HostName = rabbitHost;
+            })
+            // Directs Wolverine to build any declared queues, exchanges, or
+            // bindings with the Rabbit MQ broker as part of bootstrapping time
+            .AutoProvision()
+            .UseConventionalRouting(x =>
+            {
+                // Customize the naming convention for the outgoing exchanges
+                x.ExchangeNameForSending(type => type.Name + "Exchange");
 
-        cfg.ConfigureEndpoints(context);
+                // Customize the naming convention for incoming queues
+                x.QueueNameForListener(type => type.FullName.Replace('.', '-'));
+            });
     });
-});
+}
+else
+{
+    SetupMassTransit(builder, rabbitHost);
+}
 
 var app = builder.Build();
 
@@ -53,3 +71,25 @@ app.MapFallbackToPage("/_Host");
 app.Run();
 
 await Log.CloseAndFlushAsync();
+
+void SetupMassTransit(WebApplicationBuilder webApplicationBuilder, string? rabbitHost)
+{
+    webApplicationBuilder.Services.AddTransient<IPublisher, MassTransitPublisher>();
+
+    webApplicationBuilder.Services.AddMassTransit(x =>
+    {
+        // x.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter("dev", false));
+
+        x.AddInMemoryInboxOutbox();
+        x.UsingRabbitMq((context, cfg) =>
+        {
+            cfg.Host(rabbitHost, "/", h =>
+            {
+                h.Username("guest");
+                h.Password("guest");
+            });
+
+            cfg.ConfigureEndpoints(context);
+        });
+    });
+}
