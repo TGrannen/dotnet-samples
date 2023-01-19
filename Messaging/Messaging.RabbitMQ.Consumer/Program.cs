@@ -2,9 +2,9 @@
 using MassTransit;
 using Messaging.RabbitMQ.AdminBlazorContracts.Models;
 using Messaging.RabbitMQ.Consumer.Consumers;
-using Oakton.Resources;
 using Serilog;
 using Wolverine;
+using Wolverine.ErrorHandling;
 using Wolverine.RabbitMQ;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,7 +18,13 @@ if (useWolverine)
     builder.Host.UseWolverine(opts =>
     {
         opts.ServiceName = "Subscriber1";
-
+        // opts.Handlers.OnException<Exception>().MoveToErrorQueue();
+        
+        // The failing message is requeued for later processing, then
+        // the specific listener is paused for 10 minutes
+        opts.Handlers.OnException<Exception>() //SystemIsCompletelyUnusableException
+            .Requeue().AndPauseProcessing(20.Seconds());
+        
         opts.UseRabbitMq(rabbit => { rabbit.HostName = rabbitHost; })
             .DeclareExchange("test-message", exchange =>
             {
