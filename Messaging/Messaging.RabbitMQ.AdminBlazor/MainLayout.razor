@@ -1,0 +1,18 @@
+﻿@inherits LayoutComponentBase
+
+<MudThemeProvider/>
+<MudDialogProvider/>
+<MudSnackbarProvider/>
+
+<MudLayout>
+    <MudAppBar>
+        <MudText Typo="Typo.h5" Class="ml-3"> RabbitMQ & MassTransit Testing</MudText>
+        <MudSpacer/>
+        <MudIconButton Icon="@Icons.Custom.Brands.MudBlazor" Color="Color.Inherit" Edge="Edge.End" Href="https://mudblazor.com/" Target="_blank"/>
+    </MudAppBar>
+    <MudMainContent Class="mx-2 my-4">
+        <MudContainer MaxWidth="MaxWidth.ExtraLarge">
+            @Body
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>

@@ -1,0 +1,68 @@
+version: "3.2"
+services:
+  rabbitmq:
+    restart: always
+    image: masstransit/rabbitmq
+    container_name: 'rabbitmq'
+    ports:
+      - 5672:5672
+      - 15672:15672
+  seq:
+    container_name: seq
+    restart: always
+    environment:
+      - ACCEPT_EULA=Y
+    image: datalust/seq
+    ports:
+      - "5555:80"
+      - "5341:5341"
+    volumes:
+      - seq:/data
+  db:
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - '5432:5432'
+    volumes:
+      - db:/var/lib/postgresql/data
+  
+#  producer:
+#    container_name: producer
+#    build:
+#      dockerfile: ./Messaging.RabbitMQ.AdminBlazor/Dockerfile
+#      context: ../
+#    ports:
+#      - '8080:80'
+#    environment:
+#      - Serilog__WriteTo__Seq__Args__serverUrl=http://seq:80
+#      - Serilog__Properties__ApplicationName=RabbitMQ-Container-AdminBlazor
+#      - RabbitMQ__Host=rabbitmq
+#
+#  consumer1:
+#    container_name: consumer-1
+#    build:
+#      dockerfile: ./Messaging.RabbitMQ.Consumer/Dockerfile
+#      context: ../
+#    environment:
+#      - Serilog__WriteTo__Seq__Args__serverUrl=http://seq:80
+#      - Serilog__Properties__ApplicationName=RabbitMQ-Container-Consumer1
+#      - RabbitMQ__Host=rabbitmq
+#
+#  consumer2:
+#    container_name: consumer-2
+#    build:
+#      dockerfile: ./Messaging.RabbitMQ.Consumer/Dockerfile
+#      context: ../
+#    environment:
+#      - Serilog__WriteTo__Seq__Args__serverUrl=http://seq:80
+#      - Serilog__Properties__ApplicationName=RabbitMQ-Container-Consumer2
+#      - RabbitMQ__Host=rabbitmq
+    
+volumes:
+  db:
+    driver: local  
+  seq:
+    driver: local

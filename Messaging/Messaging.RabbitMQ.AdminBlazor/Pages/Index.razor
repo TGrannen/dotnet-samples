@@ -1,0 +1,50 @@
+﻿@page "/"
+@using Messaging.RabbitMQ.AdminBlazor.Services
+@inject PublisherBackgroundServiceConfig Config
+@inject ISnackbar Snackbar
+@inject ILogger<Index> Logger
+@inject IPublisher Publisher
+
+<MudText Typo="Typo.h4">Hello, world!</MudText>
+
+<MudStack Row="true">
+    <MudSwitch @bind-Checked="@Config.ShouldPublish" Color="Color.Primary" Label="Run continual message sending"/>
+    <MudNumericField @bind-Value="@Config.RateSeconds" Label="Repeat Rate (sec)" Variant="Variant.Text" Min="0" Max="60"/>
+    <MudNumericField @bind-Value="@Config.DelayMilliSeconds" Label="Consumer Delay (millisec)" Variant="Variant.Text" Min="0" Max="60"/>
+    <MudCheckBox @bind-Checked="@Config.Fail" Label="Fail Consumption"></MudCheckBox>
+</MudStack>
+
+<MudCheckBox @bind-Checked="@ToFail" Label="Fail Consumption"></MudCheckBox>
+<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SendMessage" Class="mt-4">Send Message</MudButton>
+
+@code {
+    bool ToFail { get; set; } = false;
+
+    private async Task SendMessage()
+    {
+        try
+        {
+            var message = new TestMessage
+            {
+                MyId = Guid.NewGuid(),
+                Time = DateTime.Now,
+                ToFail = ToFail,
+                Delay = TimeSpan.FromMilliseconds(Config.DelayMilliSeconds)
+            };
+            Logger.LogInformation("Publishing message from click {@Message}", message);
+            await Publisher.PublishAsync(message);
+            Snackbar.Add("Message sent", Severity.Success, options =>
+            {
+                options.HideTransitionDuration = 300;
+                options.ShowTransitionDuration = 300;
+                options.VisibleStateDuration = 1000;
+            });
+        }
+        catch (Exception e)
+        {
+            Logger.LogError(e, "Failed to publishing message from click");
+            Snackbar.Add("Message sent", Severity.Error);
+        }
+    }
+
+}
