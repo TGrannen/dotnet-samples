@@ -8,11 +8,13 @@ Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configurat
 builder.Host.UseSerilog();
 builder.Services.AddMassTransit(x =>
 {
-    // x.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter("dev", false));
     x.AddConsumer<TestMessageConsumer>();
 
     x.UsingRabbitMq((context, cfg) =>
     {
+        // cfg.UseMessageRetry(r => r.Immediate(5));
+        cfg.UseMessageRetry(r => r.Exponential(3, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(10), TimeSpan.FromSeconds(2)));
+
         cfg.Host("localhost", "/", h =>
         {
             h.Username("guest");

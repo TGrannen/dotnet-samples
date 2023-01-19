@@ -4,6 +4,7 @@ public class PublisherBackgroundServiceConfig
 {
     public bool ShouldPublish { get; set; } = false;
     public int RateSeconds { get; set; } = 2;
+    public int DelayMilliSeconds { get; set; } = 2000;
 }
 
 public class PublisherBackgroundService : BackgroundService
@@ -25,7 +26,12 @@ public class PublisherBackgroundService : BackgroundService
         {
             if (_config.ShouldPublish)
             {
-                var message = new TestMessage { MyId = Guid.NewGuid(), Time = DateTime.Now };
+                var message = new TestMessage
+                {
+                    MyId = Guid.NewGuid(),
+                    Time = DateTime.Now,
+                    Delay = TimeSpan.FromMilliseconds(_config.DelayMilliSeconds)
+                };
                 _logger.LogInformation("Publishing message {@Message}", message);
                 await _bus.Publish(message, stoppingToken);
             }
