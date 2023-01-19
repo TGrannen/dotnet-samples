@@ -21,7 +21,7 @@ builder.Services.AddMassTransit(x =>
             .SetTripThreshold(0.01)
             .SetRestartTimeout(s: 10));
         
-        cfg.Host("localhost", "/", h =>
+        cfg.Host(builder.Configuration.GetValue<string>("RabbitMQ:Host"), "/", h =>
         {
             h.Username("guest");
             h.Password("guest");

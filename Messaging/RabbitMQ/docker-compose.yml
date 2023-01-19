@@ -28,6 +28,39 @@ services:
       - '5432:5432'
     volumes:
       - db:/var/lib/postgresql/data
+  
+  producer:
+    container_name: producer
+    build:
+      dockerfile: ./Messaging.RabbitMQ.AdminBlazor/Dockerfile
+      context: ../
+    ports:
+      - '8080:80'
+    environment:
+      - Serilog__WriteTo__Seq__Args__serverUrl=http://seq:80
+      - Serilog__Properties__ApplicationName=RabbitMQ-Container-AdminBlazor
+      - RabbitMQ__Host=rabbitmq
+
+  consumer1:
+    container_name: consumer-1
+    build:
+      dockerfile: ./Messaging.RabbitMQ.Consumer/Dockerfile
+      context: ../
+    environment:
+      - Serilog__WriteTo__Seq__Args__serverUrl=http://seq:80
+      - Serilog__Properties__ApplicationName=RabbitMQ-Container-Consumer1
+      - RabbitMQ__Host=rabbitmq
+
+  consumer2:
+    container_name: consumer-2
+    build:
+      dockerfile: ./Messaging.RabbitMQ.Consumer/Dockerfile
+      context: ../
+    environment:
+      - Serilog__WriteTo__Seq__Args__serverUrl=http://seq:80
+      - Serilog__Properties__ApplicationName=RabbitMQ-Container-Consumer2
+      - RabbitMQ__Host=rabbitmq
+    
 volumes:
   db:
     driver: local  

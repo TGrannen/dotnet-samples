@@ -21,7 +21,7 @@ builder.Services.AddMassTransit(x =>
     x.AddInMemoryInboxOutbox();
     x.UsingRabbitMq((context, cfg) =>
     {
-        cfg.Host("localhost", "/", h =>
+        cfg.Host(builder.Configuration.GetValue<string>("RabbitMQ:Host"), "/", h =>
         {
             h.Username("guest");
             h.Password("guest");
