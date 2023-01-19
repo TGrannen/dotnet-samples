@@ -3,7 +3,7 @@
 @inject PublisherBackgroundServiceConfig Config
 @inject ISnackbar Snackbar
 @inject ILogger<Index> Logger
-@inject IBus Bus
+@inject IPublisher Publisher
 
 <MudText Typo="Typo.h4">Hello, world!</MudText>
 
@@ -32,7 +32,7 @@
                 Delay = TimeSpan.FromMilliseconds(Config.DelayMilliSeconds)
             };
             Logger.LogInformation("Publishing message from click {@Message}", message);
-            await Bus.Publish(message);
+            await Publisher.InvokeAsync(message, CancellationToken.None);
             Snackbar.Add("Message sent", Severity.Success, options =>
             {
                 options.HideTransitionDuration = 300;

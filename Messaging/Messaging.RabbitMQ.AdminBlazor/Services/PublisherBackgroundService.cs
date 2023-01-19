@@ -10,13 +10,13 @@ public class PublisherBackgroundServiceConfig
 
 public class PublisherBackgroundService : BackgroundService
 {
-    private readonly IBus _bus;
+    private readonly IPublisher _publisher;
     private readonly ILogger<PublisherBackgroundService> _logger;
     private readonly PublisherBackgroundServiceConfig _config;
 
-    public PublisherBackgroundService(IBus bus, ILogger<PublisherBackgroundService> logger, PublisherBackgroundServiceConfig config)
+    public PublisherBackgroundService(IPublisher publisher, ILogger<PublisherBackgroundService> logger, PublisherBackgroundServiceConfig config)
     {
-        _bus = bus;
+        _publisher = publisher;
         _logger = logger;
         _config = config;
     }
@@ -35,7 +35,7 @@ public class PublisherBackgroundService : BackgroundService
                     ToFail = _config.Fail
                 };
                 _logger.LogInformation("Publishing message {@Message}", message);
-                await _bus.Publish(message, stoppingToken);
+                await _publisher.InvokeAsync(message, stoppingToken);
             }
 
             await Task.Delay(TimeSpan.FromSeconds(_config.RateSeconds), stoppingToken);

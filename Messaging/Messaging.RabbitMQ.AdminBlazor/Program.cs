@@ -14,6 +14,8 @@ builder.Services.AddMudServices();
 builder.Services.AddSingleton<PublisherBackgroundServiceConfig>();
 builder.Services.AddHostedService<PublisherBackgroundService>();
 
+builder.Services.AddTransient<IPublisher, MassTransitPublisher>();
+
 builder.Services.AddMassTransit(x =>
 {
     // x.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter("dev", false));
