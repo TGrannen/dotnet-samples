@@ -8,7 +8,8 @@ Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configurat
 builder.Host.UseSerilog();
 builder.Services.AddMassTransit(x =>
 {
-    x.AddConsumer<OrderMessageConsumer>();
+    // x.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter("dev", false));
+    x.AddConsumer<TestMessageConsumer>();
 
     x.UsingRabbitMq((context, cfg) =>
     {

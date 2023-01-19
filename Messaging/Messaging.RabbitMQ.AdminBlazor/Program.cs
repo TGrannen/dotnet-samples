@@ -1,4 +1,4 @@
-using MassTransit;
+using Messaging.RabbitMQ.AdminBlazor.Services;
 using MudBlazor.Services;
 using Serilog;
 
@@ -11,9 +11,12 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddMudServices();
 
+builder.Services.AddSingleton<PublisherBackgroundServiceConfig>();
+builder.Services.AddHostedService<PublisherBackgroundService>();
+
 builder.Services.AddMassTransit(x =>
 {
-    // elided...
+    // x.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter("dev", false));
 
     x.UsingRabbitMq((context, cfg) =>
     {

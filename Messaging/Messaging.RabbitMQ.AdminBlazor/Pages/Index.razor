@@ -1,3 +1,40 @@
 ﻿@page "/"
+@using Messaging.RabbitMQ.AdminBlazor.Services
+@inject PublisherBackgroundServiceConfig Config
+@inject ISnackbar Snackbar
+@inject ILogger<Index> Logger
+@inject IBus Bus
 
 <MudText Typo="Typo.h4">Hello, world!</MudText>
+
+<MudStack Row="true">
+    <MudSwitch @bind-Checked="@Config.ShouldPublish" Color="Color.Primary" Label="Run continual message sending"/>
+    <MudNumericField @bind-Value="@Config.RateSeconds" Label="Repeat Rate (sec)" Variant="Variant.Text" Min="0" Max="60"/>
+</MudStack>
+
+<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SendMessage" Class="mt-4">Send Message</MudButton>
+
+@code {
+
+    private async Task SendMessage()
+    {
+        try
+        {
+            var message = new TestMessage { MyId = Guid.NewGuid(), Time = DateTime.Now };
+            Logger.LogInformation("Publishing message from click {@Message}", message);
+            await Bus.Publish(message);
+            Snackbar.Add("Message sent", Severity.Success, options =>
+            {
+                options.HideTransitionDuration = 300;
+                options.ShowTransitionDuration = 300;
+                options.VisibleStateDuration = 1000;
+            });
+        }
+        catch (Exception e)
+        {
+            Logger.LogError(e, "Failed to publishing message from click");
+            Snackbar.Add("Message sent", Severity.Error);
+        }
+    }
+
+}
