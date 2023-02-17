@@ -1,35 +1,29 @@
 using Serilog;
 using Configuration.Web.Extensions;
 using Configuration.Web.Models;
-using Configuration.Web.Providers.CustomProvider;
-using Microsoft.Extensions.Options;
-using Microsoft.OpenApi.Models;
+using Configuration.Web.Providers;
+using Microsoft.AspNetCore.Mvc;
+using Serilog.Events;
 
 Log.Logger = new LoggerConfiguration()
     .Enrich.FromLogContext()
+    .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
     .WriteTo.Console()
     .CreateLogger();
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog();
-builder.Configuration.AddEntityConfiguration();
 
 builder.Services.AddControllers();
-builder.Services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo { Title = "Configuration.Web", Version = "v1" }); });
 
-builder.Services.Configure<Settings1>(builder.Configuration.GetSection("Settings1"));
-builder.Services.AddScoped<ISettings1>(provider =>
-{
-    var config = provider.GetService<IConfiguration>();
-    var shouldUseInitialValue = config.GetValue<bool>("InjectedInterfaceShouldUsingInitialValue");
-    return shouldUseInitialValue
-        ? provider.GetService<IOptions<Settings1>>()?.Value
-        : provider.GetService<IOptionsSnapshot<Settings1>>()?.Value;
-});
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
-builder.Services.Configure<ISettings2, Settings2>(builder.Configuration.GetSection("Settings2"));
-builder.Services.Configure<Settings3>(builder.Configuration.GetSection("Settings3"));
-builder.Services.AddScoped<ISettings3>(provider => provider.GetService<IOptionsSnapshot<Settings3>>()?.Value);
+builder.Services.AddValidatorsFromAssemblyContaining(typeof(Program), ServiceLifetime.Transient);
+builder.Services.ConfigureValidated<Settings1>(builder.Configuration.GetSection("Settings1"));
+builder.Services.ConfigureValidated<Settings2>(builder.Configuration.GetSection("Settings2"));
+builder.Services.ConfigureValidated<Settings3>(builder.Configuration.GetSection("Settings3"));
+builder.Services.AddCustomRuntimeConfiguration(builder.Configuration);
 
 var app = builder.Build();
 app.UseSerilogRequestLogging();
@@ -38,7 +32,34 @@ app.UseRouting();
 app.UseSwagger();
 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Configuration.Web v1"));
 
-app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+app.MapGet("/Settings",
+    (IConfiguration configuration,
+            IOptions<Settings1> options,
+            IOptionsSnapshot<Settings1> optionsSnapshot,
+            IOptions<Settings2> options2,
+            IOptionsSnapshot<Settings3> optionsSnapshot3) =>
+        Results.Ok(new
+        {
+            Settings1 = new
+            {
+                Options = options.Value,
+                Snapshot = optionsSnapshot.Value
+            },
+            Settings2 = options2.Value,
+            Settings3 = optionsSnapshot3.Value,
+            Value = configuration.GetValue<string>("MySetting"),
+            FileOverrideValue = configuration.GetValue<string>("MySetting2"),
+            DeepValue = configuration.GetValue<string>("MySettingStructure:DeepValue"),
+            EnvironmentValue = configuration.GetValue<string>("MySetting3:EnvironmentVar"),
+            CommandLineValue = configuration.GetValue<string>("MySetting4"),
+            SecretValue = configuration.GetValue<string>("MySetting5"),
+        }));
+
+app.MapPost("/Settings", ([FromQuery] string value, ICustomRuntimeConfiguration manipulator) =>
+{
+    manipulator.SetValue("Settings3:DynamicValue",value);
+    return Results.Ok();
+});
 
 try
 {
