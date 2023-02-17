@@ -1,4 +1,6 @@
-﻿namespace Configuration.Web.Extensions;
+﻿using FluentValidation.Results;
+
+namespace Configuration.Web.Extensions;
 
 public class FluentValidationOptions<T> : IValidateOptions<T> where T : class
 {
@@ -13,13 +15,19 @@ public class FluentValidationOptions<T> : IValidateOptions<T> where T : class
 
     public ValidateOptionsResult Validate(string name, T options)
     {
+        // Name mismatches should be skipped
         // Null name is used to configure all named options.
         if (_name != null && name != _name)
         {
             return ValidateOptionsResult.Skip;
         }
 
-        var results = _validators.Select(x => x.Validate(options)).ToArray();
+        var results = _validators?.Select(x => x.Validate(options)).ToArray() ?? Array.Empty<ValidationResult>();
+        if (results.Length == 0)
+        {
+            return ValidateOptionsResult.Skip;
+        }
+
         if (results.All(x => x.IsValid))
         {
             return ValidateOptionsResult.Success;

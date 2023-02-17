@@ -3,7 +3,6 @@ using Configuration.Web.Extensions;
 using Configuration.Web.Models;
 using Configuration.Web.Providers.CustomProvider;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.OpenApi.Models;
 using Serilog.Events;
 
 Log.Logger = new LoggerConfiguration()
