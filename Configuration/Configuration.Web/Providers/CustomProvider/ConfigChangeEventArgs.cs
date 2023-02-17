@@ -2,5 +2,5 @@
 
 public class ConfigChangeEventArgs
 {
-    public string DynamicValue { get; set; }
+    public string DynamicValue { get; init; }
 }
