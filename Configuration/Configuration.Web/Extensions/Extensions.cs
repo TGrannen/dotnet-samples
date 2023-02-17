@@ -1,4 +1,4 @@
-﻿using Configuration.Web.Providers.CustomProvider;
+﻿using Configuration.Web.Providers;
 
 namespace Configuration.Web.Extensions;
 
@@ -19,9 +19,10 @@ public static class Extensions
         return optionsBuilder;
     }
 
-    public static IConfigurationBuilder AddCustomConfiguration(this IConfigurationBuilder builder)
+    public static IServiceCollection AddCustomRuntimeConfiguration(this IServiceCollection services, IConfigurationBuilder builder)
     {
-        builder.Add(new CustomConfigurationSource { ReloadOnChange = true });
-        return builder;
+        services.AddTransient<ICustomRuntimeConfiguration, CustomRuntimeConfiguration>();
+        builder.Add(new CustomRuntimeConfigurationSource());
+        return services;
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Configuration.Web.Providers.CustomProvider;
+﻿namespace Configuration.Web.Models;
 
 public class Settings3
 {

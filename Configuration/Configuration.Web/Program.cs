@@ -1,7 +1,7 @@
 using Serilog;
 using Configuration.Web.Extensions;
 using Configuration.Web.Models;
-using Configuration.Web.Providers.CustomProvider;
+using Configuration.Web.Providers;
 using Microsoft.AspNetCore.Mvc;
 using Serilog.Events;
 
@@ -13,7 +13,6 @@ Log.Logger = new LoggerConfiguration()
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog();
-builder.Configuration.AddCustomConfiguration();
 
 builder.Services.AddControllers();
 
@@ -24,6 +23,7 @@ builder.Services.AddValidatorsFromAssemblyContaining(typeof(Program), ServiceLif
 builder.Services.ConfigureValidated<Settings1>(builder.Configuration.GetSection("Settings1"));
 builder.Services.ConfigureValidated<Settings2>(builder.Configuration.GetSection("Settings2"));
 builder.Services.ConfigureValidated<Settings3>(builder.Configuration.GetSection("Settings3"));
+builder.Services.AddCustomRuntimeConfiguration(builder.Configuration);
 
 var app = builder.Build();
 app.UseSerilogRequestLogging();
@@ -55,9 +55,9 @@ app.MapGet("/Settings",
             SecretValue = configuration.GetValue<string>("MySetting5"),
         }));
 
-app.MapPost("/Settings", ([FromQuery] string value) =>
+app.MapPost("/Settings", ([FromQuery] string value, ICustomRuntimeConfiguration manipulator) =>
 {
-    CustomConfigChangeObserverSingleton.Instance.OnChanged(new ConfigChangeEventArgs { DynamicValue = value });
+    manipulator.SetValue("Settings3:DynamicValue",value);
     return Results.Ok();
 });
 
