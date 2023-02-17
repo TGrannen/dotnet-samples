@@ -8,7 +8,6 @@ public static class Extensions
         bool onStart = true) where TC : class
     {
         var optionsBuilder = services.AddOptions<TC>().Bind(configuration);
-
         optionsBuilder.Services.AddTransient<IValidateOptions<TC>>(sp =>
             new FluentValidationOptions<TC>(optionsBuilder.Name, sp.GetServices<IValidator<TC>>()));
 

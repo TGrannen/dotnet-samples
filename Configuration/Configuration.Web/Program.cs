@@ -2,6 +2,7 @@ using Serilog;
 using Configuration.Web.Extensions;
 using Configuration.Web.Models;
 using Configuration.Web.Providers.CustomProvider;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 using Serilog.Events;
 
@@ -16,7 +17,9 @@ builder.Host.UseSerilog();
 builder.Configuration.AddCustomConfiguration();
 
 builder.Services.AddControllers();
-builder.Services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo { Title = "Configuration.Web", Version = "v1" }); });
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 builder.Services.AddValidatorsFromAssemblyContaining(typeof(Program), ServiceLifetime.Transient);
 builder.Services.ConfigureValidated<Settings1>(builder.Configuration.GetSection("Settings1"));
@@ -30,7 +33,34 @@ app.UseRouting();
 app.UseSwagger();
 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Configuration.Web v1"));
 
-app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+app.MapGet("/Settings",
+    (IConfiguration configuration,
+            IOptions<Settings1> options,
+            IOptionsSnapshot<Settings1> optionsSnapshot,
+            IOptions<Settings2> options2,
+            IOptionsSnapshot<Settings3> optionsSnapshot3) =>
+        Results.Ok(new
+        {
+            Settings1 = new
+            {
+                Options = options.Value,
+                Snapshot = optionsSnapshot.Value
+            },
+            Settings2 = options2.Value,
+            Settings3 = optionsSnapshot3.Value,
+            Value = configuration.GetValue<string>("MySetting"),
+            FileOverrideValue = configuration.GetValue<string>("MySetting2"),
+            DeepValue = configuration.GetValue<string>("MySettingStructure:DeepValue"),
+            EnvironmentValue = configuration.GetValue<string>("MySetting3:EnvironmentVar"),
+            CommandLineValue = configuration.GetValue<string>("MySetting4"),
+            SecretValue = configuration.GetValue<string>("MySetting5"),
+        }));
+
+app.MapPost("/Settings", ([FromQuery] string value) =>
+{
+    CustomConfigChangeObserverSingleton.Instance.OnChanged(new ConfigChangeEventArgs { DynamicValue = value });
+    return Results.Ok();
+});
 
 try
 {
