@@ -4,6 +4,10 @@
       "commandName": "Project",
       "commandLineArgs": "size"
     },
+    "ConsoleApp-List": {
+      "commandName": "Project",
+      "commandLineArgs": "list"
+    },
     "ConsoleApp-Help": {
       "commandName": "Project",
       "commandLineArgs": "-h"

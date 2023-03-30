@@ -1,4 +1,7 @@
-﻿namespace ConsoleApp.Commands;
+﻿// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable ClassNeverInstantiated.Global
+
+namespace ConsoleApp.Commands;
 
 internal sealed class FileSizeCommand : Command<FileSizeCommand.Settings>
 {
@@ -15,7 +18,7 @@ internal sealed class FileSizeCommand : Command<FileSizeCommand.Settings>
         public bool IncludeHidden { get; init; }
     }
 
-    public override int Execute([NotNull] CommandContext context,[NotNull]  Settings settings)
+    public override int Execute([NotNull] CommandContext context, [NotNull] Settings settings)
     {
         var searchOptions = new EnumerationOptions
         {
