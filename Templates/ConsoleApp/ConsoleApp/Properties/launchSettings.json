@@ -1,11 +1,12 @@
 {
   "profiles": {
-    "ConsoleApp": {
+    "ConsoleApp-FileSize": {
       "commandName": "Project",
-      "commandLineArgs": "test --name=Howard --count=5",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
+      "commandLineArgs": "size"
+    },
+    "ConsoleApp-Help": {
+      "commandName": "Project",
+      "commandLineArgs": "-h"
     }
   }
 }
