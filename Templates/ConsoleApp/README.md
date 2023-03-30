@@ -1,42 +1,26 @@
 # Command based Console App
 
-This project showcases the simplicity of the `Cocona` package for creating command line commands as well as using
-`CommandLineUtils` for prompting for user input. These packages allow you to easily create expansive command line user
-interfaces with automatic parameter reading and help menu generation.
+This project showcases the simplicity of the `Spectre.Console` and `Spectre.Console.Cli` packages. This packages allow
+you to easily create expansive command line user interfaces with automatic parameter reading and help menu generation.
 
 To view this demo, build the project and invoke the CLI help menu with `.\ConsoleApp.exe -h` to see the available
 commands.
 
 Packages:
 
-* [Cocona](https://github.com/mayuki/Cocona)
-* [McMaster.Extensions.CommandLineUtils](https://github.com/natemcmaster/CommandLineUtils)
+* [Spectre.Console](https://github.com/spectreconsole/spectre.console) - [Docs](https://spectreconsole.net/)
+* [Humanizer](https://github.com/Humanizr/Humanizer)
 
 Examples:
-```text
-.\ConsoleApp.exe -h
-Usage: ConsoleApp [command]
 
-ConsoleApp
+List command
 
-Commands:
-  test
+![alt text](docs/images/list.png "Title")
 
-Options:
-  -h, --help    Show help message
-  --version     Show version
-```
+Help command
 
-```text
-.\ConsoleApp.exe test -h
-Usage: ConsoleApp test [--name <String>] [--count <Int32>] [--help]
+![alt text](docs/images/help.png "Title")
 
-Options:
-  --name <String>     (Required)
-  --count <Int32>     (Required)
-  -h, --help         Show help message
-```
-```text
-.\ConsoleApp.exe --version
-ConsoleApp 1.0.0
-```
+Version command
+
+![alt text](docs/images/version.png "Title")
