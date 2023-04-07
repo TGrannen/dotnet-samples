@@ -1,5 +1,13 @@
 ﻿@page "/"
 
-<MudText Typo="Typo.h2">Hello, world!</MudText>
-
-<Entity1Component></Entity1Component>
+<MudGrid>
+    <MudItem xs="12" sm="4">
+        <Entity1Component></Entity1Component>
+    </MudItem>
+    <MudItem xs="12" sm="4">
+        <Entity2Component></Entity2Component>
+    </MudItem>
+    <MudItem xs="12" sm="4">
+        <OutboxComponent></OutboxComponent>
+    </MudItem>
+</MudGrid>

@@ -7,5 +7,5 @@ internal class OutboxMessage
 {
     public Guid Key { get; set; }
     public DateTime Created { get; set; }
-    public IMessage Message { get; set; }
+    public string? Payload { get; set; }
 }

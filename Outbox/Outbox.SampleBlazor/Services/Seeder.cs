@@ -35,7 +35,7 @@ public class Seeder : ISeeder
         _logger.LogInformation("Creating Dynamo DB tables");
         await CreateTable("Test-Entity1", "Id", ScalarAttributeType.S, KeyType.HASH);
         await CreateTable("Test-Entity2", "Id", ScalarAttributeType.S, KeyType.HASH);
-        await CreateTable("Shared-Outbox", "Key", ScalarAttributeType.S, KeyType.HASH);
+        await CreateTable("Outbox-Shared", "Key", ScalarAttributeType.S, KeyType.HASH);
     }
 
     private async Task CreateTable(string tableName, string keyName, ScalarAttributeType attributeType, KeyType keyType)

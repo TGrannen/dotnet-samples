@@ -1,0 +1,31 @@
+@using Outbox.DynamoDb.Internal
+@inject IDynamoDBContext DynamoDbContext
+@inject IServiceScopeFactory ScopeFactory
+@inject ISnackbar Snackbar
+
+<MudText Typo="Typo.h5">Outbox Messages</MudText>
+
+<MudButton Variant="Variant.Filled" OnClick="Reload">Refresh</MudButton>
+
+<MudDataGrid Items="@_elements" T="OutboxMessage">
+    <Columns>
+        <PropertyColumn Property="x => x.Key" Title="Key"/>
+        <PropertyColumn Property="x => x.Created" Title="Created"/>
+        <PropertyColumn Property="x => x.Payload" Title="Payload"/>
+    </Columns>
+</MudDataGrid>
+
+@code {
+    private IEnumerable<OutboxMessage> _elements = new List<OutboxMessage>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Reload();
+    }
+
+    private async Task Reload()
+    {
+        _elements = await DynamoDbContext.ScanAsync<OutboxMessage>(new List<ScanCondition>()).GetRemainingAsync();
+    }
+
+}

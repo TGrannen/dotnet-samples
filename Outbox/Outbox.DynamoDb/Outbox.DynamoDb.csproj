@@ -16,4 +16,7 @@
     <ProjectReference Include="..\Outbox.Messaging.Abstractions\Outbox.Messaging.Abstractions.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="Outbox.SampleBlazor" />
+  </ItemGroup>
 </Project>

@@ -55,7 +55,7 @@ internal class DynamoDbTransaction : IDynamoDbTransaction
         {
             Key = message.Id,
             Created = DateTime.Now, // TODO Inject IDateTime interface
-            Message = message
+            Payload = message.Payload
         });
     }
 
