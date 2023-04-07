@@ -1,18 +1,19 @@
-﻿using Outbox.Messaging.Abstractions;
+﻿using System.Text.Json;
+using Outbox.Messaging.Abstractions;
 
 namespace Outbox.DynamoDb.Internal;
 
 internal class DynamoDbTransaction : IDynamoDbTransaction
 {
     private readonly IDynamoDBContext _context;
-    private readonly IMessagePublisher _messagePublisher;
+    private readonly IOutboxMessageSender _sender;
     private readonly List<BatchWrite> _batchWrites = new();
-    private readonly List<IMessage> _messages = new();
+    private readonly List<OutboxMessage> _messages = new();
 
-    public DynamoDbTransaction(IDynamoDBContext context, IMessagePublisher messagePublisher)
+    public DynamoDbTransaction(IDynamoDBContext context, IOutboxMessageSender sender)
     {
         _context = context;
-        _messagePublisher = messagePublisher;
+        _sender = sender;
     }
 
     public async Task<List<T>> GetAll<T>(CancellationToken cancellationToken = default)
@@ -27,6 +28,7 @@ internal class DynamoDbTransaction : IDynamoDbTransaction
         {
             batchRequest.AddKey(key);
         }
+
         await batchRequest.ExecuteAsync();
         return batchRequest.Results;
     }
@@ -35,10 +37,17 @@ internal class DynamoDbTransaction : IDynamoDbTransaction
     {
         return await _context.LoadAsync<T>(hashKey, cancellationToken);
     }
+
     public void Upsert<T>(T item)
     {
         var batchWrite = Get<T>();
         batchWrite.AddPutItem(item);
+    }
+
+    public void Delete<T>(T item)
+    {
+        var batchWrite = Get<T>();
+        batchWrite.AddDeleteItem(item);
     }
 
     public void Delete<T>(object hashKey)
@@ -47,16 +56,17 @@ internal class DynamoDbTransaction : IDynamoDbTransaction
         batchWrite.AddDeleteKey(hashKey);
     }
 
-    public void AddMessage(IMessage message)
+    public void AddMessage(DomainMessage message)
     {
-        _messages.Add(message);
-        var batchWrite = Get<OutboxMessage>();
-        batchWrite.AddPutItem(new OutboxMessage
+        var outboxMessage = new OutboxMessage
         {
             Key = message.Id,
             Created = DateTime.Now, // TODO Inject IDateTime interface
-            Payload = message.Payload
-        });
+            Payload = JsonSerializer.Serialize(message)
+        };
+        _messages.Add(outboxMessage);
+        var batchWrite = Get<OutboxMessage>();
+        batchWrite.AddPutItem(outboxMessage);
     }
 
     public async Task SaveChangesAsync(CancellationToken cancellationToken = default)
@@ -65,11 +75,8 @@ internal class DynamoDbTransaction : IDynamoDbTransaction
         await singleWrite.ExecuteAsync(cancellationToken);
         _batchWrites.Clear();
 
-        // TODO Wrap in retry?
-        foreach (var message in _messages)
-        {
-            await _messagePublisher.PublishAsync(message, cancellationToken);
-        }
+        await _sender.SendOutboxMessages(_messages, cancellationToken);
+        _messages.Clear();
     }
 
     private BatchWrite<T> Get<T>()

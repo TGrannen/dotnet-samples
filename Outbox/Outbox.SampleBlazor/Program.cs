@@ -1,5 +1,4 @@
 using MudBlazor.Services;
-using Outbox.SampleBlazor;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,9 +10,11 @@ builder.Services.AddMudServices();
 
 await builder.BuildLocalStackContainer();
 
+builder.Services.AddSingleton<MessagePublisherSettings>();
 builder.Services.AddTransient<IMessagePublisher, FakeMessagePublisher>();
 builder.Services.AddDynamoDb(builder.Configuration);
 builder.Services.AddDynamoDbOutbox();
+builder.Services.AddDynamoDbOutboxWorkerService();
 
 var app = builder.Build();
 

@@ -36,9 +36,9 @@
             using var scope = ScopeFactory.CreateScope();
             var dynamoDbTransaction = scope.ServiceProvider.GetRequiredService<IDynamoDbTransaction>();
             dynamoDbTransaction.Upsert(entity1);
-            dynamoDbTransaction.AddMessage(new DummyMessage
+            dynamoDbTransaction.AddMessage(new DomainMessage
             {
-                Body = new
+                Payload = new
                 {
                     Id = entity1.Id,
                     SomeMessage = "A Entity2 was created"

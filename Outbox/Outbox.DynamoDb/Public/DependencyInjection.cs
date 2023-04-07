@@ -9,12 +9,14 @@ public static class DependencyInjection
     public static IServiceCollection AddDynamoDbOutbox(this IServiceCollection services)
     {
         services.TryAddScoped<IDynamoDbTransaction, DynamoDbTransaction>();
+        services.TryAddTransient<IOutboxMessageSender, OutboxMessageSender>();
 
         return services;
     }
 
     public static IServiceCollection AddDynamoDbOutboxWorkerService(this IServiceCollection services)
     {
+        services.TryAddTransient<IOutboxMessageSender, OutboxMessageSender>();
         services.AddHostedService<OutboxBackgroundService>();
 
         return services;

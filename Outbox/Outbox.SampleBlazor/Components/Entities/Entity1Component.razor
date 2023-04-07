@@ -12,6 +12,13 @@
         <PropertyColumn Property="x => x.Id" Title="Id"/>
         <PropertyColumn Property="x => x.FirstName" Title="FirstName"/>
         <PropertyColumn Property="x => x.LastName" Title="LastName"/>
+        <TemplateColumn CellClass="d-flex justify-end">
+            <CellTemplate>
+                <MudButton Size="@Size.Small" Variant="@Variant.Filled" Color="@Color.Error" OnClick="() => DeleteItem(context.Item)">
+                    Delete
+                </MudButton>
+            </CellTemplate>
+        </TemplateColumn>
     </Columns>
 </MudDataGrid>
 
@@ -36,6 +43,30 @@
             using var scope = ScopeFactory.CreateScope();
             var dynamoDbTransaction = scope.ServiceProvider.GetRequiredService<IDynamoDbTransaction>();
             dynamoDbTransaction.Upsert(entity1);
+            await dynamoDbTransaction.SaveChangesAsync();
+            await Reload();
+        }
+        catch (Exception e)
+        {
+            Snackbar.Add($"Error when creating: {e.Message}", Severity.Error);
+        }
+    }
+
+    private async Task DeleteItem(Entity1 entity1)
+    {
+        try
+        {
+            using var scope = ScopeFactory.CreateScope();
+            var dynamoDbTransaction = scope.ServiceProvider.GetRequiredService<IDynamoDbTransaction>();
+            dynamoDbTransaction.Delete(entity1);
+            dynamoDbTransaction.AddMessage(new DomainMessage
+            {
+                Payload = new
+                {
+                    Id = entity1.Id,
+                    SomeMessage = $"\"{entity1.Id}\" was Deleted"
+                }
+            });
             await dynamoDbTransaction.SaveChangesAsync();
             await Reload();
         }

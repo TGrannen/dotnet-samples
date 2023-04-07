@@ -2,5 +2,5 @@ namespace Outbox.Messaging.Abstractions;
 
 public interface IMessagePublisher
 {
-    Task PublishAsync(IMessage message, CancellationToken cancellationToken = default);
+    Task PublishAsync(Message message, CancellationToken cancellationToken = default);
 }
