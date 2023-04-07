@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Outbox.SampleBlazor", "Outb
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Outbox.DynamoDb", "Outbox.DynamoDb\Outbox.DynamoDb.csproj", "{694EA9D5-1AB2-47CF-9478-44739BA78DE2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Outbox.Messaging.Abstractions", "Outbox.Messaging.Abstractions\Outbox.Messaging.Abstractions.csproj", "{CA212B17-D03C-46C8-BB84-12CEDCF08764}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{694EA9D5-1AB2-47CF-9478-44739BA78DE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{694EA9D5-1AB2-47CF-9478-44739BA78DE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{694EA9D5-1AB2-47CF-9478-44739BA78DE2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA212B17-D03C-46C8-BB84-12CEDCF08764}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA212B17-D03C-46C8-BB84-12CEDCF08764}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA212B17-D03C-46C8-BB84-12CEDCF08764}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA212B17-D03C-46C8-BB84-12CEDCF08764}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -4,11 +4,19 @@
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>8c44d0f4-a1c1-410a-8fa7-f18bec6b13ba</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoBogus" Version="2.13.1" />
     <PackageReference Include="MudBlazor" Version="6.2.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
+    <PackageReference Include="Testcontainers" Version="3.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Outbox.DynamoDb\Outbox.DynamoDb.csproj" />
+    <ProjectReference Include="..\Outbox.Messaging.Abstractions\Outbox.Messaging.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>

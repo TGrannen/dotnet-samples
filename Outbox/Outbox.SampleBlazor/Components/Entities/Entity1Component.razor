@@ -1,0 +1,48 @@
+@inject IDynamoDBContext DynamoDbContext
+@inject IServiceScopeFactory ScopeFactory
+@inject ISnackbar Snackbar
+
+<MudText Typo="Typo.h5">Entity 1</MudText>
+
+<MudButton Variant="Variant.Filled" OnClick="CreateNew">Create New</MudButton>
+<MudButton Variant="Variant.Filled" OnClick="Reload">Refresh</MudButton>
+
+<MudDataGrid Items="@_elements" T="Entity1">
+    <Columns>
+        <PropertyColumn Property="x => x.Id" Title="Nr"/>
+        <PropertyColumn Property="x => x.FirstName" Title="FirstName"/>
+        <PropertyColumn Property="x => x.LastName" Title="LastName"/>
+    </Columns>
+</MudDataGrid>
+
+@code {
+    private IEnumerable<Entity1> _elements = new List<Entity1>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Reload();
+    }
+
+    private async Task Reload()
+    {
+        _elements = await DynamoDbContext.ScanAsync<Entity1>(new List<ScanCondition>()).GetRemainingAsync();
+    }
+
+    private async Task CreateNew()
+    {
+        try
+        {
+            var entity1 = AutoFaker.Generate<Entity1>();
+            using var scope = ScopeFactory.CreateScope();
+            var dynamoDbTransaction = scope.ServiceProvider.GetRequiredService<IDynamoDbTransaction>();
+            dynamoDbTransaction.Upsert(entity1);
+            await dynamoDbTransaction.SaveChangesAsync();
+            await Reload();
+        }
+        catch (Exception e)
+        {
+            Snackbar.Add("Error when creating: " + e.Message, Severity.Error);
+        }
+    }
+
+}
