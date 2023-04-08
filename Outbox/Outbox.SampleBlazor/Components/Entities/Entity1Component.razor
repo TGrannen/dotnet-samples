@@ -1,6 +1,7 @@
 @inject IDynamoDBContext DynamoDbContext
 @inject IServiceScopeFactory ScopeFactory
 @inject ISnackbar Snackbar
+@inject IEventAggregator EventAggregator
 
 <MudText Typo="Typo.h5">Entity 1</MudText>
 
@@ -23,6 +24,8 @@
 </MudDataGrid>
 
 @code {
+
+
     private IEnumerable<Entity1> _elements = new List<Entity1>();
 
     protected override async Task OnInitializedAsync()
@@ -45,6 +48,7 @@
             dynamoDbTransaction.Upsert(entity1);
             await dynamoDbTransaction.SaveChangesAsync();
             await Reload();
+            await EventAggregator.PublishAsync(new ReloadEvent());
         }
         catch (Exception e)
         {
@@ -69,10 +73,11 @@
             });
             await dynamoDbTransaction.SaveChangesAsync();
             await Reload();
+            await EventAggregator.PublishAsync(new ReloadEvent());
         }
         catch (Exception e)
         {
-            Snackbar.Add($"Error when creating: {e.Message}", Severity.Error);
+            Snackbar.Add($"Error when deleting: {e.Message}", Severity.Error);
         }
     }
 

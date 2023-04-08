@@ -7,6 +7,7 @@ builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Confi
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddMudServices();
+builder.Services.AddEventAggregator(options => options.AutoRefresh = true);
 
 await builder.BuildLocalStackContainer();
 

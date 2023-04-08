@@ -2,6 +2,7 @@
 @inject IServiceScopeFactory ScopeFactory
 @inject ISnackbar Snackbar
 @inject ILogger<Entity2> Logger
+@inject IEventAggregator EventAggregator
 
 <MudText Typo="Typo.h5">Entity 2</MudText>
 
@@ -12,10 +13,18 @@
     <Columns>
         <PropertyColumn Property="x => x.Id" Title="Id"/>
         <PropertyColumn Property="x => x.LastUpdated" Title="LastUpdated"/>
+        <TemplateColumn CellClass="d-flex justify-end">
+            <CellTemplate>
+                <MudButton Size="@Size.Small" Variant="@Variant.Filled" Color="@Color.Error" OnClick="() => DeleteItem(context.Item)">
+                    Delete
+                </MudButton>
+            </CellTemplate>
+        </TemplateColumn>
     </Columns>
 </MudDataGrid>
 
 @code {
+    
     private IEnumerable<Entity2> _elements = new List<Entity2>();
 
     protected override async Task OnInitializedAsync()
@@ -46,11 +55,29 @@
             });
             await dynamoDbTransaction.SaveChangesAsync();
             await Reload();
+            await EventAggregator.PublishAsync(new ReloadEvent());
         }
         catch (Exception e)
         {
             Snackbar.Add($"Error when creating: {e.Message}", Severity.Error);
             Logger.LogError(e, "Failed to create Entity2");
+        }
+    }
+
+    private async Task DeleteItem(Entity2 item)
+    {
+        try
+        {
+            using var scope = ScopeFactory.CreateScope();
+            var dynamoDbTransaction = scope.ServiceProvider.GetRequiredService<IDynamoDbTransaction>();
+            dynamoDbTransaction.Delete(item);
+            await dynamoDbTransaction.SaveChangesAsync();
+            await Reload();
+            await EventAggregator.PublishAsync(new ReloadEvent());
+        }
+        catch (Exception e)
+        {
+            Snackbar.Add($"Error when deleting: {e.Message}", Severity.Error);
         }
     }
 

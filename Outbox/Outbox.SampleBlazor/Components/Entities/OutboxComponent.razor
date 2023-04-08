@@ -2,6 +2,7 @@
 @inject IDynamoDBContext DynamoDbContext
 @inject IServiceScopeFactory ScopeFactory
 @inject ISnackbar Snackbar
+@inherits ComponentBase
 
 <MudText Typo="Typo.h5">Outbox Messages</MudText>
 
@@ -16,16 +17,10 @@
 </MudDataGrid>
 
 @code {
-    private IEnumerable<OutboxMessage> _elements = new List<OutboxMessage>();
 
     protected override async Task OnInitializedAsync()
     {
         await Reload();
-    }
-
-    private async Task Reload()
-    {
-        _elements = await DynamoDbContext.ScanAsync<OutboxMessage>(new List<ScanCondition>()).GetRemainingAsync();
     }
 
 }

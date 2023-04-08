@@ -10,6 +10,7 @@
   <ItemGroup>
     <PackageReference Include="AutoBogus" Version="2.13.1" />
     <PackageReference Include="MudBlazor" Version="6.2.0" />
+    <PackageReference Include="Nefarius.Blazor.EventAggregator" Version="1.0.10" />
     <PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
     <PackageReference Include="Testcontainers" Version="3.0.0" />
   </ItemGroup>
