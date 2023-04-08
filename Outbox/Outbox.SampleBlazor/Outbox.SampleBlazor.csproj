@@ -10,6 +10,7 @@
   <ItemGroup>
     <PackageReference Include="AutoBogus" Version="2.13.1" />
     <PackageReference Include="Fluxor.Blazor.Web.ReduxDevTools" Version="5.7.0" />
+    <PackageReference Include="Humanizer" Version="2.14.1" />
     <PackageReference Include="MudBlazor" Version="6.2.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
     <PackageReference Include="Testcontainers" Version="3.0.0" />
@@ -18,10 +19,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Outbox.DynamoDb\Outbox.DynamoDb.csproj" />
     <ProjectReference Include="..\Outbox.Messaging.Abstractions\Outbox.Messaging.Abstractions.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Forecasts\" />
   </ItemGroup>
 
 </Project>

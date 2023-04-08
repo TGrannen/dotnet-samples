@@ -1,4 +1,3 @@
-@using Outbox.SampleBlazor.State
 @inject IDynamoDBContext DynamoDbContext
 @inject IServiceScopeFactory ScopeFactory
 @inject ISnackbar Snackbar
@@ -8,24 +7,27 @@
 <MudText Typo="Typo.h5">Entity 2</MudText>
 
 <MudButton Variant="Variant.Filled" OnClick="CreateNew">Create New</MudButton>
-<MudButton Variant="Variant.Filled" OnClick="Reload">Refresh</MudButton>
+<MudIconButton Icon="@Icons.Material.Filled.Refresh" OnClick="Reload"></MudIconButton>
 
 <MudDataGrid Items="@_elements" T="Entity2">
     <Columns>
         <PropertyColumn Property="x => x.Id" Title="Id"/>
         <PropertyColumn Property="x => x.LastUpdated" Title="LastUpdated"/>
+        <TemplateColumn>
+            <CellTemplate>
+                @context.Item.LastUpdated.Humanize()
+            </CellTemplate>
+        </TemplateColumn>
         <TemplateColumn CellClass="d-flex justify-end">
             <CellTemplate>
-                <MudButton Size="@Size.Small" Variant="@Variant.Filled" Color="@Color.Error" OnClick="() => DeleteItem(context.Item)">
-                    Delete
-                </MudButton>
+                <MudIconButton Size="@Size.Small" Variant="@Variant.Filled" Color="Color.Error" Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="() => DeleteItem(context.Item)"></MudIconButton>
             </CellTemplate>
         </TemplateColumn>
     </Columns>
 </MudDataGrid>
 
 @code {
-    
+
     private IEnumerable<Entity2> _elements = new List<Entity2>();
 
     protected override async Task OnInitializedAsync()
@@ -45,6 +47,7 @@
             var entity1 = AutoFaker.Generate<Entity2>();
             using var scope = ScopeFactory.CreateScope();
             var dynamoDbTransaction = scope.ServiceProvider.GetRequiredService<IDynamoDbTransaction>();
+            entity1.LastUpdated = DateTime.Now;
             dynamoDbTransaction.Upsert(entity1);
             dynamoDbTransaction.AddMessage(new DomainMessage
             {

@@ -7,7 +7,7 @@
 <MudText Typo="Typo.h5">Entity 1</MudText>
 
 <MudButton Variant="Variant.Filled" OnClick="CreateNew">Create New</MudButton>
-<MudButton Variant="Variant.Filled" OnClick="Reload">Refresh</MudButton>
+<MudIconButton Icon="@Icons.Material.Filled.Refresh" OnClick="Reload"></MudIconButton>
 
 <MudDataGrid Items="@_elements" T="Entity1">
     <Columns>
@@ -16,9 +16,7 @@
         <PropertyColumn Property="x => x.LastName" Title="LastName"/>
         <TemplateColumn CellClass="d-flex justify-end">
             <CellTemplate>
-                <MudButton Size="@Size.Small" Variant="@Variant.Filled" Color="@Color.Error" OnClick="() => DeleteItem(context.Item)">
-                    Delete
-                </MudButton>
+                <MudIconButton Size="@Size.Small" Variant="@Variant.Filled" Color="Color.Error" Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="() => DeleteItem(context.Item)"></MudIconButton>
             </CellTemplate>
         </TemplateColumn>
     </Columns>

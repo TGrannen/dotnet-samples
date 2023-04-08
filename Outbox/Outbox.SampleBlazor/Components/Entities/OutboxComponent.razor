@@ -3,8 +3,7 @@
 @inject IDispatcher Dispatcher
 
 <MudText Typo="Typo.h5">Outbox Messages</MudText>
-
-<MudButton Variant="Variant.Filled" OnClick="Reload">Refresh</MudButton>
+<MudIconButton Icon="@Icons.Material.Filled.Refresh" OnClick="Reload"></MudIconButton>
 
 <MudDataGrid Items="@State.Value.Messages" T="OutboxMessage">
     <Columns>

@@ -39,7 +39,7 @@ internal class PurgeOutboxBackgroundService : BackgroundService
             }
             finally
             {
-                await Task.Delay(TimeSpan.FromSeconds(10), stoppingToken);
+                await Task.Delay(TimeSpan.FromSeconds(5), stoppingToken);
             }
         }
     }
