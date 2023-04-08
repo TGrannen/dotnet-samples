@@ -9,6 +9,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Outbox.DynamoDb", "Outbox.D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Outbox.Messaging.Abstractions", "Outbox.Messaging.Abstractions\Outbox.Messaging.Abstractions.csproj", "{CA212B17-D03C-46C8-BB84-12CEDCF08764}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{894A7274-7FF7-4E96-847E-0BF13EDE8976}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
