@@ -1,8 +1,9 @@
+@using Outbox.SampleBlazor.State
 @inject IDynamoDBContext DynamoDbContext
 @inject IServiceScopeFactory ScopeFactory
 @inject ISnackbar Snackbar
 @inject ILogger<Entity2> Logger
-@inject IEventAggregator EventAggregator
+@inject IDispatcher Dispatcher
 
 <MudText Typo="Typo.h5">Entity 2</MudText>
 
@@ -55,7 +56,7 @@
             });
             await dynamoDbTransaction.SaveChangesAsync();
             await Reload();
-            await EventAggregator.PublishAsync(new ReloadEvent());
+            Dispatcher.Dispatch(new LoadOutboxAction());
         }
         catch (Exception e)
         {
@@ -73,7 +74,7 @@
             dynamoDbTransaction.Delete(item);
             await dynamoDbTransaction.SaveChangesAsync();
             await Reload();
-            await EventAggregator.PublishAsync(new ReloadEvent());
+            Dispatcher.Dispatch(new LoadOutboxAction());
         }
         catch (Exception e)
         {

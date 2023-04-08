@@ -1,18 +1,17 @@
-using Nefarius.Blazor.EventAggregator;
-
 namespace Outbox.SampleBlazor.Services;
 
 public class FakeMessagePublisher : IMessagePublisher
 {
     private readonly ILogger<FakeMessagePublisher> _logger;
     private readonly MessagePublisherSettings _settings;
-    private readonly IEventAggregator _eventAggregator;
+    private readonly ReloadEventProducer _reloadEventProducer;
 
-    public FakeMessagePublisher(ILogger<FakeMessagePublisher> logger, MessagePublisherSettings settings, IEventAggregator eventAggregator)
+    public FakeMessagePublisher(ILogger<FakeMessagePublisher> logger, MessagePublisherSettings settings,
+        ReloadEventProducer reloadEventProducer)
     {
         _logger = logger;
         _settings = settings;
-        _eventAggregator = eventAggregator;
+        _reloadEventProducer = reloadEventProducer;
     }
 
     public async Task PublishAsync(Message message, CancellationToken cancellationToken)
@@ -24,6 +23,6 @@ public class FakeMessagePublisher : IMessagePublisher
 
         await Task.Delay(TimeSpan.FromMilliseconds(_settings.PublishDelay), cancellationToken);
         _logger.LogInformation("Message sent! {@Message}", message);
-        await _eventAggregator.PublishAsync(new ReloadEvent());
+        _reloadEventProducer.SendReload();
     }
 }

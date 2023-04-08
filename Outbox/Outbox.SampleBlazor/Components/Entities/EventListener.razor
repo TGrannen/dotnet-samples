@@ -1,0 +1,19 @@
+@using Outbox.SampleBlazor.State
+@inject IDispatcher Dispatcher
+@inject ReloadEventProducer ReloadEventProducer
+
+@code {
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        ReloadEventProducer.MessageProcessed += (sender, args) =>
+        {
+            Dispatcher.Dispatch(new LoadOutboxAction
+            {
+                Delay = TimeSpan.FromMilliseconds(200)
+            });
+        };
+    }
+
+}

@@ -7,10 +7,15 @@ builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Confi
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddMudServices();
-builder.Services.AddEventAggregator(options => options.AutoRefresh = true);
+builder.Services.AddFluxor(o =>
+{
+    o.UseReduxDevTools();
+    o.ScanAssemblies(typeof(Program).Assembly);
+});
 
 await builder.BuildLocalStackContainer();
 
+builder.Services.AddSingleton<ReloadEventProducer>();
 builder.Services.AddSingleton<MessagePublisherSettings>();
 builder.Services.AddTransient<IMessagePublisher, FakeMessagePublisher>();
 builder.Services.AddDynamoDb(builder.Configuration);

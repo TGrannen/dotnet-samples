@@ -1,14 +1,12 @@
-@using Outbox.DynamoDb.Internal
-@inject IDynamoDBContext DynamoDbContext
-@inject IServiceScopeFactory ScopeFactory
-@inject ISnackbar Snackbar
-@inherits ComponentBase
+@inherits FluxorComponent
+@inject IState<OutboxState> State
+@inject IDispatcher Dispatcher
 
 <MudText Typo="Typo.h5">Outbox Messages</MudText>
 
 <MudButton Variant="Variant.Filled" OnClick="Reload">Refresh</MudButton>
 
-<MudDataGrid Items="@_elements" T="OutboxMessage">
+<MudDataGrid Items="@State.Value.Messages" T="OutboxMessage">
     <Columns>
         <PropertyColumn Property="x => x.Key" Title="Key"/>
         <PropertyColumn Property="x => x.Created" Title="Created"/>
@@ -20,7 +18,13 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await Reload();
+        await base.OnInitializedAsync();
+        Dispatcher.Dispatch(new LoadOutboxAction());
+    }
+
+    private void Reload()
+    {
+        Dispatcher.Dispatch(new LoadOutboxAction());
     }
 
 }
