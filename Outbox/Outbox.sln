@@ -1,0 +1,39 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Outbox.SampleBlazor", "Outbox.SampleBlazor\Outbox.SampleBlazor.csproj", "{60CD0898-5C12-4F41-A457-3D56DA2CB605}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Outbox.DynamoDb", "Outbox.DynamoDb\Outbox.DynamoDb.csproj", "{694EA9D5-1AB2-47CF-9478-44739BA78DE2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Outbox.Messaging.Abstractions", "Outbox.Messaging.Abstractions\Outbox.Messaging.Abstractions.csproj", "{CA212B17-D03C-46C8-BB84-12CEDCF08764}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{894A7274-7FF7-4E96-847E-0BF13EDE8976}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{60CD0898-5C12-4F41-A457-3D56DA2CB605}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60CD0898-5C12-4F41-A457-3D56DA2CB605}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60CD0898-5C12-4F41-A457-3D56DA2CB605}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60CD0898-5C12-4F41-A457-3D56DA2CB605}.Release|Any CPU.Build.0 = Release|Any CPU
+		{694EA9D5-1AB2-47CF-9478-44739BA78DE2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{694EA9D5-1AB2-47CF-9478-44739BA78DE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{694EA9D5-1AB2-47CF-9478-44739BA78DE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{694EA9D5-1AB2-47CF-9478-44739BA78DE2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA212B17-D03C-46C8-BB84-12CEDCF08764}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA212B17-D03C-46C8-BB84-12CEDCF08764}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA212B17-D03C-46C8-BB84-12CEDCF08764}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA212B17-D03C-46C8-BB84-12CEDCF08764}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

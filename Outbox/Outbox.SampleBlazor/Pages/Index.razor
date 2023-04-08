@@ -1,0 +1,26 @@
+﻿@page "/"
+
+
+<MudGrid>
+    <MudItem xs="12">
+        <PublisherComponent></PublisherComponent>
+    </MudItem>
+    <MudItem xs="12" sm="6">
+        <Entity1Component></Entity1Component>
+    </MudItem>
+    <MudItem xs="12" sm="6">
+        <Entity2Component></Entity2Component>
+    </MudItem>
+    <MudItem xs="12">
+        <OutboxComponent></OutboxComponent>
+    </MudItem>
+</MudGrid>
+
+@code {
+
+    private void ReloadOutbox()
+    {
+        throw new NotImplementedException();
+    }
+
+}

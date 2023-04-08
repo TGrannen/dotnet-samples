@@ -1,0 +1,88 @@
+@inject IDynamoDBContext DynamoDbContext
+@inject IServiceScopeFactory ScopeFactory
+@inject ISnackbar Snackbar
+@inject ILogger<Entity2> Logger
+@inject IDispatcher Dispatcher
+
+<MudText Typo="Typo.h5">Entity 2</MudText>
+
+<MudButton Variant="Variant.Filled" OnClick="CreateNew">Create New</MudButton>
+<MudIconButton Icon="@Icons.Material.Filled.Refresh" OnClick="Reload"></MudIconButton>
+
+<MudDataGrid Items="@_elements" T="Entity2">
+    <Columns>
+        <PropertyColumn Property="x => x.Id" Title="Id"/>
+        <PropertyColumn Property="x => x.LastUpdated" Title="LastUpdated"/>
+        <TemplateColumn>
+            <CellTemplate>
+                @context.Item.LastUpdated.Humanize()
+            </CellTemplate>
+        </TemplateColumn>
+        <TemplateColumn CellClass="d-flex justify-end">
+            <CellTemplate>
+                <MudIconButton Size="@Size.Small" Variant="@Variant.Filled" Color="Color.Error" Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="() => DeleteItem(context.Item)"></MudIconButton>
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+</MudDataGrid>
+
+@code {
+
+    private IEnumerable<Entity2> _elements = new List<Entity2>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Reload();
+    }
+
+    private async Task Reload()
+    {
+        _elements = await DynamoDbContext.ScanAsync<Entity2>(new List<ScanCondition>()).GetRemainingAsync();
+    }
+
+    private async Task CreateNew()
+    {
+        try
+        {
+            var entity1 = AutoFaker.Generate<Entity2>();
+            using var scope = ScopeFactory.CreateScope();
+            var dynamoDbTransaction = scope.ServiceProvider.GetRequiredService<IDynamoDbTransaction>();
+            entity1.LastUpdated = DateTime.Now;
+            dynamoDbTransaction.Upsert(entity1);
+            dynamoDbTransaction.AddMessage(new DomainMessage
+            {
+                Payload = new
+                {
+                    Id = entity1.Id,
+                    SomeMessage = "A Entity2 was created"
+                }
+            });
+            await dynamoDbTransaction.SaveChangesAsync();
+            await Reload();
+            Dispatcher.Dispatch(new LoadOutboxAction());
+        }
+        catch (Exception e)
+        {
+            Snackbar.Add($"Error when creating: {e.Message}", Severity.Error);
+            Logger.LogError(e, "Failed to create Entity2");
+        }
+    }
+
+    private async Task DeleteItem(Entity2 item)
+    {
+        try
+        {
+            using var scope = ScopeFactory.CreateScope();
+            var dynamoDbTransaction = scope.ServiceProvider.GetRequiredService<IDynamoDbTransaction>();
+            dynamoDbTransaction.Delete(item);
+            await dynamoDbTransaction.SaveChangesAsync();
+            await Reload();
+            Dispatcher.Dispatch(new LoadOutboxAction());
+        }
+        catch (Exception e)
+        {
+            Snackbar.Add($"Error when deleting: {e.Message}", Severity.Error);
+        }
+    }
+
+}

@@ -72,6 +72,10 @@ This repository's purpose is to showcase common design patterns, best practices,
 
 * [AutoMapper](ObjectMapping/)
 
+### Outbox Pattern
+
+* [Outbox Pattern](Outbox/)
+
 ### Observability
 
 * [Observability - OpenTelemetry](Observability/)

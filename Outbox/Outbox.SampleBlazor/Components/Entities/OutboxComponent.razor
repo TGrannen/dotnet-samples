@@ -1,0 +1,29 @@
+@inherits FluxorComponent
+@inject IState<OutboxState> State
+@inject IDispatcher Dispatcher
+
+<MudText Typo="Typo.h5">Outbox Messages</MudText>
+<MudIconButton Icon="@Icons.Material.Filled.Refresh" OnClick="Reload"></MudIconButton>
+
+<MudDataGrid Items="@State.Value.Messages" T="OutboxMessage">
+    <Columns>
+        <PropertyColumn Property="x => x.Key" Title="Key"/>
+        <PropertyColumn Property="x => x.Created" Title="Created"/>
+        <PropertyColumn Property="x => x.Payload" Title="Payload"/>
+    </Columns>
+</MudDataGrid>
+
+@code {
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        Dispatcher.Dispatch(new LoadOutboxAction());
+    }
+
+    private void Reload()
+    {
+        Dispatcher.Dispatch(new LoadOutboxAction());
+    }
+
+}

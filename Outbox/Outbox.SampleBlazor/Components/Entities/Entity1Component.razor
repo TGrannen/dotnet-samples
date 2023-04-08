@@ -1,0 +1,83 @@
+@using Outbox.SampleBlazor.State
+@inject IDynamoDBContext DynamoDbContext
+@inject IServiceScopeFactory ScopeFactory
+@inject ISnackbar Snackbar
+@inject IDispatcher Dispatcher
+
+<MudText Typo="Typo.h5">Entity 1</MudText>
+
+<MudButton Variant="Variant.Filled" OnClick="CreateNew">Create New</MudButton>
+<MudIconButton Icon="@Icons.Material.Filled.Refresh" OnClick="Reload"></MudIconButton>
+
+<MudDataGrid Items="@_elements" T="Entity1">
+    <Columns>
+        <PropertyColumn Property="x => x.Id" Title="Id"/>
+        <PropertyColumn Property="x => x.FirstName" Title="FirstName"/>
+        <PropertyColumn Property="x => x.LastName" Title="LastName"/>
+        <TemplateColumn CellClass="d-flex justify-end">
+            <CellTemplate>
+                <MudIconButton Size="@Size.Small" Variant="@Variant.Filled" Color="Color.Error" Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="() => DeleteItem(context.Item)"></MudIconButton>
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+</MudDataGrid>
+
+@code {
+
+
+    private IEnumerable<Entity1> _elements = new List<Entity1>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Reload();
+    }
+
+    private async Task Reload()
+    {
+        _elements = await DynamoDbContext.ScanAsync<Entity1>(new List<ScanCondition>()).GetRemainingAsync();
+    }
+
+    private async Task CreateNew()
+    {
+        try
+        {
+            var entity1 = AutoFaker.Generate<Entity1>();
+            using var scope = ScopeFactory.CreateScope();
+            var dynamoDbTransaction = scope.ServiceProvider.GetRequiredService<IDynamoDbTransaction>();
+            dynamoDbTransaction.Upsert(entity1);
+            await dynamoDbTransaction.SaveChangesAsync();
+            await Reload();
+            Dispatcher.Dispatch(new LoadOutboxAction());
+        }
+        catch (Exception e)
+        {
+            Snackbar.Add($"Error when creating: {e.Message}", Severity.Error);
+        }
+    }
+
+    private async Task DeleteItem(Entity1 entity1)
+    {
+        try
+        {
+            using var scope = ScopeFactory.CreateScope();
+            var dynamoDbTransaction = scope.ServiceProvider.GetRequiredService<IDynamoDbTransaction>();
+            dynamoDbTransaction.Delete(entity1);
+            dynamoDbTransaction.AddMessage(new DomainMessage
+            {
+                Payload = new
+                {
+                    Id = entity1.Id,
+                    SomeMessage = $"{entity1.Id} was Deleted"
+                }
+            });
+            await dynamoDbTransaction.SaveChangesAsync();
+            await Reload();
+            Dispatcher.Dispatch(new LoadOutboxAction());
+        }
+        catch (Exception e)
+        {
+            Snackbar.Add($"Error when deleting: {e.Message}", Severity.Error);
+        }
+    }
+
+}
