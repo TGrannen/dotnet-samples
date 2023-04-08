@@ -1,7 +1,5 @@
 ﻿using System.Text.Json;
 using Outbox.DynamoDb.Internal.Background;
-using Outbox.DynamoDb.Internal.Sending;
-using Outbox.Messaging.Abstractions;
 
 namespace Outbox.DynamoDb.Internal;
 

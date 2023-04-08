@@ -1,4 +1,3 @@
-using Amazon.DynamoDBv2.DocumentModel;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Outbox.DynamoDb.Internal.Sending;
@@ -20,33 +19,26 @@ internal class SenderBackgroundService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        var messages = new List<OutboxMessage>(100);
+
         while (!stoppingToken.IsCancellationRequested)
         {
             try
             {
-                var message = _messageQueue.TryDequeue();
-                while (message != null)
-                {
-                    messages.Add(message);
-                    message = _messageQueue.TryDequeue();
-                }
-
-                if (!messages.Any())
+                if (_messageQueue.IsEmpty())
                 {
                     await Task.Delay(TimeSpan.FromMilliseconds(100), stoppingToken);
                     continue;
                 }
 
+                var messages = _messageQueue.Take();
                 await _sender.SendOutboxMessages(messages, stoppingToken);
             }
             catch (Exception exception)
             {
-                _logger.LogError(exception, "Error during Outbox processing");
+                _logger.LogError(exception, "Error during Outbox Queue processing");
             }
             finally
             {
-                messages.Clear();
                 await Task.Delay(TimeSpan.FromMilliseconds(10), stoppingToken);
             }
         }

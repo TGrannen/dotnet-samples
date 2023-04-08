@@ -22,7 +22,7 @@ internal class OutboxMessageSender : IOutboxMessageSender
             var domainMessage = JsonSerializer.Deserialize<DomainMessage>(message.Payload!);
             await _messagePublisher.PublishAsync(new Message
             {
-                Id = domainMessage.Id,
+                Id = domainMessage!.Id,
                 Payload = JsonSerializer.Serialize(domainMessage.Payload)
             }, cancellationToken);
             batchWrite.AddDeleteKey(message.Key);
