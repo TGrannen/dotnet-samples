@@ -1,4 +1,6 @@
 ﻿using System.Text.Json;
+using Outbox.DynamoDb.Internal.Background;
+using Outbox.DynamoDb.Internal.Sending;
 using Outbox.Messaging.Abstractions;
 
 namespace Outbox.DynamoDb.Internal;
@@ -6,14 +8,14 @@ namespace Outbox.DynamoDb.Internal;
 internal class DynamoDbTransaction : IDynamoDbTransaction
 {
     private readonly IDynamoDBContext _context;
-    private readonly IOutboxMessageSender _sender;
+    private readonly IOutboxMessageQueue _queue;
     private readonly List<BatchWrite> _batchWrites = new();
     private readonly List<OutboxMessage> _messages = new();
 
-    public DynamoDbTransaction(IDynamoDBContext context, IOutboxMessageSender sender)
+    public DynamoDbTransaction(IDynamoDBContext context, IOutboxMessageQueue queue)
     {
         _context = context;
-        _sender = sender;
+        _queue = queue;
     }
 
     public async Task<List<T>> GetAll<T>(CancellationToken cancellationToken = default)
@@ -75,7 +77,11 @@ internal class DynamoDbTransaction : IDynamoDbTransaction
         await singleWrite.ExecuteAsync(cancellationToken);
         _batchWrites.Clear();
 
-        await _sender.SendOutboxMessages(_messages, cancellationToken);
+        foreach (var message in _messages)
+        {
+            _queue.Add(message);
+        }
+
         _messages.Clear();
     }
 

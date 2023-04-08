@@ -1,7 +1,7 @@
 using System.Text.Json;
 using Outbox.Messaging.Abstractions;
 
-namespace Outbox.DynamoDb.Internal;
+namespace Outbox.DynamoDb.Internal.Sending;
 
 internal class OutboxMessageSender : IOutboxMessageSender
 {

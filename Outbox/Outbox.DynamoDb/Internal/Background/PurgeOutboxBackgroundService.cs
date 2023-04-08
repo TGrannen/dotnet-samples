@@ -1,16 +1,17 @@
 using Amazon.DynamoDBv2.DocumentModel;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Outbox.DynamoDb.Internal.Sending;
 
-namespace Outbox.DynamoDb.Internal;
+namespace Outbox.DynamoDb.Internal.Background;
 
-internal class OutboxBackgroundService : BackgroundService
+internal class PurgeOutboxBackgroundService : BackgroundService
 {
-    private readonly ILogger<OutboxBackgroundService> _logger;
+    private readonly ILogger<PurgeOutboxBackgroundService> _logger;
     private readonly IDynamoDBContext _context;
     private readonly IOutboxMessageSender _sender;
 
-    public OutboxBackgroundService(IDynamoDBContext context, IOutboxMessageSender sender, ILogger<OutboxBackgroundService> logger)
+    public PurgeOutboxBackgroundService(IDynamoDBContext context, IOutboxMessageSender sender, ILogger<PurgeOutboxBackgroundService> logger)
     {
         _logger = logger;
         _context = context;

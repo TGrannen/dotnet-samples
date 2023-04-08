@@ -64,7 +64,7 @@
                 Payload = new
                 {
                     Id = entity1.Id,
-                    SomeMessage = $"\"{entity1.Id}\" was Deleted"
+                    SomeMessage = $"{entity1.Id} was Deleted"
                 }
             });
             await dynamoDbTransaction.SaveChangesAsync();

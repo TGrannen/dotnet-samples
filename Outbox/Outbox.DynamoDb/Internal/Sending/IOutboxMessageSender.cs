@@ -1,4 +1,4 @@
-namespace Outbox.DynamoDb.Internal;
+namespace Outbox.DynamoDb.Internal.Sending;
 
 internal interface IOutboxMessageSender
 {
