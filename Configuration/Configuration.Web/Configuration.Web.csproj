@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Amazon.Extensions.Configuration.SystemsManager" Version="5.0.2" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.5.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
