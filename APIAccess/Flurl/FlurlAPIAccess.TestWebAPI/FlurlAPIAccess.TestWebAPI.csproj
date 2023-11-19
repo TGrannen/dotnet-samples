@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <InvariantGlobalization>true</InvariantGlobalization>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Flurl.Http" Version="3.2.4" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.14"/>
+    <PackageReference Include="Serilog.AspNetCore" Version="8.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="FlurlAPIAccess.TestWebAPI.Tests" />
+  </ItemGroup>
+</Project>

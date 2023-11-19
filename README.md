@@ -7,6 +7,7 @@ This repository's purpose is to showcase common design patterns, best practices,
 ### API Access
 
 * [Polly](APIAccess/Polly/)
+* [Flurl](APIAccess/Flurl/)
 * [Refit](APIAccess/Refit/)
 * [HttpREPL](APIAccess/HttpREPL/)
 
