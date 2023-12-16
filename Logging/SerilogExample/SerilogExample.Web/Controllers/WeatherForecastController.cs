@@ -31,4 +31,12 @@ public class WeatherForecastController : ControllerBase
             })
             .ToArray();
     }
+
+    [HttpGet]
+    [Route("test")]
+    public IActionResult TestLog(int testData)
+    {
+        _logger.LogInformation("This Value is {Count} and it's pretty cool", testData);
+        return Ok();
+    }
 }
