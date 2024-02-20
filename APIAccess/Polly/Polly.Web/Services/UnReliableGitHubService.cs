@@ -16,7 +16,6 @@ public class UnReliableGitHubService : IFlakyGitHubService
 
     public async Task<IEnumerable<GitHubIssue>> GetAspNetDocsIssues()
     {
-        PrintWhitespace();
         _logger.LogInformation("Getting From Flaky Server");
         HttpResponseMessage response;
         try
@@ -25,7 +24,7 @@ public class UnReliableGitHubService : IFlakyGitHubService
         }
         catch (Exception exception)
         {
-            _logger.LogError("Error getting data from Flaky Server. Message: {Message}", exception.Message);
+            _logger.LogError(exception,"Error getting data from Flaky Server");
             return null;
         }
 
@@ -35,15 +34,6 @@ public class UnReliableGitHubService : IFlakyGitHubService
         var issues = (await JsonSerializer.DeserializeAsync<IEnumerable<GitHubIssue>>(responseStream))?.Take(3).ToList();
 
         _logger.LogInformation("Retrieved {Count} Github Issue Information", issues?.Count ?? 0);
-        PrintWhitespace();
         return issues;
-    }
-
-    private static void PrintWhitespace()
-    {
-        Console.WriteLine();
-        Console.WriteLine();
-        Console.WriteLine();
-        Console.WriteLine();
     }
 }

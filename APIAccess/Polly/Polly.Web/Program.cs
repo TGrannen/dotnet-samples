@@ -1,4 +1,6 @@
-using Polly.Web.Extensions;
+using System.Net;
+using Microsoft.Extensions.Http.Resilience;
+using Polly.CircuitBreaker;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,10 +15,6 @@ builder.Services.AddHttpClient("GitHub", client =>
 });
 
 var services = builder.Services;
-var registry = services.AddPolicyRegistry();
-
-registry.Add("retry", GetRetryPolicy());
-registry.Add("circuit", GetCircuitBreakerPolicy());
 
 services.AddSingleton<IGitHubService, GitHubService>();
 
@@ -26,10 +24,86 @@ services
         var uriString = builder.Configuration.GetValue<string>("FlakyServerUri");
         client.BaseAddress = new Uri(uriString);
     })
-    .AddPollyContextLoggingNoOpPolicy<UnReliableGitHubService>()
-    .AddPolicyHandlerFromRegistry("circuit")
-    .AddPolicyHandlerFromRegistry("retry")
-    ;
+    .AddResilienceHandler("CustomPipeline", static (builder, context) =>
+    {
+        // Enable reloads whenever the named options change
+        context.EnableReloads<HttpRetryStrategyOptions>("Resiliency:RetryOptions");
+
+        // Retrieve the named options
+        var retryOptions = context.GetOptions<HttpRetryStrategyOptions>("Resiliency:RetryOptions");
+        var logger = context.ServiceProvider.GetRequiredService<ILogger<UnReliableGitHubService>>();
+        retryOptions.OnRetry = arguments =>
+        {
+            logger.LogWarning("Retrying Args {@Arg}", new
+            {
+                arguments.RetryDelay,
+                arguments.Outcome.Exception,
+                arguments.Outcome.Result?.StatusCode,
+                arguments.AttemptNumber,
+            });
+            return ValueTask.CompletedTask;
+        };
+
+        retryOptions.ShouldHandle = args =>
+        {
+            if (HttpClientResiliencePredicates.IsTransient(args.Outcome))
+            {
+                return ValueTask.FromResult(true);
+            }
+
+            if (args.Outcome.Exception is BrokenCircuitException)
+            {
+                return ValueTask.FromResult(false);
+            }
+
+            return ValueTask.FromResult(args.Outcome.Exception != null);
+        };
+        // Add retries using the resolved options
+        builder.AddRetry(retryOptions);
+
+        // See: https://www.pollydocs.org/strategies/circuit-breaker.html
+        builder.AddCircuitBreaker(new HttpCircuitBreakerStrategyOptions
+        {
+            // Customize and configure the circuit breaker logic.
+            SamplingDuration = TimeSpan.FromSeconds(45),
+            FailureRatio = 0.5,
+            MinimumThroughput = 3,
+            BreakDuration = TimeSpan.FromSeconds(30),
+            ShouldHandle = static args => ValueTask.FromResult(args is
+            {
+                Outcome.Result.StatusCode: HttpStatusCode.RequestTimeout or HttpStatusCode.TooManyRequests or HttpStatusCode.InternalServerError
+            }),
+            OnOpened = arguments =>
+            {
+                logger.LogError("Opened Args {@Arg}", new
+                {
+                    arguments.BreakDuration,
+                    arguments.Outcome.Exception,
+                    arguments.Outcome.Result?.StatusCode,
+                    arguments.IsManual,
+                });
+                return ValueTask.CompletedTask;
+            },
+            OnHalfOpened = arguments =>
+            {
+                logger.LogWarning("Half open");
+                return ValueTask.CompletedTask;
+            },
+            OnClosed = arguments =>
+            {
+                logger.LogWarning("Closed Args {@Arg}", new
+                {
+                    arguments.Outcome.Exception,
+                    arguments.Outcome.Result?.StatusCode,
+                    arguments.IsManual,
+                });
+                return ValueTask.CompletedTask;
+            }
+        });
+
+        // See: https://www.pollydocs.org/strategies/timeout.html
+        builder.AddTimeout(TimeSpan.FromSeconds(5));
+    });
 
 builder.Host.UseSerilog((context, configuration) => { configuration.ReadFrom.Configuration(context.Configuration); });
 
@@ -46,37 +120,6 @@ if (builder.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 app.UseAuthorization();
-app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+app.MapControllers();
 
 await app.RunAsync();
-
-static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
-{
-    return HttpPolicyExtensions
-        .HandleTransientHttpError()
-        .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.NotFound)
-        .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromMilliseconds(Math.Pow(2, retryAttempt) * 100),
-            onRetry: (exception, duration, retryCount, context) =>
-            {
-                context.GetLogger()
-                    .LogWarning("Retry Number: {RetryCount}  Waiting: {Duration:#}ms, due to: {Message}",
-                        retryCount,
-                        duration.TotalMilliseconds,
-                        exception.Exception?.Message ?? exception.Result.ToString());
-            });
-}
-
-static IAsyncPolicy<HttpResponseMessage> GetCircuitBreakerPolicy()
-{
-    return HttpPolicyExtensions
-        .HandleTransientHttpError()
-        .Or<Exception>()
-        .CircuitBreakerAsync(2, TimeSpan.FromSeconds(30),
-            onBreak: (result, state, duration, context) =>
-            {
-                context.GetLogger().LogWarning("CircuitBreaker PreviousState:{PreviousState} State:{State} Duration {Duration:#}", state,
-                    CircuitState.Open, duration.TotalSeconds);
-            },
-            onReset: context => { context.GetLogger().LogWarning("CircuitBreaker State:{State}", CircuitState.Closed); },
-            () => { });
-}
