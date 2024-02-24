@@ -3,6 +3,11 @@ using System.Text.Json;
 
 namespace Polly.Web.Services;
 
+public interface IFlakyGitHubService
+{
+    Task<IEnumerable<GitHubIssue>> GetAspNetDocsIssues();
+}
+
 public class UnReliableGitHubService : IFlakyGitHubService
 {
     private readonly HttpClient _httpClient;
@@ -24,7 +29,7 @@ public class UnReliableGitHubService : IFlakyGitHubService
         }
         catch (Exception exception)
         {
-            _logger.LogError(exception,"Error getting data from Flaky Server");
+            _logger.LogError(exception, "Error getting data from Flaky Server");
             return null;
         }
 

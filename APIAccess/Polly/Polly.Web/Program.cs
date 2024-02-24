@@ -1,7 +1,8 @@
 using System.Net;
 using Microsoft.Extensions.Http.Resilience;
 using Polly.CircuitBreaker;
-using Serilog;
+using Polly.Web;
+using Serilog.Formatting.Compact;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,11 +15,13 @@ builder.Services.AddHttpClient("GitHub", client =>
     client.DefaultRequestHeaders.Add("User-Agent", "HttpClientFactory-Sample");
 });
 
-var services = builder.Services;
+builder.Services.AddSingleton<IGitHubService, GitHubService>();
+builder.Services.AddTransient<ITestService, TestService>();
+builder.Services.Configure<TestOptions>(builder.Configuration.GetSection("TestOptions"));
+builder.Services.Configure<HttpRetryStrategyOptions>("ConfiguredHttpOptions",builder.Configuration.GetSection("Resiliency:RetryOptions:Retry"));
+builder.Services.AddResilience();
 
-services.AddSingleton<IGitHubService, GitHubService>();
-
-services
+builder.Services
     .AddHttpClient<IFlakyGitHubService, UnReliableGitHubService>((provider, client) =>
     {
         var uriString = builder.Configuration.GetValue<string>("FlakyServerUri");
@@ -27,10 +30,10 @@ services
     .AddResilienceHandler("CustomPipeline", static (builder, context) =>
     {
         // Enable reloads whenever the named options change
-        context.EnableReloads<HttpRetryStrategyOptions>("Resiliency:RetryOptions");
+        context.EnableReloads<HttpRetryStrategyOptions>("ConfiguredHttpOptions");
 
         // Retrieve the named options
-        var retryOptions = context.GetOptions<HttpRetryStrategyOptions>("Resiliency:RetryOptions");
+        var retryOptions = context.GetOptions<HttpRetryStrategyOptions>("ConfiguredHttpOptions");
         var logger = context.ServiceProvider.GetRequiredService<ILogger<UnReliableGitHubService>>();
         retryOptions.OnRetry = arguments =>
         {
@@ -71,7 +74,8 @@ services
             BreakDuration = TimeSpan.FromSeconds(30),
             ShouldHandle = static args => ValueTask.FromResult(args is
             {
-                Outcome.Result.StatusCode: HttpStatusCode.RequestTimeout or HttpStatusCode.TooManyRequests or HttpStatusCode.InternalServerError
+                Outcome.Result.StatusCode: HttpStatusCode.RequestTimeout or HttpStatusCode.TooManyRequests
+                or HttpStatusCode.InternalServerError
             }),
             OnOpened = arguments =>
             {
@@ -105,7 +109,7 @@ services
         builder.AddTimeout(TimeSpan.FromSeconds(5));
     });
 
-builder.Host.UseSerilog((context, configuration) => { configuration.ReadFrom.Configuration(context.Configuration); });
+builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Configuration(context.Configuration));
 
 var app = builder.Build();
 app.UseSerilogRequestLogging();
