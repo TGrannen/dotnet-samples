@@ -1,5 +1,6 @@
 ﻿using Polly.CircuitBreaker;
 using Polly.Retry;
+using Polly.Timeout;
 using Serilog;
 
 namespace Polly.ConsoleApp.Services;
@@ -14,24 +15,6 @@ public static class Extensions
             builder
                 .AddRetry(new RetryStrategyOptions<bool>
                 {
-                    Name = "Retry Forever",
-                    ShouldHandle = args => ValueTask.FromResult(args switch
-                    {
-                        { Outcome.Result: true } => false,
-                        _ => true
-                    }),
-                    MaxRetryAttempts = int.MaxValue,
-                    Delay = config.CircuitBreakDelay,
-                    BackoffType = DelayBackoffType.Constant,
-                    OnRetry = arguments =>
-                    {
-                        Log.Information("Retry Forever - On Retry {@Args}",
-                            new { arguments.Outcome.Result, arguments.Outcome.Exception?.Message, arguments.RetryDelay, arguments.AttemptNumber });
-                        return default;
-                    }
-                })
-                .AddRetry(new RetryStrategyOptions<bool>
-                {
                     ShouldHandle = args => ValueTask.FromResult(args switch
                     {
                         { Outcome.Result: true } => false,
@@ -39,38 +22,33 @@ public static class Extensions
                         _ => true
                     }),
                     MaxRetryAttempts = config.RetryAttempts,
-                    Delay = TimeSpan.FromSeconds(1),
+                    MaxDelay = config.Delay,
+                    Delay = config.MaxDelay,
                     BackoffType = DelayBackoffType.Exponential,
                     OnRetry = arguments =>
                     {
-                        Log.Information("On Retry {@Args}",
+                        Log.Information("Retrying SQS message sending {@Args}",
                             new { arguments.Outcome.Result, arguments.Outcome.Exception?.Message, arguments.RetryDelay, arguments.AttemptNumber });
                         return default;
                     }
                 })
-                .AddCircuitBreaker(new CircuitBreakerStrategyOptions<bool>
+                .AddTimeout(new TimeoutStrategyOptions
                 {
-                    Name = "SQS Circuit Breaker",
-                    SamplingDuration = TimeSpan.FromSeconds(60),
-                    MinimumThroughput = config.RetryAttempts + 1,
-                    BreakDuration = config.CircuitBreakDelay,
-                    ShouldHandle = args => ValueTask.FromResult(args switch
+                    Timeout = config.Timeout,
+                    OnTimeout = arguments =>
                     {
-                        { Outcome.Result: true } => false,
-                        _ => true
-                    }),
-                    OnOpened = arguments =>
-                    {
-                        Log.Information("Circuit Breaker - OnOpened {@Args}", new { arguments.Outcome.Result, arguments.BreakDuration });
+                        Log.Information("On Timeout {@Args}", new { arguments.Timeout });
                         return default;
-                    },
+                    }
                 });
         });
     }
 
     public class PipelineConfig
     {
-        public int RetryAttempts { get; set; }
-        public TimeSpan CircuitBreakDelay { get; set; }
+        public int RetryAttempts { get; init; }
+        public TimeSpan Timeout { get; init; }= TimeSpan.FromSeconds(10);
+        public TimeSpan Delay { get; init; }= TimeSpan.FromSeconds(2);
+        public TimeSpan MaxDelay { get; init; }= TimeSpan.FromMinutes(2);
     }
 }
