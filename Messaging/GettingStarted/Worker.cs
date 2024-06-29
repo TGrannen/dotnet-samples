@@ -17,7 +17,7 @@ public class Worker(ILogger<Worker> logger, IBus bus) : BackgroundService
                 Value = DateTime.Now.ToString()
             }, stoppingToken);
 
-            await Task.Delay(TimeSpan.FromSeconds(3), stoppingToken);
+            await Task.Delay(TimeSpan.FromSeconds(1), stoppingToken);
         }
     }
 }

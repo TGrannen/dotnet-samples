@@ -3,10 +3,12 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <LangVersion>latest</LangVersion>
+    <UserSecretsId>9b8a2dc7-2fa7-4130-80ad-a8a4140f2926</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.0" />
-    <PackageReference Include="MassTransit" Version="[8.0.0,9.0)" />
+    <PackageReference Include="MassTransit.AmazonSQS" Version="8.2.3" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
+    <PackageReference Include="MassTransit" Version="8.2.3" />
   </ItemGroup>
 </Project>

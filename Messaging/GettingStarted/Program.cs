@@ -1,4 +1,5 @@
 using System.Reflection;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -30,8 +31,20 @@ public class Program
                     x.AddSagas(entryAssembly);
                     x.AddActivities(entryAssembly);
 
-                    x.UsingInMemory((context, cfg) =>
+                    // x.UsingInMemory((context, cfg) =>
+                    // {
+                    //     cfg.ConfigureEndpoints(context);
+                    // });
+
+                    // elided ...
+                    x.UsingAmazonSqs((context, cfg) =>
                     {
+                        cfg.Host("us-east-2", h =>
+                        {
+                            h.AccessKey(hostContext.Configuration.GetValue<string>("your-iam-access-key"));
+                            h.SecretKey(hostContext.Configuration.GetValue<string>("your-iam-secret-key"));
+                        });
+
                         cfg.ConfigureEndpoints(context);
                     });
                 });
