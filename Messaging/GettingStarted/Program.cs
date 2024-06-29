@@ -2,6 +2,7 @@ using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Serilog;
 
 namespace GettingStarted;
 
@@ -39,16 +40,20 @@ public class Program
                     // elided ...
                     x.UsingAmazonSqs((context, cfg) =>
                     {
+                        var scope = hostContext.Configuration.GetValue<string>("scope");
                         cfg.Host("us-east-2", h =>
                         {
                             h.AccessKey(hostContext.Configuration.GetValue<string>("your-iam-access-key"));
                             h.SecretKey(hostContext.Configuration.GetValue<string>("your-iam-secret-key"));
+
+                            h.Scope(scope, true);
                         });
 
-                        cfg.ConfigureEndpoints(context);
+                        cfg.ConfigureEndpoints(context, new DefaultEndpointNameFormatter($"{scope}-", false));
                     });
                 });
 
                 services.AddHostedService<Worker>();
-            });
+            })
+            .UseSerilog((context, configuration) => { configuration.ReadFrom.Configuration(context.Configuration); });
 }
