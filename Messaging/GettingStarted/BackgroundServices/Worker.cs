@@ -1,10 +1,8 @@
-﻿using System;
-using System.Threading;
-using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.Hosting;
 
 namespace GettingStarted;
 
-public class Worker(ILogger<Worker> logger, IBus bus) : BackgroundService
+public class Worker(ILogger<Worker> logger, IBus bus, IOptionsMonitor<TestingConfig> optionsMonitor) : BackgroundService
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -17,7 +15,7 @@ public class Worker(ILogger<Worker> logger, IBus bus) : BackgroundService
                 Value = DateTime.Now.ToString()
             }, stoppingToken);
 
-            await Task.Delay(TimeSpan.FromSeconds(1), stoppingToken);
+            await Task.Delay(optionsMonitor.CurrentValue.RateOfMessage, stoppingToken);
         }
     }
 }

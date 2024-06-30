@@ -17,6 +17,8 @@ public class Program
         Host.CreateDefaultBuilder(args)
             .ConfigureServices((hostContext, services) =>
             {
+                
+                services.Configure<TestingConfig>(hostContext.Configuration.GetSection("TestingConfig"));
                 services.AddMassTransit(x =>
                 {
                     x.SetKebabCaseEndpointNameFormatter();
