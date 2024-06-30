@@ -1,0 +1,6 @@
+@AwsMessagingTest_HostAddress = http://localhost:5228
+
+GET {{AwsMessagingTest_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
