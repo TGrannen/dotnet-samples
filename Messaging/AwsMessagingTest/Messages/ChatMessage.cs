@@ -5,7 +5,7 @@ public class ChatMessage
     public string MessageDescription { get; set; }
 }
 
-public class ChatMessageHandler(ILogger<ChatMessageHandler> logger) : IMessageHandler<ChatMessage>
+public class ChatMessageHandler(ILogger<ChatMessageHandler> logger, IOptionsSnapshot<TestingConfig> optionsSnapshot) : IMessageHandler<ChatMessage>
 {
     public Task<MessageProcessStatus> HandleAsync(MessageEnvelope<ChatMessage> messageEnvelope, CancellationToken token = default)
     {
@@ -20,7 +20,18 @@ public class ChatMessageHandler(ILogger<ChatMessageHandler> logger) : IMessageHa
             return Task.FromResult(MessageProcessStatus.Failed());
         }
 
-        ChatMessage message = messageEnvelope.Message;
+        var config = optionsSnapshot.Value.Chat;
+        if (config.Throw)
+        {
+            throw new Exception($"Dummy test{DateTime.Now}");
+        }
+
+        if (config.ReturnFailure)
+        {
+            return Task.FromResult(MessageProcessStatus.Failed());
+        }
+
+        var message = messageEnvelope.Message;
 
         logger.LogInformation("Message Description: {MessageDescription}", message.MessageDescription);
 

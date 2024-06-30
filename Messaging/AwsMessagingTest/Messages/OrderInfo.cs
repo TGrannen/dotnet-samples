@@ -6,7 +6,7 @@ public class OrderInfo
     public string Value { get; set; }
 }
 
-public class OrderInfoHandler(ILogger<OrderInfoHandler> logger)  : IMessageHandler<OrderInfo>
+public class OrderInfoHandler(ILogger<OrderInfoHandler> logger, IOptionsSnapshot<TestingConfig> optionsSnapshot) : IMessageHandler<OrderInfo>
 {
     public Task<MessageProcessStatus> HandleAsync(MessageEnvelope<OrderInfo> messageEnvelope, CancellationToken token = new())
     {
@@ -17,6 +17,17 @@ public class OrderInfoHandler(ILogger<OrderInfoHandler> logger)  : IMessageHandl
         }
 
         if (messageEnvelope.Message == null)
+        {
+            return Task.FromResult(MessageProcessStatus.Failed());
+        }
+
+        var config = optionsSnapshot.Value.Order;
+        if (config.Throw)
+        {
+            throw new Exception($"Order Dummy test{DateTime.Now}");
+        }
+
+        if (config.ReturnFailure)
         {
             return Task.FromResult(MessageProcessStatus.Failed());
         }

@@ -12,6 +12,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
 
 builder.Services.AddHostedService<Worker>();
+builder.Services.Configure<TestingConfig>(builder.Configuration.GetSection("TestingConfig"));
 
 // Register the AWS Message Processing Framework for .NET
 builder.Services.AddAWSMessageBus(messageBusBuilder =>

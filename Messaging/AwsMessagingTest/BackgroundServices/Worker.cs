@@ -2,7 +2,7 @@
 
 namespace AwsMessagingTest.BackgroundServices;
 
-public class Worker(ILogger<Worker> logger, IMessagePublisher bus) : BackgroundService
+public class Worker(ILogger<Worker> logger, IMessagePublisher messagePublisher, IOptionsMonitor<TestingConfig> optionsMonitor) : BackgroundService
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -10,12 +10,12 @@ public class Worker(ILogger<Worker> logger, IMessagePublisher bus) : BackgroundS
 
         while (!stoppingToken.IsCancellationRequested)
         {
-            await bus.PublishAsync(new ChatMessage
+            await messagePublisher.PublishAsync(new ChatMessage
             {
                 MessageDescription = DateTime.Now.ToString()
             }, stoppingToken);
 
-            await Task.Delay(TimeSpan.FromSeconds(1), stoppingToken);
+            await Task.Delay(optionsMonitor.CurrentValue.RateOfChat, stoppingToken);
         }
     }
 }
