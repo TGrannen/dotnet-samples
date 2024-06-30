@@ -1,5 +1,7 @@
 using AwsMessagingTest.BackgroundServices;
 using AwsMessagingTest.Messages;
+using AwsMessagingTest.Resilience;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +16,22 @@ builder.Services.AddControllers();
 builder.Services.AddHostedService<Worker>();
 builder.Services.Configure<TestingConfig>(builder.Configuration.GetSection("TestingConfig"));
 
+builder.Services.AddResiliencePipeline("my-pipeline", builder =>
+{
+    builder
+        .AddRetry(new RetryStrategyOptions
+        {
+            OnRetry = arguments =>
+            {
+                Log.Warning("On Retry {Data}", arguments);
+                return new ValueTask();
+            }
+        })
+        .AddTimeout(TimeSpan.FromSeconds(5));
+});
+
+builder.Services.TryAddSingleton<IBackoffHandler, PollyBackoffHandler>();
+
 // Register the AWS Message Processing Framework for .NET
 builder.Services.AddAWSMessageBus(messageBusBuilder =>
 {
@@ -27,7 +45,7 @@ builder.Services.AddAWSMessageBus(messageBusBuilder =>
     messageBusBuilder.AddSQSPoller(chatUrl, options =>
     {
         // The maximum number of messages from this queue that the framework will process concurrently on this client
-        options.MaxNumberOfConcurrentMessages = 10;
+        options.MaxNumberOfConcurrentMessages = 1;
 
         // The duration each call to SQS will wait for new messages
         options.WaitTimeSeconds = 20;
@@ -39,6 +57,13 @@ builder.Services.AddAWSMessageBus(messageBusBuilder =>
     // Here messages that match our ChatMessage .NET type will be handled by our ChatMessageHandler
     messageBusBuilder.AddMessageHandler<ChatMessageHandler, ChatMessage>();
     messageBusBuilder.AddMessageHandler<OrderInfoHandler, OrderInfo>();
+
+    // Optional: Configure the backoff policy used by the SQS Poller.
+    messageBusBuilder.ConfigureBackoffPolicy(options =>
+    {
+        // Capped exponential backoff policy
+        options.UseCappedExponentialBackoff(x => { x.CapBackoffTime = 60; });
+    });
 });
 
 var app = builder.Build();

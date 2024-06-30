@@ -10,6 +10,7 @@
   <ItemGroup>
     <PackageReference Include="AWS.Messaging" Version="0.9.1" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.3"/>
+    <PackageReference Include="Polly.Extensions" Version="8.4.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
     <PackageReference Include="Serilog.AspNetCore" Version="8.0.1" />
   </ItemGroup>

@@ -7,20 +7,12 @@ public class ChatMessage
 
 public class ChatMessageHandler(ILogger<ChatMessageHandler> logger, IOptionsSnapshot<TestingConfig> optionsSnapshot) : IMessageHandler<ChatMessage>
 {
-    public Task<MessageProcessStatus> HandleAsync(MessageEnvelope<ChatMessage> messageEnvelope, CancellationToken token = default)
+    public async Task<MessageProcessStatus> HandleAsync(MessageEnvelope<ChatMessage> messageEnvelope, CancellationToken token = default)
     {
-        // Add business and validation logic here
-        if (messageEnvelope == null)
-        {
-            return Task.FromResult(MessageProcessStatus.Failed());
-        }
-
-        if (messageEnvelope.Message == null)
-        {
-            return Task.FromResult(MessageProcessStatus.Failed());
-        }
-
         var config = optionsSnapshot.Value.Chat;
+
+        await Task.Delay(config.Delay, token);
+
         if (config.Throw)
         {
             throw new Exception($"Dummy test{DateTime.Now}");
@@ -28,7 +20,7 @@ public class ChatMessageHandler(ILogger<ChatMessageHandler> logger, IOptionsSnap
 
         if (config.ReturnFailure)
         {
-            return Task.FromResult(MessageProcessStatus.Failed());
+            return MessageProcessStatus.Failed();
         }
 
         var message = messageEnvelope.Message;
@@ -36,6 +28,6 @@ public class ChatMessageHandler(ILogger<ChatMessageHandler> logger, IOptionsSnap
         logger.LogInformation("Message Description: {MessageDescription}", message.MessageDescription);
 
         // Return success so the framework will delete the message from the queue
-        return Task.FromResult(MessageProcessStatus.Success());
+        return MessageProcessStatus.Success();
     }
 }
