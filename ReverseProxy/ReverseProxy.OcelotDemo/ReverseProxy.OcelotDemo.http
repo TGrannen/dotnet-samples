@@ -4,3 +4,8 @@ GET {{ReverseProxy.OcelotDemo_HostAddress}}/todos/2
 Accept: application/json
 
 ###
+
+GET {{ReverseProxy.OcelotDemo_HostAddress}}/api/values
+Accept: application/json
+
+###
