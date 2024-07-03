@@ -1,6 +1,6 @@
 @ReverseProxy.OcelotDemo_HostAddress = http://localhost:5166
 
-GET {{ReverseProxy.OcelotDemo_HostAddress}}/weatherforecast/
+GET {{ReverseProxy.OcelotDemo_HostAddress}}/todos/2
 Accept: application/json
 
 ###
