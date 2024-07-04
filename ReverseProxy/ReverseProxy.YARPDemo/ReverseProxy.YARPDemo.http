@@ -1,0 +1,11 @@
+@ReverseProxy.YARPDemo_HostAddress = http://localhost:5299
+
+GET {{ReverseProxy.YARPDemo_HostAddress}}/todos/15
+Accept: application/json
+
+###
+
+GET {{ReverseProxy.YARPDemo_HostAddress}}/Weather
+Accept: application/json
+
+###
