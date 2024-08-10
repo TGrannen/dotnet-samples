@@ -6,7 +6,7 @@ public class ProducerService(IProducer<string, EventType1> producer, ILogger<Pro
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        await Task.Delay(TimeSpan.FromSeconds(20), stoppingToken);
+        await Task.Delay(TimeSpan.FromSeconds(5), stoppingToken);
         while (!stoppingToken.IsCancellationRequested)
         {
             await ProcessKafkaMessage(stoppingToken);
