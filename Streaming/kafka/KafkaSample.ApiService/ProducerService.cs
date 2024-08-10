@@ -1,6 +1,8 @@
-﻿namespace KafkaSample.ApiService;
+﻿using AutoBogus;
 
-public class ProducerService(IProducer<string, string> producer, ILogger<ProducerService> logger) : BackgroundService
+namespace KafkaSample.ApiService;
+
+public class ProducerService(IProducer<string, EventType1> producer, ILogger<ProducerService> logger) : BackgroundService
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -17,15 +19,12 @@ public class ProducerService(IProducer<string, string> producer, ILogger<Produce
     {
         try
         {
-            var value = new
-            {
-                Id = Guid.NewGuid()
-            };
+            var value = AutoFaker.Generate<EventType1>();
             logger.LogInformation("Sending message: {@Message}", value);
-            await producer.ProduceAsync("ContinuousUpdates", new Message<string, string>
+            await producer.ProduceAsync("ContinuousUpdates", new Message<string, EventType1>
             {
-                Key = "test",
-                Value = JsonSerializer.Serialize(value),
+                Key = value.OrderNumber,
+                Value = value,
             }, stoppingToken);
         }
         catch (Exception ex)

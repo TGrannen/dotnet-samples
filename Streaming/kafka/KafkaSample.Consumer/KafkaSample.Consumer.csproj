@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\KafkaSample.Contracts\KafkaSample.Contracts.csproj" />
     <ProjectReference Include="..\KafkaSample.ServiceDefaults\KafkaSample.ServiceDefaults.csproj"/>
   </ItemGroup>
 
