@@ -13,6 +13,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KafkaSample.ApiService", "K
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KafkaSample.Consumer", "KafkaSample.Consumer\KafkaSample.Consumer.csproj", "{F995FFBE-CEA1-48BE-AE44-E13A4E2F68DA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KafkaSample.Contracts", "KafkaSample.Contracts\KafkaSample.Contracts.csproj", "{24E35268-83FF-4BC2-ACBD-C89B601FE9A6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KafkaSample.Shared", "KafkaSample.Shared\KafkaSample.Shared.csproj", "{E9CF5510-5BD8-4CBB-B8F4-FD6940D6FA99}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,5 +46,13 @@ Global
 		{F995FFBE-CEA1-48BE-AE44-E13A4E2F68DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F995FFBE-CEA1-48BE-AE44-E13A4E2F68DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F995FFBE-CEA1-48BE-AE44-E13A4E2F68DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24E35268-83FF-4BC2-ACBD-C89B601FE9A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24E35268-83FF-4BC2-ACBD-C89B601FE9A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24E35268-83FF-4BC2-ACBD-C89B601FE9A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24E35268-83FF-4BC2-ACBD-C89B601FE9A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E9CF5510-5BD8-4CBB-B8F4-FD6940D6FA99}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E9CF5510-5BD8-4CBB-B8F4-FD6940D6FA99}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E9CF5510-5BD8-4CBB-B8F4-FD6940D6FA99}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E9CF5510-5BD8-4CBB-B8F4-FD6940D6FA99}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
