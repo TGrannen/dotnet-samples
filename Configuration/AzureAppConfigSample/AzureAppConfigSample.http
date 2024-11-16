@@ -1,0 +1,6 @@
+@AzureAppConfigSample_HostAddress = http://localhost:5293
+
+GET {{AzureAppConfigSample_HostAddress}}/Settings/
+Accept: application/json
+
+###
