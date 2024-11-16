@@ -29,7 +29,7 @@ builder.Configuration.AddAzureAppConfiguration(options =>
         .Select("*")
         .ConfigureRefresh(refreshOptions =>
         {
-            refreshOptions.Register("AppConfig:Sentinel", refreshAll: true).SetRefreshInterval(TimeSpan.FromSeconds(15));
+            refreshOptions.Register("AppConfig:Sentinel", refreshAll: true);
         });
     options.ConfigureKeyVault(keyVaultOptions => { keyVaultOptions.SetCredential(new DefaultAzureCredential()); });
     options.UseFeatureFlags();
@@ -49,6 +49,7 @@ changeToken.RegisterChangeCallback(state => { Log.Information("Configuration has
 
 app.UseSerilogRequestLogging();
 app.UseHttpsRedirection();
+app.UseAzureAppConfiguration();
 app.MapGet("/Settings",
     async (IConfiguration configuration, IFeatureManager featureManager, IOptions<Settings> options, IOptionsSnapshot<Settings> optionsSnapshot) =>
         Results.Ok(new
