@@ -1,0 +1,11 @@
+@FeatureFlags.OpenFeatureDemoAPI_HostAddress = http://localhost:5048
+
+GET {{FeatureFlags.OpenFeatureDemoAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
+
+GET {{FeatureFlags.OpenFeatureDemoAPI_HostAddress}}/weatherforecast/testContextual
+Accept: application/json
+
+###

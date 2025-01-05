@@ -1,0 +1,12 @@
+services:
+  flagd:
+    image: ghcr.io/open-feature/flagd:latest
+    container_name: flagd
+    ports:
+      - "8013:8013"
+    volumes:
+      - ./config:/etc/flagd
+    command: ["start", "--uri", "file:/etc/flagd/demo.flagd.json"]
+    stdin_open: true
+    tty: true
+    restart: "no"

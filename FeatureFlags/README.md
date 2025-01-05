@@ -37,6 +37,13 @@ appsettings.json
 * [Azure App Configuration](https://azure.microsoft.com/en-us/services/app-configuration/#overview) Feature Management
   integration
 
+## Open Feature Example
+
+[OpenFeature](https://openfeature.dev/) is an open specification that provides a vendor-agnostic, community-driven API for feature flagging that works with your favorite feature
+flag management tool or in-house solution. OpenFeature is designed to work with any feature flag management tool or in-house solution. This enables you to switch between platforms
+or consolidate multiple platforms much more easily.
+feature flags. They provide a .NET SDK ([Docs](https://openfeature.dev/docs/reference/technologies/server/dotnet)) that is used in the example project within this repo.
+
 ## LaunchDarkly Example & Library
 
 [LaunchDarkly](https://launchdarkly.com) is a feature management platform that allows software development teams to
