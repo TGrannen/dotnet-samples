@@ -97,6 +97,10 @@ This repository's purpose is to showcase common design patterns, best practices,
 
 * [Stateless](StateMachines/)
 
+### Streaming
+
+* [Streaming](Streaming/)
+
 ### Templates
 
 * [Console App](Templates/ConsoleApp/)
