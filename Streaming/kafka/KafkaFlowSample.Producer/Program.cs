@@ -54,11 +54,11 @@ if (app.Environment.IsDevelopment())
     app.MapScalarApiReference();
 }
 
-app.MapPost("/produce", async (IProducerAccessor producerAccessor, ILogger<Program> logger) =>
+app.MapPost("/produce", async (IProducerAccessor producerAccessor, TimeProvider timeProvider, ILogger<Program> logger) =>
 {
     var producer = producerAccessor.GetProducer(producerName);
 
-    var messageValue = new HelloMessage($"Hello! {DateTime.Now}");
+    var messageValue = new HelloMessage($"Hello! {timeProvider.GetUtcNow()}");
     await producer.ProduceAsync(Guid.NewGuid().ToString(), messageValue);
     logger.LogInformation("Sent: {@Message}", messageValue);
     return messageValue;
@@ -121,6 +121,10 @@ app.MapPost("/produce/cdc-batch",
     });
 
 app.Run();
+
+public partial class Program
+{
+}
 
 namespace KafkaFlowSample.Producer
 {

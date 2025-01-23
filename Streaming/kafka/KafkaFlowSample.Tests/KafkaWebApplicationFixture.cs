@@ -1,19 +1,26 @@
-﻿using Testcontainers.Kafka;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Time.Testing;
+using Testcontainers.Kafka;
 
 namespace KafkaFlowSample.Tests;
 
-[CollectionDefinition(nameof(KafkaContainerFixture))]
-public class KafkaContainerFixtureCollection : ICollectionFixture<KafkaContainerFixture>
+[CollectionDefinition(nameof(KafkaWebApplicationFixture))]
+public class KafkaWebApplicationFixtureCollection : ICollectionFixture<KafkaWebApplicationFixture>
 {
 }
 
-public class KafkaContainerFixture : IAsyncLifetime
+public class KafkaWebApplicationFixture : WebApplicationFactory<Program>, IAsyncLifetime
 {
     private readonly KafkaContainer _kafkaContainer = new KafkaBuilder()
         .WithImage("confluentinc/cp-kafka:latest")
         .Build();
 
     public IConsumer<Ignore, string>? Consumer { get; private set; }
+    public FakeTimeProvider TimeProvider = new(DateTimeOffset.Parse("4/12/2021"));
     public IProducer<Null, string>? Producer { get; private set; }
 
     public async Task InitializeAsync()
@@ -29,6 +36,8 @@ public class KafkaContainerFixture : IAsyncLifetime
                 AutoOffsetReset = AutoOffsetReset.Earliest
             })
             .Build();
+
+        Environment.SetEnvironmentVariable("ConnectionStrings__messaging", _kafkaContainer.GetBootstrapAddress());
     }
 
     public async Task DisposeAsync()
@@ -36,5 +45,14 @@ public class KafkaContainerFixture : IAsyncLifetime
         await _kafkaContainer.DisposeAsync();
         Consumer!.Dispose();
         Producer!.Dispose();
+    }
+
+    protected override void ConfigureWebHost(IWebHostBuilder builder)
+    {
+        builder.ConfigureServices(services =>
+        {
+            services.RemoveAll(typeof(TimeProvider));
+            services.AddSingleton<TimeProvider>(TimeProvider);
+        });
     }
 }
