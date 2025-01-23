@@ -1,7 +1,7 @@
 ﻿namespace KafkaFlowSample.Tests;
 
-[Collection(nameof(KafkaContainerFixture))]
-public class KafkaExampleTests(KafkaContainerFixture containerFixture)
+[Collection(nameof(KafkaWebApplicationFixture))]
+public class KafkaExampleTests(KafkaWebApplicationFixture containerFixture)
 {
     [Fact]
     public async Task ShouldProduceMessageToKafka()
@@ -10,8 +10,7 @@ public class KafkaExampleTests(KafkaContainerFixture containerFixture)
         report.Status.ShouldBe(PersistenceStatus.Persisted);
         (report.Partition >= 0 && report.Offset >= 0).ShouldBeTrue();
 
-        containerFixture.Consumer!.Subscribe("ping");
-        var result = containerFixture.Consumer.Consume(TimeSpan.FromSeconds(10));
+        var result = containerFixture.ConsumeFromTopic("ping");
         result.Message.Value.ShouldBe("pong1");
     }
 
@@ -22,8 +21,7 @@ public class KafkaExampleTests(KafkaContainerFixture containerFixture)
         report.Status.ShouldBe(PersistenceStatus.Persisted);
         (report.Partition >= 0 && report.Offset >= 0).ShouldBeTrue();
 
-        containerFixture.Consumer!.Subscribe("ping");
-        var result = containerFixture.Consumer.Consume(TimeSpan.FromSeconds(10));
+        var result = containerFixture.ConsumeFromTopic("ping");
         result.Message.Value.ShouldBe("pong2");
     }
 
@@ -34,8 +32,7 @@ public class KafkaExampleTests(KafkaContainerFixture containerFixture)
         report.Status.ShouldBe(PersistenceStatus.Persisted);
         (report.Partition >= 0 && report.Offset >= 0).ShouldBeTrue();
 
-        containerFixture.Consumer!.Subscribe("ping");
-        var result = containerFixture.Consumer.Consume(TimeSpan.FromSeconds(10));
+        var result = containerFixture.ConsumeFromTopic("ping");
         result.Message.Value.ShouldBe("pong3");
     }
 
@@ -46,8 +43,7 @@ public class KafkaExampleTests(KafkaContainerFixture containerFixture)
         report.Status.ShouldBe(PersistenceStatus.Persisted);
         (report.Partition >= 0 && report.Offset >= 0).ShouldBeTrue();
 
-        containerFixture.Consumer!.Subscribe("ping");
-        var result = containerFixture.Consumer.Consume(TimeSpan.FromSeconds(10));
+        var result = containerFixture.ConsumeFromTopic("ping");
         result.Message.Value.ShouldBe("pong4");
     }
 }

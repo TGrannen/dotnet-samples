@@ -13,8 +13,7 @@ public class IntegrationTests(KafkaWebApplicationFixture factory)
         var response = await client.PostAsJsonAsync("/produce", new { });
 
         response.EnsureSuccessStatusCode();
-        factory.Consumer!.Subscribe("sample-topic");
-        var result = factory.Consumer.Consume(TimeSpan.FromSeconds(10));
+        var result = factory.ConsumeFromTopic("sample-topic");
 
         await VerifyJson(result.Message.Value);
     }
