@@ -17,6 +17,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionIt
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KafkaFlowSample.MessageContracts", "KafkaFlowSample.MessageContracts\KafkaFlowSample.MessageContracts.csproj", "{1A1F4416-A8E0-4B5D-9096-35FE094744DD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KafkaFlowSample.Tests", "KafkaFlowSample.Tests\KafkaFlowSample.Tests.csproj", "{C192BD79-9D69-454B-B8CD-0ECA25E0B22A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,5 +43,9 @@ Global
 		{1A1F4416-A8E0-4B5D-9096-35FE094744DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1A1F4416-A8E0-4B5D-9096-35FE094744DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1A1F4416-A8E0-4B5D-9096-35FE094744DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C192BD79-9D69-454B-B8CD-0ECA25E0B22A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C192BD79-9D69-454B-B8CD-0ECA25E0B22A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C192BD79-9D69-454B-B8CD-0ECA25E0B22A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C192BD79-9D69-454B-B8CD-0ECA25E0B22A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
