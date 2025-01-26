@@ -116,5 +116,6 @@ This repository's purpose is to showcase common design patterns, best practices,
 
 ### Web
 
+* [API Docs](Web/APIDocs/)
 * [Blazor](Web/Blazor/)
 * [Health Checks](Web/HealthEndpoints/)
