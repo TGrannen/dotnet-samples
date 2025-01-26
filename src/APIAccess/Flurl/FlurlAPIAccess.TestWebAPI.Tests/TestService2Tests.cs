@@ -30,11 +30,9 @@ public class TestService2Tests
         httpTest.ShouldHaveCalled("https://api.com/posts/44")
             .WithVerb(HttpMethod.Get);
 
-        result.Should().BeEquivalentTo(new
-        {
-            UserId = 60,
-            Id = 44,
-            Title = "TEST"
-        });
+        result.ShouldSatisfyAllConditions(
+            () => result.UserId.ShouldBe(60),
+            () => result.Id.ShouldBe(44),
+            () => result.Title.ShouldBe("TEST"));
     }
 }

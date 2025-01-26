@@ -1,7 +1,5 @@
 using BlazorServer.Areas.Counter.Pages;
-using Bunit;
-using FluentAssertions;
-using FluentAssertions.BUnit;
+using BlazorServer.Tests.Extensions;
 using NUnit.Framework;
 
 namespace BlazorServer.Tests;
@@ -40,9 +38,8 @@ public class Tests : BunitTestContext
         buttonElement.Click();
         buttonElement.Click();
 
-        cut.Instance.Text.Should().Be("Awesome x 3");
+        cut.Instance.Text.ShouldBe("Awesome x 3");
     }
-
 
     [Test]
     public void CounterComponent_ShouldHaveHeaderWithTextContent()
@@ -51,6 +48,9 @@ public class Tests : BunitTestContext
 
         var cut = ctx.RenderComponent<Counter>();
 
-        cut.AsElement().Should().HaveTag("h1").And.Subject.TextContent.Should().Be("Counter");
+        var asElement = cut.AsElement();
+        asElement.ShouldNotBeNull();
+        asElement.ShouldHaveTag("h1");
+        asElement.TextContent.ShouldBe("Counter");
     }
 }

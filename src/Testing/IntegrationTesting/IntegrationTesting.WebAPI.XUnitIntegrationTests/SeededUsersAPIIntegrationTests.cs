@@ -16,13 +16,15 @@ public class SeededUsersAPIIntegrationTests
     public async Task GetUsers_ShouldReturnANonEmptyCollection()
     {
         var users = await _api.GetUsers();
-        users.Should().NotBeEmpty();
-        users.Should().AllSatisfy(x =>
+        users.ShouldNotBeEmpty();
+        foreach (var user in users)
         {
-            x.Id.Should().NotBeEmpty();
-            x.Email.Should().NotBeEmpty();
-            x.Name.Should().NotBeEmpty();
-        });
+            user.ShouldSatisfyAllConditions(
+                () => user.Id.ShouldNotBe(Guid.Empty),
+                () => user.Email.ShouldNotBeNullOrEmpty(),
+                () => user.Name.ShouldNotBeNullOrEmpty()
+            );
+        }
     }
 
     internal interface IUsersAPI

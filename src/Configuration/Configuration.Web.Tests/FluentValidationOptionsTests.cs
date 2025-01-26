@@ -9,12 +9,9 @@ public class FluentValidationOptionsTests
     {
         var options = new FluentValidationOptions<TestOptions>("TEST", new[] { new TestOptionsValidator() });
         var result = options.Validate("TEST", new TestOptions { Value = "My Value" });
-        result.Should().BeEquivalentTo(new
-        {
-            Skipped = false,
-            Failed = false,
-            Succeeded = true,
-        });
+        result.Skipped.ShouldBe(false);
+        result.Failed.ShouldBe(false);
+        result.Succeeded.ShouldBe(true);
     }
 
     [Fact]
@@ -22,12 +19,10 @@ public class FluentValidationOptionsTests
     {
         var options = new FluentValidationOptions<TestOptions>("TEST", new[] { new TestOptionsValidator() });
         var result = options.Validate("TEST", new TestOptions { Value = "NOPE" });
-        result.Should().BeEquivalentTo(new
-        {
-            Skipped = false,
-            Failed = true,
-            Succeeded = false,
-        });
+
+        result.Skipped.ShouldBe(false);
+        result.Failed.ShouldBe(true);
+        result.Succeeded.ShouldBe(false);
     }
 
     [Theory]
@@ -36,12 +31,10 @@ public class FluentValidationOptionsTests
     {
         var options = new FluentValidationOptions<TestOptions>(builderName, new[] { new TestOptionsValidator() });
         var result = options.Validate(validateName, new TestOptions());
-        result.Should().BeEquivalentTo(new
-        {
-            Skipped = true,
-            Failed = false,
-            Succeeded = false,
-        });
+
+        result.Skipped.ShouldBe(true);
+        result.Failed.ShouldBe(false);
+        result.Succeeded.ShouldBe(false);
     }
 
     [Theory]
@@ -52,12 +45,10 @@ public class FluentValidationOptionsTests
     {
         var options = new FluentValidationOptions<TestOptions>(name, new List<IValidator<TestOptions>>());
         var result = options.Validate(name, new TestOptions());
-        result.Should().BeEquivalentTo(new
-        {
-            Skipped = true,
-            Failed = false,
-            Succeeded = false,
-        });
+
+        result.Skipped.ShouldBe(true);
+        result.Failed.ShouldBe(false);
+        result.Succeeded.ShouldBe(false);
     }
 
     [Fact]
@@ -65,12 +56,10 @@ public class FluentValidationOptionsTests
     {
         var options = new FluentValidationOptions<TestOptions>("TEST", null);
         var result = options.Validate("TEST", new TestOptions());
-        result.Should().BeEquivalentTo(new
-        {
-            Skipped = true,
-            Failed = false,
-            Succeeded = false,
-        });
+
+        result.Skipped.ShouldBe(true);
+        result.Failed.ShouldBe(false);
+        result.Succeeded.ShouldBe(false);
     }
 }
 

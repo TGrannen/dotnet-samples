@@ -9,8 +9,6 @@
 
     <ItemGroup>
         <PackageReference Include="bunit" Version="1.10.14" />
-        <PackageReference Include="FluentAssertions" Version="6.7.0" />
-        <PackageReference Include="FluentAssertions.BUnit" Version="0.0.67" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.1" />
         <PackageReference Include="NUnit" Version="3.13.3" />
         <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
@@ -18,6 +16,7 @@
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+        <PackageReference Include="Shouldly" Version="4.3.0" />
     </ItemGroup>
 
     <ItemGroup>

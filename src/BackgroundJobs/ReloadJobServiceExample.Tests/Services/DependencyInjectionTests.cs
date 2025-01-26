@@ -10,7 +10,7 @@ public class DependencyInjectionTests
     {
         var provider = BuildServiceProviderWithAddJobs();
         var job1 = provider.GetService<ReloadJob1>();
-        job1.Should().NotBeNull();
+        job1.ShouldNotBeNull();
     }
 
     [Fact]
@@ -18,7 +18,7 @@ public class DependencyInjectionTests
     {
         var provider = BuildServiceProviderWithAddJobs();
         var job2 = provider.GetService<ReloadJob2>();
-        job2.Should().NotBeNull();
+        job2.ShouldNotBeNull();
     }
 
     [Fact]
@@ -26,7 +26,7 @@ public class DependencyInjectionTests
     {
         var provider = BuildServiceProviderWithAddJobs();
         var service = provider.GetService<ReloadJobService<ReloadJob1>>();
-        service.Should().NotBeNull();
+        service.ShouldNotBeNull();
     }
 
 

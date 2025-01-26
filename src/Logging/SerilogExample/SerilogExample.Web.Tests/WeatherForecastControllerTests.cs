@@ -1,15 +1,16 @@
+using Moq;
 using SerilogExample.Web.Controllers;
 
 namespace SerilogExample.Web.Tests;
 
 public class WeatherForecastControllerTests
 {
-    private readonly LoggingFixture _loggingFixture = new();
+    private readonly Mock<ILogger<WeatherForecastController>> _loggerMock = new();
     private readonly WeatherForecastController _sut;
 
     public WeatherForecastControllerTests()
     {
-        _sut = new WeatherForecastController(_loggingFixture.GetLogger<WeatherForecastController>());
+        _sut = new WeatherForecastController(_loggerMock.Object);
     }
 
     [Fact]
@@ -17,7 +18,7 @@ public class WeatherForecastControllerTests
     {
         _sut.Get();
 
-        _loggingFixture.Instance.Should().HaveMessage("Getting the weather forecasts!");
+        _loggerMock.VerifyLog(x => x.LogInformation("Getting the weather forecasts!"));
     }
 
     [Fact]
@@ -27,10 +28,6 @@ public class WeatherForecastControllerTests
 
         _sut.TestLog(value);
 
-        _loggingFixture.Instance.Should()
-            .HaveMessage("This Value is {Count} and it's pretty cool")
-            .Appearing().Once()
-            .WithProperty("Count")
-            .WithValue(value);
+        _loggerMock.VerifyLog(x => x.LogInformation("This Value is {Count} and it's pretty cool", value));
     }
 }

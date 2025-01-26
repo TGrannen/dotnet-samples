@@ -1,9 +1,9 @@
 ﻿global using System.Linq;
 global using System.Threading.Tasks;
 global using NUnit.Framework;
-global using FluentAssertions;
 global using Infrastructure.ConsoleApp.Models;
 global using Infrastructure.ConsoleApp.Services;
 global using Infrastructure.ConsoleApp.Tests.Helpers;
 global using Pulumi;
 global using Pulumi.Kubernetes.Core.V1;
+global using Shouldly;

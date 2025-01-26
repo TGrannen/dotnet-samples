@@ -51,4 +51,4 @@ https://github.com/vrajmohan/pgsql-sample-data/tree/master/employee
 * [MediatR](https://github.com/jbogard/MediatR)
 * [Respawn](https://github.com/jbogard/Respawn)
 * [Moq](https://github.com/moq/moq)
-* [FluentAssertions](https://fluentassertions.com/introduction)
+* [Shouldly](https://docs.shouldly.org/)

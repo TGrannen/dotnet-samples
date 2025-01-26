@@ -1,7 +1,7 @@
 // Global using directives
 
 global using Xunit;
-global using FluentAssertions;
+global using Shouldly;
 global using Flurl;
 global using Flurl.Http;
 global using Flurl.Http.Testing;

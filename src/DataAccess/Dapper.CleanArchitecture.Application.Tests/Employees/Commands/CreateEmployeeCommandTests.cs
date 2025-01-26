@@ -25,7 +25,7 @@ public class CreateEmployeeCommandTests
     public async Task Handle_ShouldReturnDbValueInVm()
     {
         var result = await _fixture.SendAsync(new CreateEmployeeCommand { EmployeeNumber = EmployeeNumber });
-        result.Should().NotBeNull();
-        result.EmployeeNumber.Should().Be(EmployeeNumber);
+        result.ShouldNotBeNull();
+        result.EmployeeNumber.ShouldBe(EmployeeNumber);
     }
 }

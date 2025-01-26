@@ -14,7 +14,7 @@ public class UsersAPIIntegrationTests : DbRespawnTests
     public async Task GetUsers_ShouldReturnAnEmptyCollection()
     {
         var users = await _api.GetUsers();
-        users.Should().BeEmpty();
+        users.ShouldBeEmpty();
     }
 
     [Test]
@@ -26,20 +26,20 @@ public class UsersAPIIntegrationTests : DbRespawnTests
             Name = "Fred Wow"
         };
         var id = await _api.CreateUser(dto);
-        id.Should().NotBeEmpty();
+        id.ShouldNotBe(Guid.Empty);
 
         var user = await _api.GetUser(id);
-        user.Should().NotBeNull();
-        user.Id.Should().Be(id);
-        user.Name.Should().Be(dto.Name);
-        user.Email.Should().Be(dto.Email);
+        user.ShouldNotBeNull();
+        user.Id.ShouldBe(id);
+        user.Name.ShouldBe(dto.Name);
+        user.Email.ShouldBe(dto.Email);
     }
 
     [Test]
     public async Task CreateUser_ShouldAddOneUserToAllUsers()
     {
         var users = await _api.GetUsers();
-        users.Should().BeEmpty();
+        users.ShouldBeEmpty();
 
         await _api.CreateUser(new UserDto
         {
@@ -48,7 +48,7 @@ public class UsersAPIIntegrationTests : DbRespawnTests
         });
 
         users = await _api.GetUsers();
-        users.Should().HaveCount(1);
+        users.Count.ShouldBe(1);
     }
 
     internal interface IUsersAPI

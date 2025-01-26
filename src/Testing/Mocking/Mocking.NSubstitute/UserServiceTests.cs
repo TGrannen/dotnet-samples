@@ -1,6 +1,6 @@
-using FluentAssertions;
 using NSubstitute;
 using NSubstitute.ReturnsExtensions;
+using Shouldly;
 
 namespace Mocking.NSubstitute;
 
@@ -28,9 +28,9 @@ public class UserServiceTests
         var user = await _service.GetByIdAsync(userId);
 
         // Assert
-        user.Should().NotBeNull();
-        user.Id.Should().Be(userId);
-        user.UserName.Should().Be(userName);
+        user.ShouldNotBeNull();
+        user.Id.ShouldBe(userId);
+        user.UserName.ShouldBe(userName);
     }
 
     [Fact]
@@ -43,7 +43,7 @@ public class UserServiceTests
         var user = await _service.GetByIdAsync(Guid.NewGuid());
 
         // Assert
-        user.Should().BeNull();
+        user.ShouldBeNull();
     }
 
     [Fact]

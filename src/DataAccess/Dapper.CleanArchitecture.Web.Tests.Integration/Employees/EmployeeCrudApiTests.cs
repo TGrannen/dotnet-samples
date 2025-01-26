@@ -32,15 +32,15 @@ public class EmployeeCrudApiTests : TestsBase
         };
 
         var employeeNumber = await GetEmployeeNumberFromTable(command.EmployeeNumber);
-        employeeNumber.Should().Be(0);
+        employeeNumber.ShouldBe(0);
 
         var response = await _client.PostAsJsonAsync("/Clean/Create", command);
 
-        response.Should().NotBeNull();
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        response.ShouldNotBeNull();
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
 
         employeeNumber = await GetEmployeeNumberFromTable(command.EmployeeNumber);
-        employeeNumber.Should().Be(command.EmployeeNumber);
+        employeeNumber.ShouldBe(command.EmployeeNumber);
     }
 
     private async Task<int> GetEmployeeNumberFromTable(int number)

@@ -8,11 +8,12 @@ public class KubeServiceTests
         var resources = await Testing.RunAsync<TestStack>();
 
         var service = resources.OfType<Service>().FirstOrDefault();
-        service.Should().NotBeNull("Service was not found");
+        service.ShouldNotBeNull("Service was not found");
         var spec = await service!.Spec.GetValueAsync();
-        spec.Ports.Should().NotBeEmpty().And.HaveCount(1);
-        spec.Ports[0].Port.Should().Be(53);
-        spec.Ports[0].NodePort.Should().Be(2656);
+        spec.Ports.ShouldNotBeEmpty();
+        spec.Ports.Length.ShouldBe(1);
+        spec.Ports[0].Port.ShouldBe(53);
+        spec.Ports[0].NodePort.ShouldBe(2656);
     }
 
     [Test]
@@ -21,14 +22,17 @@ public class KubeServiceTests
         var resources = await Testing.RunAsync<TestStack>();
 
         var deployment = resources.OfType<Pulumi.Kubernetes.Apps.V1.Deployment>().FirstOrDefault();
-        deployment.Should().NotBeNull("Deployment was not found");
+        deployment.ShouldNotBeNull("Deployment was not found");
         var spec = await deployment!.Spec.GetValueAsync();
-        spec.Template.Spec.Containers.Should().NotBeNullOrEmpty().And.HaveCount(1);
+        spec.Template.Spec.Containers.ShouldNotBeEmpty();
+        spec.Template.Spec.Containers.Length.ShouldBe(1);
 
         var container = spec.Template.Spec.Containers[0];
-        container.Image.Should().Be("TEST-IMAGE");
-        container.ImagePullPolicy.Should().Be("TEST");
-        container.Ports.Should().NotBeNullOrEmpty().And.HaveCount(1).And.Satisfy(x => x.ContainerPortValue == 53);
+        container.Image.ShouldBe("TEST-IMAGE");
+        container.ImagePullPolicy.ShouldBe("TEST");
+        container.Ports.ShouldNotBeEmpty();
+        container.Ports.Length.ShouldBe(1);
+        container.Ports.ShouldAllBe(x => x.ContainerPortValue == 53);
     }
 
     private class TestStack : Stack

@@ -30,7 +30,7 @@ public class GetEmployeeByIdQueryTests
             .SetupDapperAsync(c => c.QueryFirstOrDefaultAsync<Employee>(It.IsAny<string>(), null, null, null, null))
             .ReturnsAsync(employee);
         var result = await _fixture.SendAsync(new GetEmployeeByIdQuery { EmployeeNumber = EmployeeNumber });
-        result.Should().NotBeNull();
-        result.Should().BeEquivalentTo(employee);
+        result.ShouldNotBeNull();
+        result.ShouldBeEquivalentTo(employee);
     }
 }

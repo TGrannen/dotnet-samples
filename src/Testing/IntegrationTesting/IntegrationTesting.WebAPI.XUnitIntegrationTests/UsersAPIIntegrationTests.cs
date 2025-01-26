@@ -16,7 +16,7 @@ public class UsersAPIIntegrationTests : DbTestsBase<Program>
     public async Task GetUsers_ShouldReturnANonEmptyCollection()
     {
         var users = await _api.GetUsers();
-        users.Should().BeEmpty();
+        users.ShouldBeEmpty();
     }
 
     [Fact]
@@ -27,17 +27,17 @@ public class UsersAPIIntegrationTests : DbTestsBase<Program>
             Email = "test@test.com",
             Name = "Fred Wow"
         });
-        id.Should().NotBeEmpty();
+        id.ShouldNotBe(Guid.Empty);
 
         var user = await _api.GetUser(id);
-        user.Should().NotBeNull();
+        user.ShouldNotBeNull();
     }
 
     [Fact]
     public async Task CreateUser_ShouldAddOneUserToAllUsers()
     {
         var users = await _api.GetUsers();
-        users.Should().BeEmpty();
+        users.ShouldBeEmpty();
 
         await _api.CreateUser(new UserDto
         {
@@ -46,7 +46,7 @@ public class UsersAPIIntegrationTests : DbTestsBase<Program>
         });
 
         users = await _api.GetUsers();
-        users.Should().HaveCount(1);
+        users.Count.ShouldBe(1);
     }
 }
 

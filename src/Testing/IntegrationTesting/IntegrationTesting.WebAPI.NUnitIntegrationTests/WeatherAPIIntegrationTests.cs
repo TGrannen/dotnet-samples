@@ -14,12 +14,14 @@ public class WeatherAPIIntegrationTests
     public async Task GetForecasts_ShouldReturn5Forecasts()
     {
         var forecasts = await _api.GetForecasts();
-        forecasts.Should().HaveCount(5);
-        forecasts.Should().AllSatisfy(x =>
+        forecasts.Count.ShouldBe(5);
+        foreach (var x in forecasts)
         {
-            x.Date.Should().BeAfter(DateTime.MinValue);
-            x.Summary.Should().NotBeNull();
-        });
+            x.ShouldSatisfyAllConditions(
+                () => x.Date.ShouldBeGreaterThan(DateTime.MinValue),
+                () => x.Summary.ShouldNotBeNull()
+            );
+        }
     }
 }
 

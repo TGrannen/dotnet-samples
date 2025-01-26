@@ -1,9 +1,9 @@
-using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Mocking.Moq.Extensions;
 using Mocking.Moq.Loggers;
 using Mocking.Shared;
 using Moq;
+using Shouldly;
 using Xunit;
 
 namespace Mocking.Moq;
@@ -37,9 +37,9 @@ public class UserServiceTests
         var user = await _service.GetByIdAsync(userId);
 
         // Assert
-        user.Should().NotBeNull();
-        user.Id.Should().Be(userId);
-        user.UserName.Should().Be(userName);
+        user.ShouldNotBeNull();
+        user.Id.ShouldBe(userId);
+        user.UserName.ShouldBe(userName);
     }
 
     [Fact]
@@ -52,7 +52,7 @@ public class UserServiceTests
         var user = await _service.GetByIdAsync(Guid.NewGuid());
 
         // Assert
-        user.Should().BeNull();
+        user.ShouldBeNull();
     }
 
     [Fact]

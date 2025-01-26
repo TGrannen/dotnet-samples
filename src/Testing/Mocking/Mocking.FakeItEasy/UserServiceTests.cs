@@ -1,7 +1,7 @@
 using FakeItEasy;
-using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Mocking.Shared;
+using Shouldly;
 using Xunit;
 
 namespace Mocking.FakeItEasy;
@@ -30,9 +30,9 @@ public class UserServiceTests
         var user = await _service.GetByIdAsync(userId);
 
         // Assert
-        user.Should().NotBeNull();
-        user.Id.Should().Be(userId);
-        user.UserName.Should().Be(userName);
+        user.ShouldNotBeNull();
+        user.Id.ShouldBe(userId);
+        user.UserName.ShouldBe(userName);
     }
 
     [Fact]
@@ -45,7 +45,7 @@ public class UserServiceTests
         var user = await _service.GetByIdAsync(Guid.NewGuid());
 
         // Assert
-        user.Should().BeNull();
+        user.ShouldBeNull();
     }
 
     [Fact]
