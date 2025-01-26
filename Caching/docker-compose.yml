@@ -1,10 +1,27 @@
-version: '3'
 services:
   redis:
-    image: redislabs/redismod
+    image: redis:latest
+    restart: unless-stopped
+    container_name: redis
     ports:
-      - 6379:6379
-  redisinsight:
-    image: redislabs/redisinsight:latest
+      - "6379:6379"
+  redis-insight:
+    image: redis/redisinsight:latest
+    restart: unless-stopped
+    container_name: redis-insight
     ports:
-      - '8001:8001'
+      - "5540:5540"
+    volumes:
+      - redis-insight:/data  
+  aspire-dashboard:
+    image: mcr.microsoft.com/dotnet/aspire-dashboard:9.0
+    restart: unless-stopped
+    container_name: aspire-dashboard
+    ports:
+      - "18888:18888"
+      - "4317:18889"
+    volumes:
+      - redis-insight:/data
+
+volumes:
+  redis-insight:
