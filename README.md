@@ -6,116 +6,116 @@ This repository's purpose is to showcase common design patterns, best practices,
 
 ### API Access
 
-* [Polly](APIAccess/Polly/)
-* [Flurl](APIAccess/Flurl/)
-* [Refit](APIAccess/Refit/)
-* [HttpREPL](APIAccess/HttpREPL/)
+* [Polly](src/APIAccess/Polly/)
+* [Flurl](src/APIAccess/Flurl/)
+* [Refit](src/APIAccess/Refit/)
+* [HttpREPL](src/APIAccess/HttpREPL/)
 
 ### Background Jobs
 
-* [Hangfire](BackgroundJobs/Hangfire.Web/)
-* [Quartz](BackgroundJobs/QuartzExample.Web/)
-* [Worker Service](BackgroundJobs/WorkerServiceExample/)
-* [Custom Examples - Reload Jobs](BackgroundJobs/ReloadJobServiceExample/)
+* [Hangfire](src/BackgroundJobs/Hangfire.Web/)
+* [Quartz](src/BackgroundJobs/QuartzExample.Web/)
+* [Worker Service](src/BackgroundJobs/WorkerServiceExample/)
+* [Custom Examples - Reload Jobs](src/BackgroundJobs/ReloadJobServiceExample/)
 
 ### Benchmarks
 
-* [BenchmarkDotNet](Benchmarks/)
+* [BenchmarkDotNet](src/Benchmarks/)
 
 ### Caching
 
-* [Caching](Caching/)
+* [Caching](src/Caching/)
 
 ### Configration
 
-* [Configuration](Configuration/)
+* [Configuration](src/Configuration/)
 
 ### Data Access
 
-* [EF Core](DataAccess/EFCore.Web/)
+* [EF Core](src/DataAccess/EFCore.Web/)
 
-* [Dapper](DataAccess/Dapper.Web/) - [Clean Architecture Example](DataAccess/Dapper.CleanArchitecture.Web/)
+* [Dapper](src/DataAccess/Dapper.Web/) - [Clean Architecture Example](src/DataAccess/Dapper.CleanArchitecture.Web/)
 
 ### Docker
 
-* [FluentDocker](Docker/)
+* [FluentDocker](src/Docker/)
 
 ### Emailing
 
-* [FluentEmail](Emailing/FluentEmail.Web/)
+* [FluentEmail](src/Emailing/FluentEmail.Web/)
 
 ### Feature Flags
 
-* [Feature Flags](FeatureFlags)
+* [Feature Flags](src/FeatureFlags)
 
 ### Full Text Search
 
-* [ElasticSearch](FullTextSearch)
+* [ElasticSearch](src/FullTextSearch)
 
 ### Infrastructure
 
-* [Infrastructure](Infrastructure)
+* [Infrastructure](src/Infrastructure)
 
 ### Load Testing
 
-* [NBomber](LoadTesting/)
+* [NBomber](src/LoadTesting/)
 
 ### Logging
 
-* [Serilog](Logging/SerilogExample/)
-* [Serilog - AWS CloudWatch](Logging/AWSCloudWatch/)
+* [Serilog](src/Logging/SerilogExample/)
+* [Serilog - AWS CloudWatch](src/Logging/AWSCloudWatch/)
 
 ### Messaging
 
-* [Messaging](Messaging/)
+* [Messaging](src/Messaging/)
 
 ### Object Mapping
 
-* [AutoMapper](ObjectMapping/)
+* [AutoMapper](src/ObjectMapping/)
 
 ### Outbox Pattern
 
-* [Outbox Pattern](Outbox/)
+* [Outbox Pattern](src/Outbox/)
 
 ### Observability
 
-* [Observability - OpenTelemetry](Observability/)
+* [Observability - OpenTelemetry](src/Observability/)
 
 ### Rate Limiting
 
-* [Rate Limiting](RateLimiting/)
+* [Rate Limiting](src/RateLimiting/)
 
 ### RealTime
 
-* [SignalR](RealTime/)
+* [SignalR](src/RealTime/)
 
 ### ReverseProxy
 
-* [ReverseProxy](ReverseProxy//)
+* [ReverseProxy](src/ReverseProxy//)
 
 ### State Machines
 
-* [Stateless](StateMachines/)
+* [Stateless](src/StateMachines/)
 
 ### Streaming
 
-* [Streaming](Streaming/)
+* [Streaming](src/Streaming/)
 
 ### Templates
 
-* [Console App](Templates/ConsoleApp/)
-* ["Console" Based Microservice](Templates/ConsoleApp-Microservice/)
+* [Console App](src/Templates/ConsoleApp/)
+* ["Console" Based Microservice](src/Templates/ConsoleApp-Microservice/)
 
 ### Testing
 
-* [Mocking](Testing/Mocking/)
-* [xUnit](Testing/xUnit/)
-* [NUnit](Testing/NUnit/)
-* [Integration Testing](Testing/IntegrationTesting/)
-* [Playwright Testing](Testing/PlaywrightTesting/)
+* [Mocking](src/Testing/Mocking/)
+* [xUnit](src/Testing/xUnit/)
+* [NUnit](src/Testing/NUnit/)
+* [Integration Testing](src/Testing/IntegrationTesting/)
+* [Playwright Testing](src/Testing/PlaywrightTesting/)
 
 ### Web
 
-* [API Docs](Web/APIDocs/)
-* [Blazor](Web/Blazor/)
-* [Health Checks](Web/HealthEndpoints/)
+* [API Docs](src/Web/APIDocs/)
+* [Blazor](src/Web/Blazor/)
+* [Health Checks](src/Web/HealthEndpoints/)
