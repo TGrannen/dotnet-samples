@@ -105,6 +105,7 @@ This repository's purpose is to showcase common design patterns, best practices,
 
 * [Console App](src/Templates/ConsoleApp/)
 * ["Console" Based Microservice](src/Templates/ConsoleApp-Microservice/)
+* [Strangler Pattern](src/Templates/StranglerPattern/)
 
 ### Testing
 

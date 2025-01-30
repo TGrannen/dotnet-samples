@@ -1,0 +1,11 @@
+@StranglerPattern.OldApiService_HostAddress = http://localhost:5122
+
+GET {{StranglerPattern.OldApiService_HostAddress}}/name/
+Accept: application/json
+
+###
+
+GET {{StranglerPattern.OldApiService_HostAddress}}/some-old-api/
+Accept: application/json
+
+###

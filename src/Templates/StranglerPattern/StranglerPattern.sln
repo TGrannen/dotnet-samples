@@ -1,0 +1,53 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.0.0
+MinimumVisualStudioVersion = 17.8.0.0
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StranglerPattern.AppHost", "StranglerPattern.AppHost\StranglerPattern.AppHost.csproj", "{1225F047-3A8E-4A7D-A0C6-670ED11F68C1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StranglerPattern.ServiceDefaults", "StranglerPattern.ServiceDefaults\StranglerPattern.ServiceDefaults.csproj", "{79DF7937-3C9C-4811-9E47-6544D8B616CE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StranglerPattern.ApiService", "StranglerPattern.ApiService\StranglerPattern.ApiService.csproj", "{6F1A949F-7E14-4D2A-983C-94557B9D50FA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StranglerPattern.OldApiService", "StranglerPattern.OldApiService\StranglerPattern.OldApiService.csproj", "{9E91DB44-F1F6-4F26-A04E-3209752A74A6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Aspire", "Aspire", "{3D806FA4-A0EF-486B-962E-1550B4BD2607}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{8229DD05-06A5-408B-AE84-B6528F4521E4}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1225F047-3A8E-4A7D-A0C6-670ED11F68C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1225F047-3A8E-4A7D-A0C6-670ED11F68C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1225F047-3A8E-4A7D-A0C6-670ED11F68C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1225F047-3A8E-4A7D-A0C6-670ED11F68C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79DF7937-3C9C-4811-9E47-6544D8B616CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79DF7937-3C9C-4811-9E47-6544D8B616CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79DF7937-3C9C-4811-9E47-6544D8B616CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79DF7937-3C9C-4811-9E47-6544D8B616CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F1A949F-7E14-4D2A-983C-94557B9D50FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F1A949F-7E14-4D2A-983C-94557B9D50FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F1A949F-7E14-4D2A-983C-94557B9D50FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F1A949F-7E14-4D2A-983C-94557B9D50FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E91DB44-F1F6-4F26-A04E-3209752A74A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E91DB44-F1F6-4F26-A04E-3209752A74A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E91DB44-F1F6-4F26-A04E-3209752A74A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E91DB44-F1F6-4F26-A04E-3209752A74A6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {86835FD1-0E33-47E5-A3DA-CDFD072EB411}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1225F047-3A8E-4A7D-A0C6-670ED11F68C1} = {3D806FA4-A0EF-486B-962E-1550B4BD2607}
+		{79DF7937-3C9C-4811-9E47-6544D8B616CE} = {3D806FA4-A0EF-486B-962E-1550B4BD2607}
+	EndGlobalSection
+EndGlobal

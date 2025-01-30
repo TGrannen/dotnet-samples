@@ -1,0 +1,16 @@
+@StranglerPattern.ApiService_HostAddress = http://localhost:5510
+
+GET {{StranglerPattern.ApiService_HostAddress}}/name/
+Accept: application/json
+
+###
+
+GET {{StranglerPattern.ApiService_HostAddress}}/proxy/name/
+Accept: application/json
+
+###
+
+GET {{StranglerPattern.ApiService_HostAddress}}/some-old-api/
+Accept: application/json
+
+###
