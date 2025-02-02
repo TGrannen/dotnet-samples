@@ -1,31 +1,51 @@
-﻿using FluentEmail.Core;
-using FluentEmail.Core.Models;
-using FluentEmail.SendGrid;
-using Microsoft.AspNetCore.Mvc;
-
-namespace FluentEmail.Web.Controllers;
+﻿namespace FluentEmail.Web.Controllers;
 
 [ApiController]
-[Route("[controller]")]
-public class TestEmailController : ControllerBase
+[Route("api")]
+public class TestEmailController(IFluentEmail fluentEmail, IOptions<EmailConfig> options) : ControllerBase
 {
-    private readonly IFluentEmail _fluentEmail;
-    private readonly IConfiguration _configuration;
-
-    public TestEmailController(IFluentEmail fluentEmail, IConfiguration configuration)
+    [HttpPost]
+    [Route(nameof(SendWithHtmlRazorFileRenderedBody))]
+    public async Task<SendResponse> SendWithHtmlRazorFileRenderedBody()
     {
-        _fluentEmail = fluentEmail;
-        _configuration = configuration;
+        return await fluentEmail
+            .To("bob@email.com", "bob")
+            .Subject("Fancy Rendered Email")
+            .UsingTemplateFromFile("Templates/FancyEmailTemplate.cshtml", new FancyEmailTemplateModel { Name = "James", Value = 560 })
+            .SendAsync();
+    }
+
+    [HttpPost]
+    [Route(nameof(SendWithInlineRenderedBody))]
+    public async Task<SendResponse> SendWithInlineRenderedBody()
+    {
+        var template = "Dear @Model.Name, You are totally @Model.Compliment.";
+
+        return await fluentEmail
+            .To("bob@email.com", "bob")
+            .Subject("Inline Rendering")
+            .UsingTemplate(template, new { Name = "Steve", Compliment = "Awesome" })
+            .SendAsync();
+    }
+
+    [HttpPost]
+    [Route(nameof(SendWithImageAttachment))]
+    public async Task<SendResponse> SendWithImageAttachment()
+    {
+        return await fluentEmail
+            .To("bob@email.com", "bob")
+            .Subject("With Attachment")
+            .Body("yo bob, long time no see!")
+            .AttachFromFilename("Content/meme.png")
+            .SendAsync();
     }
 
     [HttpPost]
     [Route(nameof(PostToSendGrid))]
     public async Task<SendResponse> PostToSendGrid()
     {
-        var apiKey = _configuration.GetValue("EmailConfig:SendGrid:APIKey", "dummy-api-key");
-        var sandBoxMode = _configuration.GetValue("EmailConfig:SendGrid:UseSandbox", true);
-
-        var sender = new SendGridSender(apiKey, sandBoxMode);
+        var sendGridConfig = options.Value.SendGrid;
+        var sender = new SendGridSender(sendGridConfig.APIKey, sendGridConfig.UseSandbox);
 
         var email = Email
             .From("john@email.com")
@@ -40,7 +60,7 @@ public class TestEmailController : ControllerBase
     [Route(nameof(PostToSMTP))]
     public async Task<SendResponse> PostToSMTP()
     {
-        return await _fluentEmail
+        return await fluentEmail
             //.From("john@email.com") // Set by default in DI or can be overriden with SetFrom(...)
             .To("bob@email.com", "bob")
             .Subject("hows it going bob")

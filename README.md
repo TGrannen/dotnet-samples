@@ -42,7 +42,7 @@ This repository's purpose is to showcase common design patterns, best practices,
 
 ### Emailing
 
-* [FluentEmail](src/Emailing/FluentEmail.Web/)
+* [FluentEmail](src/Emailing/)
 
 ### Feature Flags
 

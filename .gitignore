@@ -351,3 +351,4 @@ MigrationBackup/
 **/.idea/
 Observability/prometheus/
 *.env
+/src/Emailing/data
