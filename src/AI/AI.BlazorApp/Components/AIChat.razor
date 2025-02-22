@@ -1,0 +1,127 @@
+﻿@using Microsoft.Extensions.AI
+@inject ILogger<AIChat> Logger
+@inject IChatClient ChatClient
+@inject IHostApplicationLifetime ApplicationLifetime
+
+<h1>AI Chat</h1>
+
+<div class="button-container">
+    @foreach (var prompt in _prompts)
+    {
+        <button @onclick="() => SelectPrompt(prompt)">@prompt</button>
+    }
+</div>
+
+<div class="chat-input">
+    <input @bind="_userInput" placeholder="Type a message..." @onkeyup="HandleKeyPress"/>
+    <button @onclick="SendMessage" disabled="@(string.IsNullOrEmpty(_userInput))">Send</button>
+
+    @if (_isLoading)
+    {
+        <button @onclick="StopExecution">Stop</button>
+    }
+</div>
+
+<div>
+    @if (_isLoading)
+    {
+        <p>Loading...</p>
+    }
+</div>
+
+
+<ul>
+    @foreach (var message in _messages)
+    {
+        <li>
+            <strong>@message.Role:</strong> @message.Text
+        </li>
+    }
+</ul>
+
+<div>
+    @if (!string.IsNullOrEmpty(_response))
+    {
+        <p>@_response</p>
+    }
+</div>
+
+@code {
+
+    private List<string> _prompts =
+    [
+        "How would you explain AI to a 5-year-old?",
+        "What are the ethical implications of AI in daily life?",
+        "How can AI enhance creativity?",
+        "What are the biggest challenges in AI research today?",
+        "Can AI develop its own form of intelligence beyond humans?"
+    ];
+
+    private string _userInput = string.Empty;
+    private string _response = string.Empty;
+    private readonly List<ChatMessage> _messages = [];
+    private CancellationTokenSource _tokenSource = new();
+    private bool _isLoading = false;
+
+    private async Task SendMessage()
+    {
+        if (string.IsNullOrWhiteSpace(_userInput)) return;
+
+        try
+        {
+            var userMessage = new ChatMessage(new ChatRole("user"), _userInput);
+            _messages.Add(userMessage);
+            _userInput = string.Empty;
+            _isLoading = true;
+
+            _response = string.Empty;
+            _tokenSource = new CancellationTokenSource();
+            var combined = CancellationTokenSource.CreateLinkedTokenSource(ApplicationLifetime.ApplicationStopping, _tokenSource.Token);
+            await foreach (var responseUpdate in ChatClient.GetStreamingResponseAsync(_messages, cancellationToken: combined.Token))
+            {
+                if (ApplicationLifetime.ApplicationStopping.IsCancellationRequested)
+                {
+                    break;
+                }
+
+                _response += responseUpdate;
+                StateHasChanged();
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            Logger.LogWarning("AI Chat stopped");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+        finally
+        {
+            var chatMessage = new ChatMessage(new ChatRole("model"), _response);
+            _messages.Add(chatMessage);
+            _response = string.Empty;
+        }
+
+        _isLoading = false;
+    }
+
+    private async Task HandleKeyPress(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            await SendMessage();
+        }
+    }
+
+    private void SelectPrompt(string prompt)
+    {
+        _userInput = prompt;
+    }
+
+    private void StopExecution()
+    {
+        _tokenSource.Cancel();
+    }
+
+}

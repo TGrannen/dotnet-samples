@@ -1,0 +1,34 @@
+﻿.button-container {
+    margin-bottom: 2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px;
+}
+
+.chat-input {
+    width: 100%;
+    display: flex;
+    margin-bottom: 2rem;
+
+    input {
+        flex: 1;
+    }
+
+    button {
+        margin-left: 1rem;
+    }
+}
+
+button {
+    padding: 10px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}

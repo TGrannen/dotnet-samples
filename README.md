@@ -4,6 +4,10 @@ This repository's purpose is to showcase common design patterns, best practices,
 
 ## Samples
 
+### AI
+
+* [AI](src/AI)
+
 ### API Access
 
 * [Polly](src/APIAccess/Polly/)
