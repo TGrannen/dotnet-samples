@@ -124,4 +124,5 @@ This repository's purpose is to showcase common design patterns, best practices,
 * [API Docs](src/Web/APIDocs/)
 * [Blazor](src/Web/Blazor/)
 * [FastEndpoints](src/Web/FastEndpoints/)
+* [MinimalAPIs](src/Web/MinimalAPIs/)
 * [Health Checks](src/Web/HealthEndpoints/)
