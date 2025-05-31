@@ -1,0 +1,20 @@
+@FastEndpointsExample.WebApi_HostAddress = http://localhost:5095
+
+POST {{FastEndpointsExample.WebApi_HostAddress}}/api/user/create/
+Content-Type: application/json
+
+{
+  "FirstName": "Marlon",
+  "LastName": "Brando",
+  "Age": 40
+}
+
+###
+
+POST {{FastEndpointsExample.WebApi_HostAddress}}/api/sales/orders/create
+Content-Type: application/json
+
+{
+  "customer": "John Smith",
+  "orderValue": 1051.54
+}
