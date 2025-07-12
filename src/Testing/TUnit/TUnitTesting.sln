@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TUnitTesting.Tests", "TUnitTesting.Tests\TUnitTesting.Tests.csproj", "{4995ED75-9B10-49AC-B187-9855939C474A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TUnitTesting.WebApi", "TUnitTesting.WebApi\TUnitTesting.WebApi.csproj", "{3649B718-69E6-472E-93D9-E5FA9FFB08BD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{BC0BDD2C-7BB5-4759-BCB5-77E2E94590E6}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yml = docker-compose.yml
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4995ED75-9B10-49AC-B187-9855939C474A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4995ED75-9B10-49AC-B187-9855939C474A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4995ED75-9B10-49AC-B187-9855939C474A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4995ED75-9B10-49AC-B187-9855939C474A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3649B718-69E6-472E-93D9-E5FA9FFB08BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3649B718-69E6-472E-93D9-E5FA9FFB08BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3649B718-69E6-472E-93D9-E5FA9FFB08BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3649B718-69E6-472E-93D9-E5FA9FFB08BD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

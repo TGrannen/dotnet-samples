@@ -1,0 +1,6 @@
+@TUnitTesting_WebApi_HostAddress = https://localhost:7093
+
+GET {{TUnitTesting_WebApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

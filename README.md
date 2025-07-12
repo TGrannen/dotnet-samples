@@ -115,6 +115,7 @@ This repository's purpose is to showcase common design patterns, best practices,
 
 * [Mocking](src/Testing/Mocking/)
 * [xUnit](src/Testing/xUnit/)
+* [TUnit](src/Testing/TUnit/)
 * [NUnit](src/Testing/NUnit/)
 * [Integration Testing](src/Testing/IntegrationTesting/)
 * [Playwright Testing](src/Testing/PlaywrightTesting/)
