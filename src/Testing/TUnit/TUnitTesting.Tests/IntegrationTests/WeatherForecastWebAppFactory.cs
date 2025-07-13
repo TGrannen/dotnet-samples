@@ -1,4 +1,13 @@
-﻿namespace TUnitTesting.Tests.IntegrationTests;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+using Serilog;
+using Serilog.Events;
+using ILogger = Microsoft.Extensions.Logging.ILogger;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
+
+namespace TUnitTesting.Tests.IntegrationTests;
 
 public class WeatherForecastWebAppFactory : WebApplicationFactory<Program>, IAsyncInitializer
 {
@@ -10,5 +19,11 @@ public class WeatherForecastWebAppFactory : WebApplicationFactory<Program>, IAsy
         // And avoids multiple initialisations from different tests if parallelisation is switched on
         _ = Server;
         return Task.CompletedTask;
+    }
+
+    protected override void ConfigureWebHost(IWebHostBuilder builder)
+    {
+        builder.UseEnvironment("Testing");
+        base.ConfigureWebHost(builder);
     }
 }

@@ -29,7 +29,7 @@ public class BlogPostWebAppFactory : WebApplicationFactory<Program>, IAsyncIniti
         // You can also override certain services here to mock things out
         // Start the container
         await _dbContainer.StartAsync();
-        _connectionString = GetDbConnectionString();
+        _connectionString = _dbContainer.GetConnectionString();
 
         // Grab a reference to the server
         // This forces it to initialize.
@@ -47,16 +47,12 @@ public class BlogPostWebAppFactory : WebApplicationFactory<Program>, IAsyncIniti
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
+        builder.UseEnvironment("Testing");
         builder.ConfigureServices(services =>
         {
             services.RemoveAll<DbContextOptions<ApplicationDbContext>>();
-            services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(GetDbConnectionString()));
+            services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(_connectionString));
         });
-    }
-
-    public string GetDbConnectionString()
-    {
-        return _dbContainer.GetConnectionString();
     }
 
     private async Task EnsureDatabaseCreatedAsync()
