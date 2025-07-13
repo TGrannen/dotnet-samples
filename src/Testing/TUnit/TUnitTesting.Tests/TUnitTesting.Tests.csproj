@@ -10,10 +10,11 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.7" />
-    <PackageReference Include="TUnit" Version="0.24.0" />
-    <PackageReference Include="Testcontainers.PostgreSql" Version="3.7.0" />
-    <PackageReference Include="TUnit.Core" Version="0.24.0" />
-    <PackageReference Include="Refit" Version="7.0.0" />
+    <PackageReference Include="Respawn" Version="6.2.1" />
+    <PackageReference Include="TUnit" Version="0.25.21" />
+    <PackageReference Include="Testcontainers.PostgreSql" Version="4.6.0" />
+    <PackageReference Include="TUnit.Core" Version="0.25.21" />
+    <PackageReference Include="Refit" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>

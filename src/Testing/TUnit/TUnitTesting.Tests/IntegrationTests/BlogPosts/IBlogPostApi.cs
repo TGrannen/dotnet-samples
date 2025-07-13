@@ -1,7 +1,6 @@
 ﻿using Refit;
-using TUnitTesting.WebApi.Controllers;
 
-namespace TUnitTesting.Tests.IntegrationTests;
+namespace TUnitTesting.Tests.IntegrationTests.BlogPosts;
 
 public interface IBlogPostCommentApi
 {

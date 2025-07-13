@@ -1,22 +1,23 @@
-﻿namespace TUnitTesting.Tests.IntegrationTests;
+﻿namespace TUnitTesting.Tests.IntegrationTests.BlogPosts;
 
-[Property("Category", "Integration")]
-public class BlogPostTests
+/// <summary>
+/// Same Tests as <see cref="BlogPostTests"/> but instead of creating new posts for every test, a post is created by
+/// one test and then reference to that post is passed through the ObjectBag to dependent tests
+/// </summary>
+[Category("Integration")]
+public class BlogPostWithStateTests
 {
-    private IBlogPostApi API => Refit.RestService.For<IBlogPostApi>(Factory.CreateClient());
-
-    [ClassDataSource<WebAppFactory>(Shared = SharedType.PerTestSession)]
-    public required WebAppFactory Factory { get; init; }
+    [ClassDataSource<BlogPostWebAppFactory>(Shared = SharedType.PerTestSession)]
+    public required BlogPostWebAppFactory Factory { get; init; }
 
     [Test]
     public async Task CreatePost_ReturnsCreatedStatusCodeAndPost()
     {
-        var newPost = new  { Title = "New Pure TUnit Post", Content = "This is a new test post with TUnit." };
+        var newPost = new { Title = "New Pure TUnit Post", Content = "This is a new test post with TUnit." };
 
-        var response = await API.CreatePost(newPost);
+        var response = await Factory.PostAPI.CreatePost(newPost);
 
         using var _ = Assert.Multiple();
-
         await Assert.That(response.IsSuccessStatusCode).IsEqualTo(true);
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.Created);
         await Assert.That(response.Content).IsNotNull();
@@ -30,14 +31,12 @@ public class BlogPostTests
     [DependsOn(nameof(CreatePost_ReturnsCreatedStatusCodeAndPost))]
     public async Task GetPosts_ReturnsSuccessStatusCodeAndPosts()
     {
-        var response = await API.GetPosts();
-
-        using var _ = Assert.Multiple();
-
-        await Assert.That(response.IsSuccessStatusCode).IsEqualTo(true);
-        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.OK);
+        var response = await Factory.PostAPI.GetPosts();
 
         var postId = GetPostId();
+        using var _ = Assert.Multiple();
+        await Assert.That(response.IsSuccessStatusCode).IsEqualTo(true);
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.OK);
         await Assert.That(response.Content).IsNotNull();
         await Assert.That(response.Content).Contains(x => x.Id == postId);
         await Assert.That(response.Content!.First(x => x.Id == postId).Title).IsEqualTo("New Pure TUnit Post");
@@ -47,12 +46,11 @@ public class BlogPostTests
     [DependsOn(nameof(GetPosts_ReturnsSuccessStatusCodeAndPosts))]
     public async Task UpdatePost_ReturnsNoContent()
     {
-        var updatedPostDto = new  { Title = "Pure TUnit Updated Title", Content = "Pure TUnit Updated content." };
+        var updatedPostDto = new { Title = "Pure TUnit Updated Title", Content = "Pure TUnit Updated content." };
         var postId = GetPostId();
-        var response = await API.UpdatePost(postId, updatedPostDto);
+        var response = await Factory.PostAPI.UpdatePost(postId, updatedPostDto);
 
         using var _ = Assert.Multiple();
-
         await Assert.That(response.IsSuccessStatusCode).IsEqualTo(true);
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.NoContent);
     }
@@ -60,7 +58,7 @@ public class BlogPostTests
     [Test]
     public async Task GetPostById_ReturnsNotFound_ForNonExistentPost()
     {
-        var response = await API.GetPostById(99999);
+        var response = await Factory.PostAPI.GetPostById(99999);
 
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.NotFound);
     }
@@ -70,10 +68,9 @@ public class BlogPostTests
     public async Task DeletePost_ReturnsNoContent()
     {
         var postId = GetPostId();
-        var response = await API.DeletePost(postId);
+        var response = await Factory.PostAPI.DeletePost(postId);
 
         using var _ = Assert.Multiple();
-
         await Assert.That(response.IsSuccessStatusCode).IsEqualTo(true);
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.NoContent);
     }
@@ -83,10 +80,9 @@ public class BlogPostTests
     public async Task DeletePost_ReturnsNotFound_AfterDeleted()
     {
         var postId = GetPostId();
-        var response = await API.GetPostById(postId);
+        var response = await Factory.PostAPI.GetPostById(postId);
 
         using var _ = Assert.Multiple();
-
         await Assert.That(response.IsSuccessStatusCode).IsEqualTo(false);
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.NotFound);
     }

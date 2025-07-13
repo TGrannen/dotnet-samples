@@ -1,55 +1,46 @@
-﻿namespace TUnitTesting.Tests.IntegrationTests;
+﻿namespace TUnitTesting.Tests.IntegrationTests.BlogPosts;
 
-[Property("Category", "Integration")]
+[Category("Integration")]
 public class BlogPostCommentTests
 {
-    private IBlogPostCommentApi API => Refit.RestService.For<IBlogPostCommentApi>(Factory.CreateClient());
-
-    [ClassDataSource<WebAppFactory>(Shared = SharedType.PerTestSession)]
-    public required WebAppFactory Factory { get; init; }
+    [ClassDataSource<BlogPostWebAppFactory>(Shared = SharedType.PerTestSession)]
+    public required BlogPostWebAppFactory Factory { get; init; }
 
     [Test]
     public async Task CreatePost_ReturnsCreatedStatusCodeAndPost()
     {
         var newPost = new { Title = "New Pure TUnit Post", Content = "This is a new test post with TUnit." };
-
-        var response = await API.CreatePost(newPost);
+        var response = await Factory.CommentAPI.CreatePost(newPost);
 
         using var _ = Assert.Multiple();
-
         await Assert.That(response.IsSuccessStatusCode).IsEqualTo(true);
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.Created);
         await Assert.That(response.Content).IsNotNull();
-
-        TestContext.Current!.ObjectBag.Add("PostId", response.Content.Id);
     }
 
     [Test]
-    [DependsOn(nameof(CreatePost_ReturnsCreatedStatusCodeAndPost))]
     public async Task CreateComment_ReturnsCreatedStatusCodeAndComment()
     {
         var newCommentDto = new { Text = "This is a pure TUnit test comment." };
-        var postId = GetPostId();
+        var postId = await CreatePost();
 
-        var response = await API.CreateComment(postId, newCommentDto);
+        var response = await Factory.CommentAPI.CreateComment(postId, newCommentDto);
 
         using var _ = Assert.Multiple();
-
         await Assert.That(response.IsSuccessStatusCode).IsEqualTo(true);
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.Created);
         await Assert.That(response.Content).IsNotNull();
         await Assert.That(response.Content.Text).IsEqualTo(newCommentDto.Text);
         await Assert.That(response.Content.PostId).IsEqualTo(postId);
-
-        TestContext.Current!.ObjectBag.Add("CommentId", response.Content.Id);
     }
 
     [Test]
-    [DependsOn(nameof(CreateComment_ReturnsCreatedStatusCodeAndComment))]
     public async Task GetCommentsForPost_ReturnsComments()
     {
-        var postId = GetPostId();
-        var response = await API.GetComments(postId);
+        var postId = await CreatePost();
+        await CreateComment(postId);
+
+        var response = await Factory.CommentAPI.GetComments(postId);
 
         await Assert.That(response.IsSuccessStatusCode).IsEqualTo(true);
 
@@ -60,29 +51,26 @@ public class BlogPostCommentTests
     }
 
     [Test]
-    [DependsOn(nameof(GetCommentsForPost_ReturnsComments))]
     public async Task DeleteComment_ReturnsNoContent()
     {
-        var postId = GetPostId();
-        var commentId = GetCommentId();
-        var response = await API.DeleteComment(postId, commentId);
+        var postId = await CreatePost();
+        var commentId = await CreateComment(postId);
+        var response = await Factory.CommentAPI.DeleteComment(postId, commentId);
 
         using var _ = Assert.Multiple();
         await Assert.That(response.IsSuccessStatusCode).IsEqualTo(true);
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.NoContent);
     }
 
-    private static int GetPostId()
+    private async Task<int> CreatePost()
     {
-        var addToBagTestContext = TestContext.Current!.GetTests(nameof(CreatePost_ReturnsCreatedStatusCodeAndPost)).First();
-        var postId = addToBagTestContext.ObjectBag["PostId"] as int? ?? -1;
-        return postId;
+        var response = await Factory.CommentAPI.CreatePost(new { Title = "Dummy Post", Content = "This is a new test post with TUnit." });
+        return response.Content!.Id;
     }
 
-    private static int GetCommentId()
+    private async Task<int> CreateComment(int postId, string? text = null)
     {
-        var addToBagTestContext = TestContext.Current!.GetTests(nameof(CreateComment_ReturnsCreatedStatusCodeAndComment)).First();
-        var postId = addToBagTestContext.ObjectBag["CommentId"] as int? ?? -1;
-        return postId;
+        var response = await Factory.CommentAPI.CreateComment(postId, new { Text = text ?? "This is a pure TUnit test comment." });
+        return response.Content!.Id;
     }
 }
