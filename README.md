@@ -19,6 +19,7 @@ This repository's purpose is to showcase common design patterns, best practices,
 
 * [Hangfire](src/BackgroundJobs/Hangfire.Web/)
 * [Quartz](src/BackgroundJobs/QuartzExample.Web/)
+* [TickerQ](src/BackgroundJobs/TickerQExample.WebAPI/)
 * [Worker Service](src/BackgroundJobs/WorkerServiceExample/)
 * [Custom Examples - Reload Jobs](src/BackgroundJobs/ReloadJobServiceExample/)
 
