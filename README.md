@@ -15,6 +15,10 @@ This repository's purpose is to showcase common design patterns, best practices,
 * [Refit](src/APIAccess/Refit/)
 * [HttpREPL](src/APIAccess/HttpREPL/)
 
+### API Access
+
+* [Aspire Samples](Aspire/)
+
 ### Background Jobs
 
 * [Hangfire](src/BackgroundJobs/Hangfire.Web/)
