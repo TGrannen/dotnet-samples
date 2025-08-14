@@ -1,0 +1,6 @@
+@ObjectMapping.Mapster_HostAddress = http://localhost:5058
+
+GET {{ObjectMapping.Mapster_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
