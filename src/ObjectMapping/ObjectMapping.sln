@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObjectMapping.AutoMapper.We
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObjectMapping.AutoMapper.Tests", "ObjectMapping.AutoMapper.Tests\ObjectMapping.AutoMapper.Tests.csproj", "{A4F1F029-C86B-4845-A3BF-3830A28332EE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObjectMapping.Facets", "ObjectMapping.Facets\ObjectMapping.Facets.csproj", "{90AEDF29-AEC6-4E0A-8172-00307E86FD82}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,5 +37,9 @@ Global
 		{A4F1F029-C86B-4845-A3BF-3830A28332EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A4F1F029-C86B-4845-A3BF-3830A28332EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A4F1F029-C86B-4845-A3BF-3830A28332EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90AEDF29-AEC6-4E0A-8172-00307E86FD82}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90AEDF29-AEC6-4E0A-8172-00307E86FD82}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90AEDF29-AEC6-4E0A-8172-00307E86FD82}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90AEDF29-AEC6-4E0A-8172-00307E86FD82}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

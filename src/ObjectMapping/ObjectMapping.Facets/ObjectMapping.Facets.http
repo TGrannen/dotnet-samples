@@ -1,0 +1,14 @@
+@ObjectMapping_Facets_HostAddress = https://localhost:7164
+
+POST {{ObjectMapping_Facets_HostAddress}}/TestMapper
+Content-Type: application/json
+
+{
+  "id": 75,
+  "firstName": "test",
+  "lastName": "string",
+  "emailAddress": "test@email.com",
+  "age": 50
+}
+
+###
