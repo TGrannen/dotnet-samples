@@ -23,6 +23,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NSubstitute", "NSubstitute"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mediator", "Mediator", "{475334D0-FFF7-4AC1-8E8C-D63671E8B71B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mocking.AutoBogus", "Mocking.AutoBogus\Mocking.AutoBogus.csproj", "{4162E754-8C64-4B4D-8524-8E32C262D78D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -105,6 +107,18 @@ Global
 		{8B6700FB-FDC8-40E6-B736-42E78FE68F19}.Release|x64.Build.0 = Release|Any CPU
 		{8B6700FB-FDC8-40E6-B736-42E78FE68F19}.Release|x86.ActiveCfg = Release|Any CPU
 		{8B6700FB-FDC8-40E6-B736-42E78FE68F19}.Release|x86.Build.0 = Release|Any CPU
+		{4162E754-8C64-4B4D-8524-8E32C262D78D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4162E754-8C64-4B4D-8524-8E32C262D78D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4162E754-8C64-4B4D-8524-8E32C262D78D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{4162E754-8C64-4B4D-8524-8E32C262D78D}.Debug|x64.Build.0 = Debug|Any CPU
+		{4162E754-8C64-4B4D-8524-8E32C262D78D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4162E754-8C64-4B4D-8524-8E32C262D78D}.Debug|x86.Build.0 = Debug|Any CPU
+		{4162E754-8C64-4B4D-8524-8E32C262D78D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4162E754-8C64-4B4D-8524-8E32C262D78D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4162E754-8C64-4B4D-8524-8E32C262D78D}.Release|x64.ActiveCfg = Release|Any CPU
+		{4162E754-8C64-4B4D-8524-8E32C262D78D}.Release|x64.Build.0 = Release|Any CPU
+		{4162E754-8C64-4B4D-8524-8E32C262D78D}.Release|x86.ActiveCfg = Release|Any CPU
+		{4162E754-8C64-4B4D-8524-8E32C262D78D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
