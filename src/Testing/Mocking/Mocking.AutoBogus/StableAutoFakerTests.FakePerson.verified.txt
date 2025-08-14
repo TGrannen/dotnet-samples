@@ -1,6 +1,20 @@
 ﻿{
-  Id: 718,
-  FirstName: Bonnie,
-  LastName: Spinka,
-  Status: ipsum
+  Id: Guid_1,
+  FirstName: Gisselle,
+  LastName: Walter,
+  BirthDate: DateTime_1,
+  HomeAddress: {
+    Street: 621 Pacocha Fords,
+    City: West Nobleville
+  },
+  Tags: [
+    corrupti,
+    eveniet,
+    magnam
+  ],
+  Scores: {
+    eligendi: 117,
+    quaerat: 399,
+    sint: 301
+  }
 }

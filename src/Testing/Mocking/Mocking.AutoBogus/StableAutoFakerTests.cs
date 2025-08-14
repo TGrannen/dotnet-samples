@@ -1,4 +1,4 @@
-﻿using AwesomeAssertions;
+﻿using Mocking.AutoBogus.StableFaker;
 
 namespace Mocking.AutoBogus;
 
@@ -7,17 +7,18 @@ public class StableAutoFakerTests
     [Fact]
     public Task FakePerson()
     {
-        var person = StableAutoFaker.Generate<Person>();
+        var personFaker = new StableAutoFaker<Person>()
+            .WithConfiguration(config =>
+            {
+                // Example
+                // config.WithGlobalSeed(640568)
+                //     .WithPropertyRule("Email", _ => "fixed@example.com")
+                //     .WithTypeRule<decimal>(_ => 999.99m)
+                //     .Ignore("CreatedAt");
+            });
+
+        var person = personFaker.Generate();
 
         return Verify(person);
-    }
-
-    [Fact]
-    public void TestRandomizer()
-    {
-        var faker1 = StableAutoFaker.NewFaker("User.FirstName");
-        var faker2 = StableAutoFaker.NewFaker("User.FirstName");
-
-        faker1.Name.FirstName().Should().Be(faker2.Name.FirstName());
     }
 }

@@ -1,6 +1,20 @@
 ﻿{
-  Id: 1987465247,
-  FirstName: Marie,
-  LastName: VonRueden,
-  Status: program
+  Id: Guid_1,
+  FirstName: Arch,
+  LastName: Weissnat,
+  BirthDate: DateTime_1,
+  HomeAddress: {
+    Street: IB,
+    City: Lake Madalynmouth
+  },
+  Tags: [
+    Mobility,
+    West Virginia,
+    e-business
+  ],
+  Scores: {
+    applications: 898128714,
+    Kwacha: 876254099,
+    zero defect: 678041841
+  }
 }
