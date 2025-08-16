@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>FluentMigratorSample.Runner</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentMigrator.Runner" Version="7.1.0" />
+    <PackageReference Include="FluentMigrator.Runner.Postgres" Version="7.1.0" />
+    <PackageReference Include="Npgsql" Version="9.0.3" />
+    <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
+  </ItemGroup>
+
+</Project>
