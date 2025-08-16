@@ -1,5 +1,7 @@
-﻿public class LogDocument
+﻿namespace FullTextSearch.ElasticSearch.Web.Models;
+
+public class LogDocument
 {
     public Guid Id { get; set; } = Guid.NewGuid();
-    public string Body { get; set; }
+    public required string Body { get; set; }
 }

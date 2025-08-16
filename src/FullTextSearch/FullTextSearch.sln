@@ -10,6 +10,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionIt
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FullTextSearch.ElasticSearch.AppHost", "FullTextSearch.ElasticSearch.AppHost\FullTextSearch.ElasticSearch.AppHost.csproj", "{5EA81BB4-2922-44C7-8090-1C176EBB14B7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FullTextSearch.ElasticSearch.ServiceDefaults", "FullTextSearch.ElasticSearch.ServiceDefaults\FullTextSearch.ElasticSearch.ServiceDefaults.csproj", "{C23C12C3-F6DD-4A69-8E27-C927F1A6F227}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,5 +27,13 @@ Global
 		{2C7F7C87-EF82-4DDA-8463-87B793BFD0CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2C7F7C87-EF82-4DDA-8463-87B793BFD0CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2C7F7C87-EF82-4DDA-8463-87B793BFD0CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5EA81BB4-2922-44C7-8090-1C176EBB14B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5EA81BB4-2922-44C7-8090-1C176EBB14B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5EA81BB4-2922-44C7-8090-1C176EBB14B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5EA81BB4-2922-44C7-8090-1C176EBB14B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C23C12C3-F6DD-4A69-8E27-C927F1A6F227}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C23C12C3-F6DD-4A69-8E27-C927F1A6F227}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C23C12C3-F6DD-4A69-8E27-C927F1A6F227}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C23C12C3-F6DD-4A69-8E27-C927F1A6F227}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
