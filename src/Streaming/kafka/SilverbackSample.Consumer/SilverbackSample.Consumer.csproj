@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.0"/>
+    <PackageReference Include="Silverback.Integration.Kafka" Version="4.6.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SilverbackSample.MessageContracts\SilverbackSample.MessageContracts.csproj" />
+    <ProjectReference Include="..\SilverbackSample.ServiceDefaults\SilverbackSample.ServiceDefaults.csproj" />
+  </ItemGroup>
+
+</Project>

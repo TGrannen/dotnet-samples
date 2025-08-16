@@ -1,0 +1,10 @@
+@SilverbackSample_Producer_HostAddress = https://localhost:7115
+
+###
+GET {{SilverbackSample_Producer_HostAddress}}/Producer/IsConnected
+
+###
+POST {{SilverbackSample_Producer_HostAddress}}/Producer/Produce?number=78945641
+
+###
+POST {{SilverbackSample_Producer_HostAddress}}/Producer/Produce/Batch?count=78
