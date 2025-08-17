@@ -2,5 +2,5 @@
 
 internal interface IEnvFlagsProvider
 {
-    Task<Flags> GetFlags();
+    Task<IFlags> GetFlags();
 }

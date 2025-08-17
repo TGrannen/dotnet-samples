@@ -6,7 +6,7 @@ internal class EnvFlagsProvider : IEnvFlagsProvider
 {
     private readonly FlagsmithClient _client;
     private readonly ILogger<EnvFlagsProvider> _logger;
-    private Flags? _flags;
+    private IFlags _flags;
 
     public EnvFlagsProvider(FlagsmithClient client, ILogger<EnvFlagsProvider> logger)
     {
@@ -14,7 +14,7 @@ internal class EnvFlagsProvider : IEnvFlagsProvider
         _logger = logger;
     }
 
-    public async Task<Flags> GetFlags()
+    public async Task<IFlags> GetFlags()
     {
         if (_flags != null)
         {

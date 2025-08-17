@@ -7,12 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.0"/>
-    <PackageReference Include="OpenFeature" Version="2.2.0" />
-    <PackageReference Include="OpenFeature.Contrib.Providers.Flagd" Version="0.3.0" />
-    <PackageReference Include="OpenFeature.DependencyInjection" Version="2.2.0" />
-    <PackageReference Include="OpenFeature.Hosting" Version="2.2.0" />
-    <PackageReference Include="Scalar.AspNetCore" Version="1.2.72" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.8" />
+    <PackageReference Include="OpenFeature" Version="2.8.1" />
+    <PackageReference Include="OpenFeature.Contrib.Providers.Flagd" Version="0.3.3" />
+    <PackageReference Include="OpenFeature.DependencyInjection" Version="2.8.1" />
+    <PackageReference Include="OpenFeature.Hosting" Version="2.8.1" />
+    <PackageReference Include="Scalar.AspNetCore" Version="2.6.9" />
     <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
   </ItemGroup>
 

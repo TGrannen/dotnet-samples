@@ -3,7 +3,7 @@
 public class Params
 {
     public string Key { get; init; }
-    public List<Trait>? Traits { get; init; }
+    public List<ITrait>? Traits { get; init; }
 }
 
 public class Converter
@@ -31,7 +31,7 @@ public class Converter
         return new Params
         {
             Key = context.Key,
-            Traits = !attributes.Any() ? null : attributes.Select(x => new Trait(x.Key, x.Value)).ToList()
+            Traits = attributes.Count == 0 ? null : attributes.Select(ITrait (x) => new Trait(x.Key, x.Value)).ToList()
         };
     }
 

@@ -15,7 +15,7 @@ public class Converter
         var builder = User.Builder(context.Key).Anonymous(context.Anonymous);
 
         ApplyContextAttribute(context.Avatar, attr => builder.Avatar(attr.Value));
-        ApplyContextAttribute(context.Secondary, attr => builder.Secondary(attr.Value));
+        // ApplyContextAttribute(context.Secondary, attr => builder.Secondary(attr.Value));
         ApplyContextAttribute(context.IPAddress, attr => builder.IPAddress(attr.Value));
         ApplyContextAttribute(context.Country, attr => builder.Country(attr.Value));
         ApplyContextAttribute(context.FirstName, attr => builder.FirstName(attr.Value));

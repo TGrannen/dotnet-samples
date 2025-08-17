@@ -7,21 +7,19 @@ namespace FeatureFlags.Library.Flagsmith;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddFlagsmith(this IServiceCollection services, Action<FlagsmithConfig>? configAction = null)
+    public static IServiceCollection AddFlagsmith(this IServiceCollection services, Action<FlagsmithConfiguration>? configAction = null)
     {
-        services.AddSingleton<FlagsmithConfig>(provider =>
+        services.AddSingleton<FlagsmithConfiguration>(provider =>
         {
-            var config = new FlagsmithConfig();
+            var config = new FlagsmithConfiguration();
             configAction?.Invoke(config);
-            var key = !string.IsNullOrEmpty(config.SdkKey)
-                ? config.SdkKey
-                : provider.GetRequiredService<IConfiguration>().GetValue<string>("Flagsmith:ApiKey");
+            var configuration = provider.GetRequiredService<IConfiguration>();
             var analytics = config.EnableAnalytics
                 ? config.EnableAnalytics
-                : provider.GetRequiredService<IConfiguration>().GetValue("Flagsmith:EnableAnalytics", false);
-            return new FlagsmithConfig
+                : configuration.GetValue("Flagsmith:EnableAnalytics", false);
+            return new FlagsmithConfiguration
             {
-                SdkKey = key,
+                
                 EnableAnalytics = analytics
             };
         });
@@ -29,12 +27,11 @@ public static class DependencyInjection
         services.AddSingleton<FlagsmithClient>(s =>
         {
             var logger = s.GetRequiredService<ILogger<FeatureService>>();
-            var clientLogger = s.GetRequiredService<ILogger<FlagsmithClient>>();
             FlagsmithClient client;
             try
             {
-                var config = s.GetRequiredService<FlagsmithConfig>();
-                client = new FlagsmithClient(config.SdkKey, logger: clientLogger, enableAnalytics: config.EnableAnalytics);
+                var config = s.GetRequiredService<FlagsmithConfiguration>();
+                client = new FlagsmithClient(config);
             }
             catch (Exception ex)
             {

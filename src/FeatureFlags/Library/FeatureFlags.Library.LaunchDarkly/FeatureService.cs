@@ -35,7 +35,7 @@ class FeatureService : IFeatureService, IJsonFeatureService
     public Task<bool> IsEnabledAsync(string key, IFeatureContext context, bool defaultValue = false)
     {
         var user = _converter.Convert(context);
-        var result = _client.BoolVariation(key, user, defaultValue);
+        var result = _client.BoolVariation(key, user.ToContext(), defaultValue);
         return Task.FromResult(result);
     }
 
@@ -54,7 +54,7 @@ class FeatureService : IFeatureService, IJsonFeatureService
     public Task<T> GetConfiguration<T>(string key, IFeatureContext context, T defaultValue = default) where T : class
     {
         var user = _converter.Convert(context);
-        var json = _client.JsonVariation(key, user, GetGenericDefaultValue(defaultValue));
+        var json = _client.JsonVariation(key, user.ToContext(), GetGenericDefaultValue(defaultValue));
         var result = JsonConvert.DeserializeObject<T>(json.ToJsonString());
         return Task.FromResult(result);
     }
