@@ -23,11 +23,11 @@ public class FlakyGitHubController : ControllerBase
         return issues != null ? (IActionResult)Ok(issues) : NotFound();
     }
 
-    private List<GitHubIssue> Issues()
+    private static List<GitHubIssue> Issues()
     {
         return new List<GitHubIssue>
         {
-            new GitHubIssue
+            new()
             {
                 id = 757783375,
                 node_id = "MDExOlB1bGxSZXF1ZXN0NTMzMDk0NDc3",
@@ -41,7 +41,7 @@ public class FlakyGitHubController : ControllerBase
                 created_at = DateTime.Parse("2020/12/05 21:25:26.0000000", CultureInfo.InvariantCulture),
                 updated_at = DateTime.Parse("2020/12/05 21:26:06.0000000", CultureInfo.InvariantCulture)
             },
-            new GitHubIssue
+            new()
             {
                 id = 757748085,
                 node_id = "MDExOlB1bGxSZXF1ZXN0NTMzMDY5MzU5",
