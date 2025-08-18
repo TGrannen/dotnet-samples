@@ -2,9 +2,9 @@
 
 public class GitHubIssue
 {
-    public int id { get; set; }
+    public long id { get; set; }
     public string node_id { get; set; }
-    public int number { get; set; }
+    public long number { get; set; }
     public string state { get; set; }
     public string title { get; set; }
     public string body { get; set; }

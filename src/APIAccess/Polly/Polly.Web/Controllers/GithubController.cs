@@ -18,13 +18,13 @@ public class GithubController : ControllerBase
     public async Task<IActionResult> GetAspNetDocsIssues()
     {
         var issues = await _githubService.GetAspNetDocsIssues();
-        return issues != null ? (IActionResult)Ok(issues) : NotFound();
+        return issues != null ? Ok(issues) : NotFound();
     }
 
     [HttpGet("GetFromFlaky")]
     public async Task<IActionResult> GetFromFlaky()
     {
         var issues = await _flakyGitHubService.GetAspNetDocsIssues();
-        return issues != null ? (IActionResult)Ok(issues) : NotFound();
+        return issues != null ? Ok(issues) : NotFound();
     }
 }
