@@ -3,14 +3,18 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.AddServiceDefaults();
+
 builder.Services.AddControllers();
 builder.Services.AddTransient<DbInitializer>();
 builder.Services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo { Title = "EFCore.Web", Version = "v1" }); });
 
-builder.Services.AddDbContext<SchoolContext>(options => { options.UseSqlServer("name=ConnectionStrings:DefaultConnection"); });
+builder.Services.AddDbContext<SchoolContext>(options => { options.UseNpgsql(builder.Configuration.GetConnectionString("ef-test-db")); });
 builder.Host.UseSerilog((context, configuration) => { configuration.ReadFrom.Configuration(context.Configuration); });
 
 var app = builder.Build();
+
+app.MapDefaultEndpoints();
 app.UseSerilogRequestLogging();
 
 if (builder.Environment.IsDevelopment())

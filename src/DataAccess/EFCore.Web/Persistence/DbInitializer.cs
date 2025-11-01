@@ -84,14 +84,14 @@ public class DbInitializer(ILogger<DbInitializer> logger, SchoolContext context)
 
             await context.SaveChangesAsync();
 
-            var classrooms = new Classroom[]
-            {
-                new() { RoomNumber = "West 23", Courses = context.Courses.Take(1).ToList() },
-                new() { RoomNumber = "North 4", Courses = context.Courses.Skip(2).Take(2).ToList() },
-                new() { RoomNumber = "East 14", Courses = context.Courses.Skip(4).Take(1).ToList() },
-            };
-
-            context.Classrooms.AddRange(classrooms);
+            // var classrooms = new Classroom[]
+            // {
+            //     new() { RoomNumber = "West 23", Courses = context.Courses.Take(1).ToList() },
+            //     new() { RoomNumber = "North 4", Courses = context.Courses.Skip(2).Take(2).ToList() },
+            //     new() { RoomNumber = "East 14", Courses = context.Courses.Skip(4).Take(1).ToList() },
+            // };
+            //
+            // context.Classrooms.AddRange(classrooms);
             await context.SaveChangesAsync();
         }
         catch (Exception e)

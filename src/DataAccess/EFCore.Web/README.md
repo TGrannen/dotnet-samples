@@ -20,5 +20,5 @@ dotnet ef migrations add InitialCreate -o Persistence/Migrations
 ### Second Migration
 
 ``` bash
-dotnet ef migrations add UpdateDataModel -o Persistence/Migrations
+dotnet ef migrations add AddClassroom -o Persistence/Migrations
 ```
