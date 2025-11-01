@@ -4,11 +4,11 @@ namespace EFCore.Web.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class CourseControllerController : ControllerBase
+public class CourseController : ControllerBase
 {
     private readonly SchoolContext _context;
 
-    public CourseControllerController(SchoolContext context)
+    public CourseController(SchoolContext context)
     {
         _context = context;
     }

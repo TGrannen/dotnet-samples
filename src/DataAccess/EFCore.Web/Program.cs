@@ -4,6 +4,7 @@ using Microsoft.OpenApi.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
+builder.Services.AddTransient<DbInitializer>();
 builder.Services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo { Title = "EFCore.Web", Version = "v1" }); });
 
 builder.Services.AddDbContext<SchoolContext>(options => { options.UseSqlServer("name=ConnectionStrings:DefaultConnection"); });
@@ -22,25 +23,13 @@ if (builder.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 app.UseAuthorization();
-app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+app.MapControllers();
 
-CreateDbIfNotExists(app);
+using (var scope = app.Services.CreateScope())
+{
+    var initializer = scope.ServiceProvider.GetRequiredService<DbInitializer>();
+    await initializer.MigrateAsync();
+    await initializer.SeedIfEmpty();
+}
 
 await app.RunAsync();
-
-static void CreateDbIfNotExists(IHost host)
-{
-    using var scope = host.Services.CreateScope();
-
-    var services = scope.ServiceProvider;
-    try
-    {
-        var context = services.GetRequiredService<SchoolContext>();
-        DbInitializer.Initialize(context);
-    }
-    catch (Exception ex)
-    {
-        var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "An error occurred creating the DB");
-    }
-}
