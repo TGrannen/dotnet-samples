@@ -8,6 +8,5 @@ public class CourseConfiguration : IEntityTypeConfiguration<Course>
     {
         builder.ToTable("Course");
         builder.Property(x => x.ClassroomId).IsRequired(false);
-        builder.Property(x => x.CourseId).ValueGeneratedNever();
     }
 }

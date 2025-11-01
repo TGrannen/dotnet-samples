@@ -42,7 +42,10 @@ namespace EFCore.Web.Persistence.Migrations
             modelBuilder.Entity("EFCore.Web.Models.Course", b =>
                 {
                     b.Property<int>("CourseId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CourseId"));
 
                     b.Property<int?>("ClassroomId")
                         .HasColumnType("integer");
@@ -52,7 +55,8 @@ namespace EFCore.Web.Persistence.Migrations
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(400)
+                        .HasColumnType("character varying(400)");
 
                     b.HasKey("CourseId");
 
@@ -100,11 +104,13 @@ namespace EFCore.Web.Persistence.Migrations
 
                     b.Property<string>("FirstMidName")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(400)
+                        .HasColumnType("character varying(400)");
 
                     b.Property<string>("LastName")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(400)
+                        .HasColumnType("character varying(400)");
 
                     b.HasKey("Id");
 

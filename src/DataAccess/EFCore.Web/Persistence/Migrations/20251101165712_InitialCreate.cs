@@ -13,17 +13,16 @@ namespace EFCore.Web.Persistence.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Course",
+                name: "Classrooms",
                 columns: table => new
                 {
-                    CourseId = table.Column<int>(type: "integer", nullable: false),
-                    ClassroomId = table.Column<int>(type: "integer", nullable: true),
-                    Title = table.Column<string>(type: "text", nullable: false),
-                    Credits = table.Column<int>(type: "integer", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    RoomNumber = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Course", x => x.CourseId);
+                    table.PrimaryKey("PK_Classrooms", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -32,13 +31,33 @@ namespace EFCore.Web.Persistence.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    LastName = table.Column<string>(type: "text", nullable: false),
-                    FirstMidName = table.Column<string>(type: "text", nullable: false),
+                    LastName = table.Column<string>(type: "character varying(400)", maxLength: 400, nullable: false),
+                    FirstMidName = table.Column<string>(type: "character varying(400)", maxLength: 400, nullable: false),
                     EnrollmentDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Students", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Course",
+                columns: table => new
+                {
+                    CourseId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ClassroomId = table.Column<int>(type: "integer", nullable: true),
+                    Title = table.Column<string>(type: "character varying(400)", maxLength: 400, nullable: false),
+                    Credits = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Course", x => x.CourseId);
+                    table.ForeignKey(
+                        name: "FK_Course_Classrooms_ClassroomId",
+                        column: x => x.ClassroomId,
+                        principalTable: "Classrooms",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -69,6 +88,11 @@ namespace EFCore.Web.Persistence.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Course_ClassroomId",
+                table: "Course",
+                column: "ClassroomId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Enrollments_CourseId",
                 table: "Enrollments",
                 column: "CourseId");
@@ -90,6 +114,9 @@ namespace EFCore.Web.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "Students");
+
+            migrationBuilder.DropTable(
+                name: "Classrooms");
         }
     }
 }
