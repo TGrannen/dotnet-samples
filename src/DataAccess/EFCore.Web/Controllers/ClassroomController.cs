@@ -4,20 +4,13 @@ namespace EFCore.Web.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class ClassroomController : ControllerBase
+public class ClassroomController(SchoolContext context) : ControllerBase
 {
-    private readonly SchoolContext _context;
-
-    public ClassroomController(SchoolContext context)
-    {
-        _context = context;
-    }
-
     [HttpGet]
     [Route("GetTopFive")]
     public async Task<List<Classroom>> Get()
     {
-        var listAsync = await _context.Classrooms.OrderBy(x => x.RoomNumber).Take(5).Include(x => x.Courses).ToListAsync();
+        var listAsync = await context.Classrooms.OrderBy(x => x.RoomNumber).Take(5).Include(x => x.Courses).ToListAsync();
         return listAsync;
     }
 
@@ -25,6 +18,6 @@ public class ClassroomController : ControllerBase
     [Route("GetById")]
     public async Task<Classroom> GetById(int id)
     {
-        return await _context.Classrooms.Include(x => x.Courses).SingleAsync(b => b.Id == id);
+        return await context.Classrooms.Include(x => x.Courses).SingleAsync(b => b.Id == id);
     }
 }
