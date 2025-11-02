@@ -1,6 +1,6 @@
 namespace EFCore.Web.Persistence;
 
-public class DbInitializer(ILogger<DbInitializer> logger, SchoolContext context)
+public class DbInitializer(ILogger<DbInitializer> logger, SchoolContext context, DataGenerator seeder)
 {
     public async Task MigrateAsync()
     {
@@ -25,49 +25,13 @@ public class DbInitializer(ILogger<DbInitializer> logger, SchoolContext context)
 
         try
         {
-            AutoFaker.Configure(builder => { builder.WithConventions(); });
-            Randomizer.Seed = new Random(8675309);
-
-            var studentFaker = new AutoFaker<Student>()
-                    .RuleFor(x => x.FirstMidName, f => f.Person.FirstName)
-                    .RuleFor(x => x.LastName, f => f.Person.LastName)
-                    .RuleFor(x => x.EnrollmentDate, f => f.Date.Past(100).ToUniversalTime())
-                    .RuleFor(x => x.Enrollments, f => new List<Enrollment>())
-                ;
-            var students = studentFaker.Generate(10).ToArray();
+            var students = seeder.GenerateStudents(10);
             context.Students.AddRange(students);
-
-            // TODO remove multiple saves
-            await context.SaveChangesAsync();
-
-            var courseFaker = new Faker<Course>()
-                    .RuleFor(x => x.Title, f => f.Name.JobTitle())
-                    .RuleFor(x => x.ClassroomId, f => null)
-                    .RuleFor(x => x.Enrollments, f => new List<Enrollment>())
-                ;
-            var courses = courseFaker.Generate(10).ToArray();
+            var courses = seeder.GenerateCourses(10);
             context.Courses.AddRange(courses);
-            await context.SaveChangesAsync();
-
-            var enrollmentFaker = new Faker<Enrollment>()
-                    .RuleFor(x => x.Student, f => f.PickRandom(students))
-                    .RuleFor(x => x.Course, f => f.PickRandom(courses))
-                    .RuleFor(x => x.Grade, f => f.Random.Int(1, 5) != 1 ? f.PickRandom<Grade>() : null)
-                ;
-
-            context.Enrollments.AddRange(enrollmentFaker.Generate(20));
-            await context.SaveChangesAsync();
-
-            var classroomFaker = new Faker<Classroom>()
-                    .RuleFor(x => x.RoomNumber, f => f.Random.Int(14, 343).ToString())
-                    .RuleFor(x => x.Courses, f =>
-                    {
-                        var skip = f.Random.Int(0, 3);
-                        var take = f.Random.Int(1, 5);
-                        return context.Courses.Skip(skip).Take(take).ToList();
-                    })
-                ;
-            var classrooms = classroomFaker.Generate(10).ToArray();
+            var enrollments = seeder.GenerateEnrollments(students, courses);
+            context.Enrollments.AddRange(enrollments);
+            var classrooms = seeder.GenerateClassroom(10);
             context.Classrooms.AddRange(classrooms);
             await context.SaveChangesAsync();
         }

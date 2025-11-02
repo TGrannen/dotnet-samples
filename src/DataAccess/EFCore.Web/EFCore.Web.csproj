@@ -15,6 +15,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="PhenX.EntityFrameworkCore.BulkInsert.PostgreSql" Version="0.4.4" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.6" />
      <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
   </ItemGroup>

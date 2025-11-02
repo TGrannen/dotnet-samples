@@ -1,5 +1,6 @@
 using Serilog;
 using Microsoft.OpenApi.Models;
+using PhenX.EntityFrameworkCore.BulkInsert.PostgreSql;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,10 +11,16 @@ builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.ReferenceHandler =
         System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
 });
+builder.Services.AddTransient<DataGenerator>();
 builder.Services.AddTransient<DbInitializer>();
 builder.Services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo { Title = "EFCore.Web", Version = "v1" }); });
 
-builder.Services.AddDbContext<SchoolContext>(options => { options.UseNpgsql(builder.Configuration.GetConnectionString("ef-test-db")); });
+builder.Services.AddDbContext<SchoolContext>(options =>
+{
+    options
+        .UseNpgsql(builder.Configuration.GetConnectionString("ef-test-db"))
+        .UseBulkInsertPostgreSql();
+});
 builder.Host.UseSerilog((context, configuration) => { configuration.ReadFrom.Configuration(context.Configuration); });
 
 var app = builder.Build();

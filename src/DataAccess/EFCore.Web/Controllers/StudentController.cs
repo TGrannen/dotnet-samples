@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PhenX.EntityFrameworkCore.BulkInsert.Extensions;
 
 namespace EFCore.Web.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class StudentController(SchoolContext context) : ControllerBase
+public class StudentController(SchoolContext context, DataGenerator generator) : ControllerBase
 {
     [HttpGet]
     [Route("GetTopFive")]
@@ -23,5 +24,28 @@ public class StudentController(SchoolContext context) : ControllerBase
     public async Task<Student> GetById(int id)
     {
         return await context.Students.SingleAsync(b => b.Id == id);
+    }
+
+    [HttpGet]
+    [Route("GetTotalStudentCount")]
+    public async Task<long> GetTotalStudentCount()
+    {
+        return await context.Students.CountAsync();
+    }
+
+    [HttpPost]
+    [Route("BulkInsert")]
+    public async Task<int> BulkInsert(int numberOfStudents = 10000, int batchSize = 1000)
+    {
+        var students = generator.GenerateStudents(numberOfStudents);
+        // context.Students.AddRange(students);
+        // var count = await context.SaveChangesAsync();
+        await context.ExecuteBulkInsertAsync(students, options =>
+        {
+            // Set the batch size for the insert operation, the default value is different for each provider
+            options.BatchSize = batchSize;
+        });
+
+        return numberOfStudents;
     }
 }
