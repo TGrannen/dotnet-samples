@@ -21,7 +21,7 @@ builder.Services.AddDbContext<SchoolContext>(options =>
         .UseNpgsql(builder.Configuration.GetConnectionString("ef-test-db"))
         .UseBulkInsertPostgreSql();
 });
-builder.Host.UseSerilog((context, configuration) => { configuration.ReadFrom.Configuration(context.Configuration); });
+builder.Host.UseSerilog((context, configuration) => { configuration.ReadFrom.Configuration(context.Configuration); }, writeToProviders: true);
 
 var app = builder.Build();
 

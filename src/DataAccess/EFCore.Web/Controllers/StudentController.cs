@@ -38,13 +38,10 @@ public class StudentController(SchoolContext context, DataGenerator generator) :
     public async Task<int> BulkInsert(int numberOfStudents = 10000, int batchSize = 1000)
     {
         var students = generator.GenerateStudents(numberOfStudents);
-        // context.Students.AddRange(students);
-        // var count = await context.SaveChangesAsync();
-        await context.ExecuteBulkInsertAsync(students, options =>
+        foreach (var batch in students.Chunk(batchSize))
         {
-            // Set the batch size for the insert operation, the default value is different for each provider
-            options.BatchSize = batchSize;
-        });
+            await context.ExecuteBulkInsertAsync(batch);
+        }
 
         return numberOfStudents;
     }

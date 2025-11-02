@@ -25,9 +25,9 @@ public class DbInitializer(ILogger<DbInitializer> logger, SchoolContext context,
 
         try
         {
-            var students = seeder.GenerateStudents(10);
+            var students = seeder.GenerateStudents(10).ToArray();
             context.Students.AddRange(students);
-            var courses = seeder.GenerateCourses(10);
+            var courses = seeder.GenerateCourses(10).ToArray();
             context.Courses.AddRange(courses);
             var enrollments = seeder.GenerateEnrollments(students, courses);
             context.Enrollments.AddRange(enrollments);

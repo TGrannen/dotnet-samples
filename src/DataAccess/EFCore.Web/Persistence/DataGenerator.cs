@@ -15,14 +15,16 @@ public class DataGenerator(SchoolContext context)
         .RuleFor(x => x.EnrollmentDate, f => f.Date.Past(100).ToUniversalTime())
         .RuleFor(x => x.Enrollments, f => new List<Enrollment>());
 
-    public Student[] GenerateStudents(int count)
+    public IEnumerable<Student> GenerateStudents(int count)
     {
-        return _studentFaker.Generate(count).ToArray();
+        return Enumerable.Range(0, int.MaxValue)
+            .Select(_ => _studentFaker.Generate())
+            .Take(count);
     }
 
-    public Course[] GenerateCourses(int count)
+    public IEnumerable<Course> GenerateCourses(int count)
     {
-        return _courseFaker.Generate(count).ToArray();
+        return _courseFaker.Generate(count);
     }
 
     public Enrollment[] GenerateEnrollments(Student[] students, Course[] courses)
