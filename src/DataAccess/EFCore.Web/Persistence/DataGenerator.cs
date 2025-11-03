@@ -17,9 +17,7 @@ public class DataGenerator(SchoolContext context)
 
     public IEnumerable<Student> GenerateStudents(int count)
     {
-        return Enumerable.Range(0, int.MaxValue)
-            .Select(_ => _studentFaker.Generate())
-            .Take(count);
+        return _studentFaker.GenerateLazy(count);
     }
 
     public IEnumerable<Course> GenerateCourses(int count)
