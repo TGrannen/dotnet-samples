@@ -7,37 +7,28 @@ namespace QuartzExample.Web.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class JobQueueController : ControllerBase
+public class JobQueueController(IScheduler scheduler, ILogger<JobQueueController> logger) : ControllerBase
 {
-    private readonly IScheduler _scheduler;
-    private readonly ILogger<JobQueueController> _logger;
-
-    public JobQueueController(IScheduler scheduler, ILogger<JobQueueController> logger)
-    {
-        _scheduler = scheduler;
-        _logger = logger;
-    }
-
     [HttpPost]
     [Route("QueueExample2")]
     public void QueueExample2()
     {
-        _logger.LogInformation("Queuing from API action");
+        logger.LogInformation("Queuing from API action");
 
-        _scheduler.ScheduleImmediateJob<ExampleJob2>();
+        scheduler.ScheduleImmediateJob<ExampleJob2>();
 
-        _logger.LogInformation("Queued from API action");
+        logger.LogInformation("Queued from API action");
     }
 
     [HttpPost]
     [Route("QueueExample3")]
     public void QueueExample3(string value)
     {
-        _logger.LogInformation("Queuing from API action");
+        logger.LogInformation("Queuing from API action");
 
-        _scheduler.ScheduleImmediateJob<ExampleJob3>(new Dictionary<string, string> { { "value", value } });
+        scheduler.ScheduleImmediateJob<ExampleJob3>(new Dictionary<string, string> { { "value", value } });
 
-        _logger.LogInformation("Queued from API action");
+        logger.LogInformation("Queued from API action");
     }
 
     [HttpPost]
@@ -46,10 +37,10 @@ public class JobQueueController : ControllerBase
     {
         var fromSeconds = TimeSpan.FromSeconds(delaySeconds);
 
-        _logger.LogInformation("Queuing Delayed Job for {Seconds} seconds. Job should run after {Time}", delaySeconds, DateTimeOffset.Now.Add(fromSeconds));
+        logger.LogInformation("Queuing Delayed Job for {Seconds} seconds. Job should run after {Time}", delaySeconds, DateTimeOffset.Now.Add(fromSeconds));
 
-        _scheduler.ScheduleDelayedJob<ExampleJob2>(fromSeconds);
+        scheduler.ScheduleDelayedJob<ExampleJob2>(fromSeconds);
 
-        _logger.LogInformation("Queued Delayed Job");
+        logger.LogInformation("Queued Delayed Job");
     }
 }

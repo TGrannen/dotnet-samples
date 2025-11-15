@@ -1,23 +1,16 @@
 namespace WorkerServiceExample.Services;
 
-public class ExampleService : BackgroundService
+public class ExampleService(ILogger<ExampleService> logger) : BackgroundService
 {
-    private readonly ILogger<ExampleService> _logger;
-
-    public ExampleService(ILogger<ExampleService> logger)
-    {
-        _logger = logger;
-    }
-
     public override Task StartAsync(CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Starting {Service} up worker at: {Time}", nameof(ExampleService), DateTimeOffset.Now);
+        logger.LogInformation("Starting {Service} up worker at: {Time}", nameof(ExampleService), DateTimeOffset.Now);
         return base.StartAsync(cancellationToken);
     }
 
     public override Task StopAsync(CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Stopping {Service} worker at: {Time}", nameof(ExampleService), DateTimeOffset.Now);
+        logger.LogInformation("Stopping {Service} worker at: {Time}", nameof(ExampleService), DateTimeOffset.Now);
         return base.StopAsync(cancellationToken);
     }
 
@@ -25,7 +18,7 @@ public class ExampleService : BackgroundService
     {
         while (!stoppingToken.IsCancellationRequested)
         {
-            _logger.LogInformation("Worker running at: {Time}", DateTimeOffset.Now);
+            logger.LogInformation("Worker running at: {Time}", DateTimeOffset.Now);
             await Task.Delay(2500, stoppingToken);
         }
     }

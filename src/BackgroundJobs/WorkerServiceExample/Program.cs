@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Builder;
 using Serilog;
 using WorkerServiceExample.Services;
 

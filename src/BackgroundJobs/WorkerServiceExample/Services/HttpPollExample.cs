@@ -1,16 +1,7 @@
 namespace WorkerServiceExample.Services;
 
-public class HttpPollExample : BackgroundService
+public class HttpPollExample(ILogger<HttpPollExample> logger, IHttpClientFactory factory) : BackgroundService
 {
-    private readonly ILogger<HttpPollExample> _logger;
-    private readonly IHttpClientFactory _factory;
-
-    public HttpPollExample(ILogger<HttpPollExample> logger, IHttpClientFactory factory)
-    {
-        _logger = logger;
-        _factory = factory;
-    }
-
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         while (!stoppingToken.IsCancellationRequested)
@@ -18,7 +9,7 @@ public class HttpPollExample : BackgroundService
             try
             {
                 var success = await IsGoogleUp();
-                _logger.Log(success
+                logger.Log(success
                         ? LogLevel.Information
                         : LogLevel.Error,
                     "Google is {Status}",
@@ -26,7 +17,7 @@ public class HttpPollExample : BackgroundService
             }
             catch (Exception exception)
             {
-                _logger.LogError(exception, "Major Exception");
+                logger.LogError(exception, "Major Exception");
             }
             finally
             {
@@ -37,7 +28,7 @@ public class HttpPollExample : BackgroundService
 
     private async Task<bool> IsGoogleUp()
     {
-        var client = _factory.CreateClient();
+        var client = factory.CreateClient();
         var response = await client.GetAsync("http://google.com");
         bool success = response.IsSuccessStatusCode;
         return success;

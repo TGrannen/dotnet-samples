@@ -9,7 +9,7 @@ public interface IReloadJobService
     void Stop();
 }
 
-class ReloadJobService<T> : BackgroundService, IReloadJobService where T : IReloadJob
+internal class ReloadJobService<T> : BackgroundService, IReloadJobService where T : IReloadJob
 {
     public TimeSpan Delay { get; init; } = TimeSpan.FromSeconds(2);
     private readonly IServiceProvider _provider;
@@ -60,7 +60,6 @@ class ReloadJobService<T> : BackgroundService, IReloadJobService where T : IRelo
             .Permit(Trigger.Reload, State.Loading)
             ;
     }
-
 
     public void Reload()
     {
