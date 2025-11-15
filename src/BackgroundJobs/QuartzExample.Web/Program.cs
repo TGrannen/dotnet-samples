@@ -1,4 +1,4 @@
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using Quartz;
 using QuartzExample.Web.Extensions;
 using QuartzExample.Web.Jobs;

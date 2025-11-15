@@ -33,13 +33,6 @@ public static class QuartzConfigurationExtensions
         {
             q.SchedulerId = "Scheduler-Core";
 
-            q.UseMicrosoftDependencyInjectionJobFactory(options =>
-            {
-                // if we don't have the job in DI, allow fallback
-                // to configure via default constructor
-                options.AllowDefaultConstructor = true;
-            });
-
             q.UseSimpleTypeLoader();
             q.UseInMemoryStore();
             q.UseDefaultThreadPool(tp =>
@@ -49,7 +42,7 @@ public static class QuartzConfigurationExtensions
         });
 
         // Add all jobs to IOC Container
-        services.Scan(scan => scan.FromCallingAssembly().AddClasses(x => x.AssignableTo<IJob>()));
+        services.Scan(scan => scan.FromEntryAssembly().AddClasses(x => x.AssignableTo<IJob>()));
 
         services.AddQuartzHostedService(options =>
         {
