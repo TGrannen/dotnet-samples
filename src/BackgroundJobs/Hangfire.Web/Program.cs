@@ -1,11 +1,12 @@
 using Hangfire;
-using Microsoft.OpenApi.Models;
+using Hangfire.MemoryStorage;
+using Microsoft.OpenApi;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add Hangfire services.
-builder.Services.AddHangfire(x => x.UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddHangfire(x => x.UseMemoryStorage());
 builder.Services.AddHangfireServer();
 
 builder.Services.AddControllers();
@@ -14,6 +15,7 @@ builder.Services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo { Title
 builder.Host.UseSerilog((context, configuration) => { configuration.ReadFrom.Configuration(context.Configuration); });
 
 var app = builder.Build();
+
 app.UseSerilogRequestLogging();
 
 if (builder.Environment.IsDevelopment())
@@ -26,7 +28,7 @@ if (builder.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 app.UseAuthorization();
-app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+app.MapControllers();
 
 app.UseHangfireDashboard();
 
