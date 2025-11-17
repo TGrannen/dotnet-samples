@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <UserSecretsId>dotnet-WorkerServiceExample-F87CA5B6-47B5-4F34-BFEB-963C57054E74</UserSecretsId>
     <LangVersion>latestmajor</LangVersion>
     <ImplicitUsings>true</ImplicitUsings>
