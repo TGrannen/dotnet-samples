@@ -1,8 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <ImplicitUsings>true</ImplicitUsings>
     <IsPackable>false</IsPackable>
     <ImplicitUsings>true</ImplicitUsings>
     <LangVersion>10</LangVersion>
