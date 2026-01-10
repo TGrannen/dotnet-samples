@@ -9,3 +9,4 @@ global using TUnit.AspNetCore;
 global using TUnit.Core.Extensions;
 global using TUnit.Core.Interfaces;
 global using TUnitTesting.Tests.IntegrationTests.BlogPosts.Shared;
+global using static Microsoft.Playwright.Assertions;

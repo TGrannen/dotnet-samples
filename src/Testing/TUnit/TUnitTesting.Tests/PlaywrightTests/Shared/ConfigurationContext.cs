@@ -19,7 +19,14 @@ public class ConfigurationContext
             .Build();
         var services = new ServiceCollection();
         services.Configure<AuthOptions>(_configuration.GetSection(AuthOptions.SectionName));
+        services.Configure<PlaywrightOptions>(_configuration.GetSection(PlaywrightOptions.SectionName));
         _serviceProvider = services.BuildServiceProvider();
+
+        var playwrightOptions = GetOptions<PlaywrightOptions>();
+        if (playwrightOptions.Debug)
+        {
+            Environment.SetEnvironmentVariable("PWDEBUG", "1");
+        }
     }
 
     public IConfiguration Configuration => _configuration;

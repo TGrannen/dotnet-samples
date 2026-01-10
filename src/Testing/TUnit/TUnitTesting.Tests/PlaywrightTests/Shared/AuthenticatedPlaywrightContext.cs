@@ -1,69 +1,91 @@
-using Microsoft.Extensions.Options;
+﻿using System.Text.Json;
 
 namespace TUnitTesting.Tests.PlaywrightTests.Shared;
 
+#pragma warning disable CS8618
 public class AuthenticatedPlaywrightContext : IAsyncInitializer
 {
-    [ClassDataSource<ConfigurationContext>(Shared = SharedType.PerTestSession)]
+    [ClassDataSource<ConfigurationContext>(Shared = SharedType.PerAssembly)]
     public required ConfigurationContext ConfigurationContext { get; set; } = null!;
 
-    private static readonly string AuthStatePath =
-        Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "playwright", ".auth", "state.json"));
+    private static readonly string AuthStateDirectory =
+        Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "playwright", ".auth"));
+
+    private static readonly string AuthStatePath = Path.GetFullPath(Path.Combine(AuthStateDirectory, "state.json"));
 
     public string AuthenticationStatePath => AuthStatePath;
 
     public async Task InitializeAsync()
     {
-        // Ensure the playwright/.auth directory exists
-        var authDirectory = Path.GetDirectoryName(AuthStatePath);
-        if (!string.IsNullOrEmpty(authDirectory) && !Directory.Exists(authDirectory))
+        if (!Directory.Exists(AuthStateDirectory))
         {
-            Directory.CreateDirectory(authDirectory);
+            Directory.CreateDirectory(AuthStateDirectory);
         }
 
         // Only perform login if authentication state doesn't exist or is invalid
         if (File.Exists(AuthStatePath) && new FileInfo(AuthStatePath).Length > 0)
         {
-            return;
+            var json = await File.ReadAllTextAsync(AuthStatePath);
+            var authState = JsonSerializer.Deserialize<AuthState>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            if (authState is { Cookies.Length: > 0 })
+            {
+                return;
+            }
         }
 
-        // Launch Playwright browser for authentication
+        var playwrightOptions = ConfigurationContext.GetOptions<PlaywrightOptions>();
+
         using var playwright = await Playwright.CreateAsync();
         var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
         {
-            Headless = false,
+            Headless = !playwrightOptions.Headed,
             SlowMo = 200
         });
 
         var context = await browser.NewContextAsync();
+
         var loginPage = await context.NewPageAsync();
-        await PerformLoginAsync(loginPage);
+
+        var authOptions = ConfigurationContext.GetOptions<AuthOptions>();
+        await loginPage.PerformLoginAsync(authOptions);
+
         await context.StorageStateAsync(new BrowserContextStorageStateOptions
         {
             Path = AuthStatePath
         });
 
+        await loginPage.CloseAsync();
         await context.CloseAsync();
-        await browser.CloseAsync();
+        await browser.DisposeAsync();
     }
 
-    private async Task PerformLoginAsync(IPage page)
+    public class AuthState
     {
-        var authOptions = ConfigurationContext.GetOptions<AuthOptions>();
+        public CookiesModel[] Cookies { get; set; }
+        public OriginsModel[] Origins { get; set; }
 
-        if (string.IsNullOrEmpty(authOptions.Email) || string.IsNullOrEmpty(authOptions.Password))
+        public class CookiesModel
         {
-            throw new InvalidOperationException(
-                "Authentication credentials are not configured. Please set 'Authentication:Email' and 'Authentication:Password' in user secrets.");
+            public string Name { get; set; }
+            public string Value { get; set; }
+            public string Domain { get; set; }
+            public string Path { get; set; }
+            public double Expires { get; set; }
+            public bool HttpOnly { get; set; }
+            public bool Secure { get; set; }
+            public string SameSite { get; set; }
         }
 
-        await page.GotoAsync("https://guillotineleagues.com/");
-        await page.GetByRole(AriaRole.Link, new PageGetByRoleOptions { Name = "Log In" }).First.ClickAsync();
-        await page.GetByRole(AriaRole.Textbox, new PageGetByRoleOptions { Name = "Email" }).ClickAsync();
-        await page.GetByRole(AriaRole.Textbox, new PageGetByRoleOptions { Name = "Email" }).FillAsync(authOptions.Email);
-        await page.GetByRole(AriaRole.Textbox, new PageGetByRoleOptions { Name = "Email" }).PressAsync("Tab");
-        await page.GetByRole(AriaRole.Textbox, new PageGetByRoleOptions { Name = "Password" }).FillAsync(authOptions.Password);
-        await page.GetByRole(AriaRole.Textbox, new PageGetByRoleOptions { Name = "Password" }).ClickAsync();
-        await page.GetByRole(AriaRole.Button, new PageGetByRoleOptions { Name = "Login" }).ClickAsync();
+        public class OriginsModel
+        {
+            public string Origin { get; set; }
+            public LocalStorage[] LocalStorage { get; set; }
+        }
+
+        public class LocalStorage
+        {
+            public string Name { get; set; }
+            public string Value { get; set; }
+        }
     }
 }

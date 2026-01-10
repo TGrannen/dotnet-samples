@@ -12,7 +12,7 @@ public class PlaywrightChromiumTests : PageTest
     /// Default browser is Chromium, but you can explicitly override it
     /// </summary>
     public override string BrowserName => "chromium";
-    
+
     [Test]
     public async Task TestWithChromium()
     {
@@ -24,7 +24,7 @@ public class PlaywrightChromiumTests : PageTest
 public class PlaywrightFirefoxTests : PageTest
 {
     public override string BrowserName => "firefox";
-    
+
     [Test]
     public async Task TestWithFirefox()
     {
@@ -36,7 +36,7 @@ public class PlaywrightFirefoxTests : PageTest
 public class PlaywrightWebKitTests : PageTest
 {
     public override string BrowserName => "webkit";
-    
+
     [Test]
     public async Task TestWithWebKit()
     {
