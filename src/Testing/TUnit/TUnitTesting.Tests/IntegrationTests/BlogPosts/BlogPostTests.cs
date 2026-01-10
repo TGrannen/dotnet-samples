@@ -1,16 +1,13 @@
 ﻿namespace TUnitTesting.Tests.IntegrationTests.BlogPosts;
 
 [Category("Integration")]
-public class BlogPostTests
+public class BlogPostTests : TestsBase
 {
-    [ClassDataSource<BlogPostWebAppFactory>(Shared = SharedType.PerTestSession)]
-    public required BlogPostWebAppFactory Fixture { get; init; }
-
     [Test]
     public async Task CreatePost_ReturnsCreatedStatusCodeAndPost()
     {
         var newPost = new { Title = "New Pure TUnit Post", Content = "This is a new test post with TUnit." };
-        var response = await Fixture.PostAPI.CreatePost(newPost);
+        var response = await PostAPI.CreatePost(newPost);
 
         using var _ = Assert.Multiple();
         await Assert.That(response.IsSuccessStatusCode).IsEqualTo(true);
@@ -24,10 +21,10 @@ public class BlogPostTests
     [NotInParallel]
     public async Task GetPosts_ReturnsSuccessStatusCodeAndPosts()
     {
-        await Fixture.ResetBlogPostsAsync();
+        await ResetBlogPostsAsync();
         var postId = await CreatePost("New Pure TUnit Post");
 
-        var response = await Fixture.PostAPI.GetPosts();
+        var response = await PostAPI.GetPosts();
 
         using var _ = Assert.Multiple();
         await Assert.That(response.IsSuccessStatusCode).IsEqualTo(true);
@@ -43,7 +40,7 @@ public class BlogPostTests
         var updatedPostDto = new { Title = "Pure TUnit Updated Title", Content = "Pure TUnit Updated content." };
         var postId = await CreatePost();
 
-        var response = await Fixture.PostAPI.UpdatePost(postId, updatedPostDto);
+        var response = await PostAPI.UpdatePost(postId, updatedPostDto);
 
         using var _ = Assert.Multiple();
         await Assert.That(response.IsSuccessStatusCode).IsEqualTo(true);
@@ -53,7 +50,7 @@ public class BlogPostTests
     [Test]
     public async Task GetPostById_ReturnsNotFound_ForNonExistentPost()
     {
-        var response = await Fixture.PostAPI.GetPostById(99999);
+        var response = await PostAPI.GetPostById(99999);
 
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.NotFound);
     }
@@ -63,7 +60,7 @@ public class BlogPostTests
     {
         var postId = await CreatePost();
 
-        var response = await Fixture.PostAPI.DeletePost(postId);
+        var response = await PostAPI.DeletePost(postId);
 
         using var _ = Assert.Multiple();
         await Assert.That(response.IsSuccessStatusCode).IsEqualTo(true);
@@ -74,9 +71,9 @@ public class BlogPostTests
     public async Task DeletePost_ReturnsNotFound_AfterDeleted()
     {
         var postId = await CreatePost();
-        await Fixture.PostAPI.DeletePost(postId);
+        await PostAPI.DeletePost(postId);
 
-        var response = await Fixture.PostAPI.GetPostById(postId);
+        var response = await PostAPI.GetPostById(postId);
 
         using var _ = Assert.Multiple();
         await Assert.That(response.IsSuccessStatusCode).IsEqualTo(false);
@@ -85,7 +82,7 @@ public class BlogPostTests
 
     private async Task<int> CreatePost(string title = "Dummy Post")
     {
-        var response = await Fixture.PostAPI.CreatePost(new { Title = title, Content = "This is a new test post with TUnit." });
+        var response = await PostAPI.CreatePost(new { Title = title, Content = "This is a new test post with TUnit." });
         return response.Content!.Id;
     }
 }

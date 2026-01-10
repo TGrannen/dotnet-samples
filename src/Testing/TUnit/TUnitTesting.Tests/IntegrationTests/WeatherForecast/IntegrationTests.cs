@@ -1,4 +1,4 @@
-﻿namespace TUnitTesting.Tests.IntegrationTests;
+﻿namespace TUnitTesting.Tests.IntegrationTests.WeatherForecast;
 
 public class IntegrationTests
 {

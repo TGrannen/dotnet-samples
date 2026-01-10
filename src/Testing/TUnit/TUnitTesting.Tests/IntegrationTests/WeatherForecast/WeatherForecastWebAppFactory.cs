@@ -1,13 +1,6 @@
 ﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
-using Serilog;
-using Serilog.Events;
-using ILogger = Microsoft.Extensions.Logging.ILogger;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
-namespace TUnitTesting.Tests.IntegrationTests;
+namespace TUnitTesting.Tests.IntegrationTests.WeatherForecast;
 
 public class WeatherForecastWebAppFactory : WebApplicationFactory<Program>, IAsyncInitializer
 {

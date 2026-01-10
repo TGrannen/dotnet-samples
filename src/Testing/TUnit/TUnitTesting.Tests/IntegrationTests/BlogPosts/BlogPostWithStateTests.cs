@@ -5,17 +5,16 @@
 /// one test and then reference to that post is passed through the ObjectBag to dependent tests
 /// </summary>
 [Category("Integration")]
-public class BlogPostWithStateTests
+public class BlogPostWithStateTests : TestsBase
 {
-    [ClassDataSource<BlogPostWebAppFactory>(Shared = SharedType.PerTestSession)]
-    public required BlogPostWebAppFactory Factory { get; init; }
+    private static int _createdPost;
 
     [Test]
     public async Task CreatePost_ReturnsCreatedStatusCodeAndPost()
     {
         var newPost = new { Title = "New Pure TUnit Post", Content = "This is a new test post with TUnit." };
 
-        var response = await Factory.PostAPI.CreatePost(newPost);
+        var response = await PostAPI.CreatePost(newPost);
 
         using var _ = Assert.Multiple();
         await Assert.That(response.IsSuccessStatusCode).IsEqualTo(true);
@@ -24,14 +23,14 @@ public class BlogPostWithStateTests
         await Assert.That(response.Content.Title).IsEqualTo(newPost.Title);
         await Assert.That(response.Content.Content).IsEqualTo(newPost.Content);
 
-        TestContext.Current!.ObjectBag.Add("PostId", response.Content.Id);
+        _createdPost = response.Content.Id;
     }
 
     [Test]
     [DependsOn(nameof(CreatePost_ReturnsCreatedStatusCodeAndPost))]
     public async Task GetPosts_ReturnsSuccessStatusCodeAndPosts()
     {
-        var response = await Factory.PostAPI.GetPosts();
+        var response = await PostAPI.GetPosts();
 
         var postId = GetPostId();
         using var _ = Assert.Multiple();
@@ -48,7 +47,7 @@ public class BlogPostWithStateTests
     {
         var updatedPostDto = new { Title = "Pure TUnit Updated Title", Content = "Pure TUnit Updated content." };
         var postId = GetPostId();
-        var response = await Factory.PostAPI.UpdatePost(postId, updatedPostDto);
+        var response = await PostAPI.UpdatePost(postId, updatedPostDto);
 
         using var _ = Assert.Multiple();
         await Assert.That(response.IsSuccessStatusCode).IsEqualTo(true);
@@ -58,7 +57,7 @@ public class BlogPostWithStateTests
     [Test]
     public async Task GetPostById_ReturnsNotFound_ForNonExistentPost()
     {
-        var response = await Factory.PostAPI.GetPostById(99999);
+        var response = await PostAPI.GetPostById(99999);
 
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.NotFound);
     }
@@ -68,7 +67,7 @@ public class BlogPostWithStateTests
     public async Task DeletePost_ReturnsNoContent()
     {
         var postId = GetPostId();
-        var response = await Factory.PostAPI.DeletePost(postId);
+        var response = await PostAPI.DeletePost(postId);
 
         using var _ = Assert.Multiple();
         await Assert.That(response.IsSuccessStatusCode).IsEqualTo(true);
@@ -80,7 +79,7 @@ public class BlogPostWithStateTests
     public async Task DeletePost_ReturnsNotFound_AfterDeleted()
     {
         var postId = GetPostId();
-        var response = await Factory.PostAPI.GetPostById(postId);
+        var response = await PostAPI.GetPostById(postId);
 
         using var _ = Assert.Multiple();
         await Assert.That(response.IsSuccessStatusCode).IsEqualTo(false);
@@ -89,8 +88,6 @@ public class BlogPostWithStateTests
 
     private static int GetPostId()
     {
-        var addToBagTestContext = TestContext.Current!.GetTests(nameof(CreatePost_ReturnsCreatedStatusCodeAndPost)).First();
-        var postId = addToBagTestContext.ObjectBag["PostId"] as int? ?? -1;
-        return postId;
+        return _createdPost;
     }
 }
