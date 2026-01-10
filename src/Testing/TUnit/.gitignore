@@ -1,0 +1,4 @@
+# Playwright authentication state - contains sensitive authentication data
+# See: https://playwright.dev/dotnet/docs/auth
+TUnitTesting.Tests/playwright/.auth
+
