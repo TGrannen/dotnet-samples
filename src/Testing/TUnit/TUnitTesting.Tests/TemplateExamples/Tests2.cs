@@ -1,6 +1,4 @@
-﻿using TUnitTesting.Tests.TemplateExamples.Data;
-
-namespace TUnitTesting.Tests.TemplateExamples;
+﻿namespace TUnitTesting.Tests.TemplateExamples;
 
 [Arguments("Hello")]
 [Arguments("World")]
@@ -12,10 +10,6 @@ public class MoreTests(string title)
         Console.WriteLine(title);
         Console.WriteLine("Did I forget that data injection works on classes too?");
     }
-
-    // You can even inject in ClassDataSources as properties to avoid repetitive constructors if you're using inheritance!
-    [ClassDataSource<DataClass>(Shared = SharedType.PerTestSession)]
-    public required DataClass DataClass { get; init; }
 
     [Test]
     [MatrixDataSource]
