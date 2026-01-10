@@ -11,15 +11,17 @@ public class Tests
     }
 
     [Test]
-    [Arguments(1, 2, 3)]
-    [Arguments(2, 3, 5)]
-    public async Task DataDrivenArguments(int a, int b, int c)
+    [Arguments(1, 2, 3, DisplayName = "One plus two equals three")]
+    [Arguments(2, 3, 5, DisplayName = "Adding $a + $b = $expected")]
+    [Arguments(5, 1, 6, Skip = "Test skipping for now")]
+    [Arguments(100, 50, 150, Categories = ["LargeNumbers", "Performance"])]
+    public async Task DataDrivenArguments(int a, int b, int expected)
     {
         Console.WriteLine("This one can accept arguments from an attribute");
 
         var result = a + b;
 
-        await Assert.That(result).IsEqualTo(c);
+        await Assert.That(result).IsEqualTo(expected);
     }
 
     [Test]
@@ -34,6 +36,17 @@ public class Tests
     }
 
     [Test]
+    [MethodDataSource(nameof(ObjectDataSource))]
+    public async Task MethodObjectDataSource(AdditionTestData data)
+    {
+        Console.WriteLine("This one can accept arguments from a method");
+
+        var result = data.Value1 + data.Value2;
+
+        await Assert.That(result).IsEqualTo(data.ExpectedResult);
+    }
+
+    [Test]
     [ClassDataSource<DataClass>]
     [ClassDataSource<DataClass>(Shared = SharedType.PerClass)]
     [ClassDataSource<DataClass>(Shared = SharedType.PerAssembly)]
@@ -45,21 +58,19 @@ public class Tests
         Console.WriteLine("These can also be shared among other tests, or new'd up each time, by using the `Shared` property on the attribute");
     }
 
-    [Test]
-    [DataGenerator]
-    public async Task CustomDataGenerator(int a, int b, int c)
+    public record AdditionTestData(int Value1, int Value2, int ExpectedResult);
+
+    public static IEnumerable<Func<AdditionTestData>> ObjectDataSource()
     {
-        Console.WriteLine("You can even define your own custom data generators");
-
-        var result = a + b;
-
-        await Assert.That(result).IsEqualTo(c);
+        yield return () => new AdditionTestData(1, 1, 2);
+        yield return () => new AdditionTestData(2, 1, 3);
+        yield return () => new AdditionTestData(3, 1, 4);
     }
 
-    public static IEnumerable<(int a, int b, int c)> DataSource()
+    public static IEnumerable<Func<(int a, int b, int c)>> DataSource()
     {
-        yield return (1, 1, 2);
-        yield return (2, 1, 3);
-        yield return (3, 1, 4);
+        yield return () => (1, 1, 2);
+        yield return () => (2, 1, 3);
+        yield return () => (3, 1, 4);
     }
 }
