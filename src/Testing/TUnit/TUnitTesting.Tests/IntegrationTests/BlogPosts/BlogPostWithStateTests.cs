@@ -5,7 +5,7 @@
 /// one test and then reference to that post is passed through the ObjectBag to dependent tests
 /// </summary>
 [Category("Integration")]
-public class BlogPostWithStateTests : TestsBase
+public class BlogPostWithStateTests : BlogPostTestBase
 {
     private static int _createdPost;
 

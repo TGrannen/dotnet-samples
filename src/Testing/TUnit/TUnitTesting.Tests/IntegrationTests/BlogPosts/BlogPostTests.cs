@@ -1,7 +1,7 @@
 ﻿namespace TUnitTesting.Tests.IntegrationTests.BlogPosts;
 
 [Category("Integration")]
-public class BlogPostTests : TestsBase
+public class BlogPostTests : BlogPostTestBase
 {
     [Test]
     public async Task CreatePost_ReturnsCreatedStatusCodeAndPost()
