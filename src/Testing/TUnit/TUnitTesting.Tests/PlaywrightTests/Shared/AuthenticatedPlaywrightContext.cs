@@ -1,6 +1,4 @@
-﻿using System.Text.Json;
-
-namespace TUnitTesting.Tests.PlaywrightTests.Shared;
+﻿namespace TUnitTesting.Tests.PlaywrightTests.Shared;
 
 #pragma warning disable CS8618
 public class AuthenticatedPlaywrightContext : IAsyncInitializer
@@ -17,20 +15,9 @@ public class AuthenticatedPlaywrightContext : IAsyncInitializer
 
     public async Task InitializeAsync()
     {
-        if (!Directory.Exists(AuthStateDirectory))
+        if (await AuthStatePath.HasValidAuthStateAsync())
         {
-            Directory.CreateDirectory(AuthStateDirectory);
-        }
-
-        // Only perform login if authentication state doesn't exist or is invalid
-        if (File.Exists(AuthStatePath) && new FileInfo(AuthStatePath).Length > 0)
-        {
-            var json = await File.ReadAllTextAsync(AuthStatePath);
-            var authState = JsonSerializer.Deserialize<AuthState>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-            if (authState is { Cookies.Length: > 0 })
-            {
-                return;
-            }
+            return;
         }
 
         var playwrightOptions = ConfigurationContext.GetOptions<PlaywrightOptions>();
@@ -39,7 +26,7 @@ public class AuthenticatedPlaywrightContext : IAsyncInitializer
         var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
         {
             Headless = !playwrightOptions.Headed,
-            SlowMo = 200
+            SlowMo = (float?)playwrightOptions.SlowMo?.TotalMilliseconds
         });
 
         var context = await browser.NewContextAsync();
@@ -57,35 +44,5 @@ public class AuthenticatedPlaywrightContext : IAsyncInitializer
         await loginPage.CloseAsync();
         await context.CloseAsync();
         await browser.DisposeAsync();
-    }
-
-    public class AuthState
-    {
-        public CookiesModel[] Cookies { get; set; }
-        public OriginsModel[] Origins { get; set; }
-
-        public class CookiesModel
-        {
-            public string Name { get; set; }
-            public string Value { get; set; }
-            public string Domain { get; set; }
-            public string Path { get; set; }
-            public double Expires { get; set; }
-            public bool HttpOnly { get; set; }
-            public bool Secure { get; set; }
-            public string SameSite { get; set; }
-        }
-
-        public class OriginsModel
-        {
-            public string Origin { get; set; }
-            public LocalStorage[] LocalStorage { get; set; }
-        }
-
-        public class LocalStorage
-        {
-            public string Name { get; set; }
-            public string Value { get; set; }
-        }
     }
 }

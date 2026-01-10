@@ -2,7 +2,8 @@ using TUnitTesting.Tests.PlaywrightTests.Shared;
 
 namespace TUnitTesting.Tests.PlaywrightTests;
 
-public class AuthenticatedNavigationTests(ConfigurationContext config) : AuthenticatedPageTestBase(config)
+// [Repeat(3)]
+public class AuthenticatedNavigationTests : AuthenticatedPageTestBase
 {
     [Test]
     public async Task NavigateToAuthenticatedPage(CancellationToken cancellationToken)
@@ -28,5 +29,12 @@ public class AuthenticatedNavigationTests(ConfigurationContext config) : Authent
         await Page.GetByRole(AriaRole.Button, new PageGetByRoleOptions { Name = "NOCO pain, no gain Free to" }).ClickAsync();
         await Page.GetByRole(AriaRole.Link, new PageGetByRoleOptions { Name = "Teams", Exact = true }).ClickAsync();
         await Page.GetByRole(AriaRole.Link, new PageGetByRoleOptions { Name = "League Rosters" }).ClickAsync();
+    }
+
+    [Test, Skip("Only run manually")]
+    // [Explicit]
+    public void DeleteLoginState()
+    {
+        File.Delete(AuthContext.AuthenticationStatePath);
     }
 }

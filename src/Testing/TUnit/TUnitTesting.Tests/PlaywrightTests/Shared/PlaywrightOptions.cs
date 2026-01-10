@@ -6,4 +6,5 @@ public class PlaywrightOptions
     public bool Debug { get; set; }
     public bool Headed { get; set; }
     public TimeSpan? SlowMo { get; set; } = null;
+    public bool ReuseContext { get; set; } = true;
 }

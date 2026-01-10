@@ -1,7 +1,29 @@
-﻿namespace TUnitTesting.Tests.PlaywrightTests.Shared;
+﻿using System.Text.Json;
+
+namespace TUnitTesting.Tests.PlaywrightTests.Shared;
 
 public static class PlaywrightExtensions
 {
+    private static readonly JsonSerializerOptions JsonSerializerOptions = new() { PropertyNameCaseInsensitive = true };
+
+    public static async Task<bool> HasValidAuthStateAsync(this string authStatePath)
+    {
+        var authStateDirectory = Path.GetDirectoryName(authStatePath);
+        if (!Directory.Exists(authStateDirectory))
+        {
+            Directory.CreateDirectory(authStateDirectory!);
+        }
+
+        if (!File.Exists(authStatePath) || new FileInfo(authStatePath).Length <= 0)
+        {
+            return false;
+        }
+
+        var json = await File.ReadAllTextAsync(authStatePath);
+        var authState = JsonSerializer.Deserialize<AuthState>(json, JsonSerializerOptions);
+        return authState is { Cookies.Length: > 0 };
+    }
+
     public static async Task PerformLoginAsync(this IPage page, AuthOptions authOptions)
     {
         if (string.IsNullOrEmpty(authOptions.Email) || string.IsNullOrEmpty(authOptions.Password))
@@ -23,5 +45,35 @@ public static class PlaywrightExtensions
             IgnoreCase = true,
             Timeout = 30_000
         });
+    }
+
+    public class AuthState
+    {
+        public CookiesModel[] Cookies { get; set; }
+        public OriginsModel[] Origins { get; set; }
+
+        public class CookiesModel
+        {
+            public string Name { get; set; }
+            public string Value { get; set; }
+            public string Domain { get; set; }
+            public string Path { get; set; }
+            public double Expires { get; set; }
+            public bool HttpOnly { get; set; }
+            public bool Secure { get; set; }
+            public string SameSite { get; set; }
+        }
+
+        public class OriginsModel
+        {
+            public string Origin { get; set; }
+            public LocalStorage[] LocalStorage { get; set; }
+        }
+
+        public class LocalStorage
+        {
+            public string Name { get; set; }
+            public string Value { get; set; }
+        }
     }
 }

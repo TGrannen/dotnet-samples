@@ -36,7 +36,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="playwright\.auth\" />
+    <Content Include="playwright\.auth\state.json" />
   </ItemGroup>
 
 </Project>
