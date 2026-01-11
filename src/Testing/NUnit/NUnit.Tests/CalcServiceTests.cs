@@ -16,7 +16,7 @@ public class CalcServiceTests
     public void CalcService_ShouldPerformAddition_WhenPositiveNumbers()
     {
         var result = _calcService.PerformOperation(4, 9, "a");
-        Assert.AreEqual(13, result);
+        Assert.That(result, Is.EqualTo(13));
     }
 
     [Theory]
@@ -26,7 +26,7 @@ public class CalcServiceTests
     public void CalcService_ShouldPerformAddition_WhenValidNumbersArePassed(double expected, double firstToAdd, double secondToAdd)
     {
         var result = _calcService.PerformOperation(firstToAdd, secondToAdd, "a");
-        Assert.AreEqual(expected, expected);
+        Assert.That(result, Is.EqualTo(expected));
     }
 
     [Theory]
@@ -39,7 +39,7 @@ public class CalcServiceTests
             result = _calcService.PerformOperation(result, value, "a");
         }
 
-        Assert.AreEqual(expected, result);
+        Assert.That(result, Is.EqualTo(expected));
     }
 
     public static IEnumerable<object[]> TestData()

@@ -27,27 +27,27 @@ public class CalcServiceTestsWithFixture
     public void AddMethod()
     {
         var result = _calcService.PerformOperation(_first, _second, "a");
-        Assert.AreEqual(_first + _second, result);
+        Assert.That(result, Is.EqualTo(_first + _second));
     }
 
     [TestCase]
     public void SubtractMethod()
     {
         var result = _calcService.PerformOperation(_first, _second, "s");
-        Assert.AreEqual(_first - _second, result);
+        Assert.That(result, Is.EqualTo(_first - _second));
     }
 
     [TestCase]
     public void MultiplyMethod()
     {
         var result = _calcService.PerformOperation(_first, _second, "m");
-        Assert.AreEqual(_first * _second, result);
+        Assert.That(result, Is.EqualTo(_first * _second));
     }
 
     [TestCase]
     public void DivideMethod()
     {
         var result = _calcService.PerformOperation(_first, _second, "d");
-        Assert.AreEqual(_first / _second, result);
+        Assert.That(result, Is.EqualTo(_first / _second));
     }
 }
