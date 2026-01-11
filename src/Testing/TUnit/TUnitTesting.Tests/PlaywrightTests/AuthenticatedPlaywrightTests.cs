@@ -2,7 +2,6 @@ using TUnitTesting.Tests.PlaywrightTests.Shared;
 
 namespace TUnitTesting.Tests.PlaywrightTests;
 
-// [Repeat(3)]
 public class AuthenticatedNavigationTests : AuthenticatedPageTestBase
 {
     [Test]

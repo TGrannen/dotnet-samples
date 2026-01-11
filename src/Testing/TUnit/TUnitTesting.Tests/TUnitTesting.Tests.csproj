@@ -35,8 +35,4 @@
     </None>
   </ItemGroup>
 
-  <ItemGroup>
-    <Content Include="playwright\.auth\state.json" />
-  </ItemGroup>
-
 </Project>

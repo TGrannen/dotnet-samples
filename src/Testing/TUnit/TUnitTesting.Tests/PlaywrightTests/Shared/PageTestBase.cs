@@ -11,6 +11,7 @@ public abstract class PageTestBase : PlaywrightTest
     private static IBrowserContext? _sharedContext;
     private IBrowserContext? _testContext;
     private PlaywrightOptions _playwrightOptions = null!;
+    private string? _traceFilePath;
 
     [ClassDataSource<ConfigurationContext>(Shared = SharedType.PerAssembly)]
     public required ConfigurationContext Config { get; set; } = null!;
@@ -36,6 +37,8 @@ public abstract class PageTestBase : PlaywrightTest
         _playwrightOptions = Config.GetOptions<PlaywrightOptions>();
         await Semaphore.WaitAsync();
         var reusingContext = _playwrightOptions.ReuseContext;
+        var tracingOptions = _playwrightOptions.Tracing;
+        reusingContext = reusingContext && !tracingOptions.Enabled;
 
         try
         {
@@ -45,18 +48,16 @@ public abstract class PageTestBase : PlaywrightTest
                 SlowMo = (float?)_playwrightOptions.SlowMo?.TotalMilliseconds,
             });
 
-            var contextOptions = GetBrowserNewContextOptions();
-
             if (reusingContext)
             {
                 // Reuse shared context
-                _sharedContext ??= await _browser.NewContextAsync(contextOptions).ConfigureAwait(false);
-                _testContext = null; // No per-test context when reusing
+                _sharedContext ??= await _browser.NewContextAsync(GetBrowserNewContextOptions()).ConfigureAwait(false);
+                _testContext = _sharedContext;
             }
             else
             {
                 // Create a new context for each test
-                _testContext = await _browser.NewContextAsync(contextOptions).ConfigureAwait(false);
+                _testContext = await _browser.NewContextAsync(GetBrowserNewContextOptions()).ConfigureAwait(false);
             }
         }
         finally
@@ -64,8 +65,13 @@ public abstract class PageTestBase : PlaywrightTest
             Semaphore.Release();
         }
 
-        var contextToUse = reusingContext ? _sharedContext! : _testContext!;
-        Page = await contextToUse.NewPageAsync().ConfigureAwait(false);
+        // Start tracing if enabled
+        if (tracingOptions.Enabled)
+        {
+            await StartTracing(tracingOptions);
+        }
+
+        Page = await _testContext.NewPageAsync().ConfigureAwait(false);
     }
 
     [After(Test)]
@@ -73,10 +79,40 @@ public abstract class PageTestBase : PlaywrightTest
     {
         await Page.CloseAsync();
 
+        if (_playwrightOptions.Tracing.Enabled && _testContext != null)
+        {
+            await _testContext.Tracing.StopAsync(new TracingStopOptions
+            {
+                Path = _traceFilePath
+            });
+        }
+
         if (!_playwrightOptions.ReuseContext && _testContext != null)
         {
             await _testContext.CloseAsync().ConfigureAwait(false);
             _testContext = null;
         }
+    }
+
+    private async Task StartTracing(TracingOptions tracingOptions)
+    {
+        var testClass = TestContext.Current!.ClassContext.ClassType.Name;
+        var testMethod = TestContext.Current!.Metadata.TestName;
+        var title = $"{testClass}.{testMethod}";
+        var traceFileName = $"{title}.zip";
+
+        var outputDir = tracingOptions.OutputDirectory ?? "traces";
+        var outputPath = Path.Combine(AppContext.BaseDirectory, outputDir);
+        Directory.CreateDirectory(outputPath);
+
+        _traceFilePath = Path.Combine(outputPath, traceFileName);
+
+        await _testContext!.Tracing.StartAsync(new TracingStartOptions
+        {
+            Title = title,
+            Screenshots = tracingOptions.Screenshots,
+            Snapshots = tracingOptions.Snapshots,
+            Sources = tracingOptions.Sources
+        });
     }
 }

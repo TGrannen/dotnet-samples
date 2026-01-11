@@ -7,7 +7,7 @@ public class AuthenticatedPlaywrightContext : IAsyncInitializer
     public required ConfigurationContext ConfigurationContext { get; set; } = null!;
 
     private static readonly string AuthStateDirectory =
-        Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "playwright", ".auth"));
+        Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "playwright", "auth"));
 
     private static readonly string AuthStatePath = Path.GetFullPath(Path.Combine(AuthStateDirectory, "state.json"));
 
