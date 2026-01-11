@@ -7,7 +7,7 @@ public class CalcService : ICalculatorService
 {
     public double PerformOperation(double num1, double num2, string op)
     {
-        double result = double.NaN; // Default value is "not-a-number" which we use if an operation, such as division, could result in an error.
+        var result = double.NaN; // Default value is "not-a-number" which we use if an operation, such as division, could result in an error.
 
         // Use a switch statement to do the math.
         switch (op)

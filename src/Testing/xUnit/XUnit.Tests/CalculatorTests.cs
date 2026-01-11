@@ -4,12 +4,7 @@ namespace XUnit.Tests;
 
 public class CalculatorTests
 {
-    private readonly CalcService _calcService;
-
-    public CalculatorTests()
-    {
-        _calcService = new CalcService();
-    }
+    private readonly CalcService _calcService = new();
 
     [Fact(Skip = "This test is broken")]
     public void CalcService_ShouldPerformAddition_WhenPositiveNumbers()
