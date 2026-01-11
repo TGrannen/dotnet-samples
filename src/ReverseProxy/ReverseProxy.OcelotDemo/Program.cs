@@ -13,9 +13,13 @@ builder.Services.AddOcelot();
 var app = builder.Build();
 app.UseHttpsRedirection();
 app.UseRouting();
+app.UseSerilogRequestLogging();
 
-// Must use UseEndpoints here or it will not work 🤷‍♂️
-app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+#pragma warning disable ASP0014
+// Disabled warning because this is required to make this work
+// instead of the normal app.MapControllers() call
+app.UseEndpoints(endpoints => endpoints.MapControllers());
+#pragma warning restore ASP0014
 
-app.UseOcelot().Wait();
+await app.UseOcelot();
 app.Run();

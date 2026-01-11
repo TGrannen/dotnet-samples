@@ -9,6 +9,7 @@ public class ValuesController : ControllerBase
     [HttpGet]
     public IActionResult Get()
     {
-        return Ok(new string[] { "value1", "value2" });
+        string[] values = ["value1", "value2"];
+        return Ok(values);
     }
 }

@@ -1,11 +1,11 @@
-@ReverseProxy.OcelotDemo_HostAddress = http://localhost:5166
+@HostAddress = http://localhost:5166
 
-GET {{ReverseProxy.OcelotDemo_HostAddress}}/todos/2
+GET {{HostAddress}}/todos/2
 Accept: application/json
 
 ###
 
-GET {{ReverseProxy.OcelotDemo_HostAddress}}/api/values
+GET {{HostAddress}}/api/values
 Accept: application/json
 
 ###
