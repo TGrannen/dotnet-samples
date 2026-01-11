@@ -49,31 +49,31 @@ public static class PlaywrightExtensions
 
     public class AuthState
     {
-        public CookiesModel[] Cookies { get; set; }
-        public OriginsModel[] Origins { get; set; }
+        public required CookiesModel[] Cookies { get; set; }
+        public required OriginsModel[] Origins { get; set; }
 
         public class CookiesModel
         {
-            public string Name { get; set; }
-            public string Value { get; set; }
-            public string Domain { get; set; }
-            public string Path { get; set; }
+            public required string Name { get; set; }
+            public required string Value { get; set; }
+            public required string Domain { get; set; }
+            public required string Path { get; set; }
             public double Expires { get; set; }
             public bool HttpOnly { get; set; }
             public bool Secure { get; set; }
-            public string SameSite { get; set; }
+            public required string SameSite { get; set; }
         }
 
         public class OriginsModel
         {
-            public string Origin { get; set; }
-            public LocalStorage[] LocalStorage { get; set; }
+            public string Origin { get; set; } = null!;
+            public LocalStorageModel[]? LocalStorage { get; set; }
         }
 
-        public class LocalStorage
+        public class LocalStorageModel
         {
-            public string Name { get; set; }
-            public string Value { get; set; }
+            public required string Name { get; set; }
+            public required string Value { get; set; }
         }
     }
 }

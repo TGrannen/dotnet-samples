@@ -27,7 +27,7 @@ public class BlogPostCommentTests : BlogPostTestBase
         await Assert.That(response.IsSuccessStatusCode).IsEqualTo(true);
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.Created);
         await Assert.That(response.Content).IsNotNull();
-        await Assert.That(response.Content.Text).IsEqualTo(newCommentDto.Text);
+        await Assert.That(response.Content!.Text).IsEqualTo(newCommentDto.Text);
         await Assert.That(response.Content.PostId).IsEqualTo(postId);
     }
 
@@ -43,7 +43,7 @@ public class BlogPostCommentTests : BlogPostTestBase
 
         using var _ = Assert.Multiple();
         await Assert.That(response.Content).IsNotNull();
-        await Assert.That(response.Content).HasCount(1);
+        await Assert.That(response.Content).Count().IsEqualTo(1);
         await Assert.That(response.Content).Contains(c => c.Text == "This is a pure TUnit test comment.");
     }
 
