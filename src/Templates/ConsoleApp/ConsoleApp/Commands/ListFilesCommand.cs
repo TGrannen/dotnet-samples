@@ -1,8 +1,6 @@
 ﻿// ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable ClassNeverInstantiated.Global
 
-using Humanizer;
-
 namespace ConsoleApp.Commands;
 
 public class ListFilesCommand : Command<ListFilesCommand.Settings>
@@ -14,7 +12,7 @@ public class ListFilesCommand : Command<ListFilesCommand.Settings>
         public string? SearchPath { get; init; }
     }
 
-    public override int Execute([NotNull] CommandContext context, [NotNull] Settings settings)
+    public override int Execute(CommandContext context, Settings settings, CancellationToken cancellationToken)
     {
         var searchOptions = new EnumerationOptions
         {

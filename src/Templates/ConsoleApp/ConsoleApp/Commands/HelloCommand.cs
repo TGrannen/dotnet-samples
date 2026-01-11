@@ -10,7 +10,7 @@ public class HelloCommand : Command<HelloCommand.Settings>
         [CommandArgument(0, "[Name]")] public string? Name { get; init; }
     }
 
-    public override int Execute([NotNull] CommandContext context, [NotNull] Settings settings)
+    public override int Execute(CommandContext context, Settings settings, CancellationToken cancellationToken)
     {
         AnsiConsole.MarkupLine($"Hello, [blue]{settings.Name}[/]");
         return 0;
