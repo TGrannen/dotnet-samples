@@ -7,10 +7,10 @@ namespace ReverseProxy.YARPDemo.Controllers;
 public class WeatherController : ControllerBase
 {
     // Mock data for simplicity
-    private static readonly string[] Summaries = new[]
-    {
+    private static readonly string[] Summaries =
+    [
         "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-    };
+    ];
 
     [HttpGet]
     public IEnumerable<WeatherForecast> Get()
