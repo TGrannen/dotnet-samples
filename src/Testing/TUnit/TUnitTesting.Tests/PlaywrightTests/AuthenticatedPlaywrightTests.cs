@@ -2,6 +2,7 @@ using TUnitTesting.Tests.PlaywrightTests.Shared;
 
 namespace TUnitTesting.Tests.PlaywrightTests;
 
+[Skip("Only run manually")]
 public class AuthenticatedNavigationTests : AuthenticatedPageTestBase
 {
     [Test]

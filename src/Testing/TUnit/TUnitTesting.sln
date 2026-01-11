@@ -10,6 +10,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{BC0BDD2C-7BB5-4759-BCB5-77E2E94590E6}"
 	ProjectSection(SolutionItems) = preProject
 		docker-compose.yml = docker-compose.yml
+		..\..\..\.github\workflows\tunit-tests.yml = ..\..\..\.github\workflows\tunit-tests.yml
 	EndProjectSection
 EndProject
 Global
