@@ -1,6 +1,4 @@
-﻿using TUnitTesting.Tests.TemplateExamples.Data;
-
-namespace TUnitTesting.Tests.TemplateExamples;
+﻿namespace TUnitTesting.Tests.TemplateExamples;
 
 public class Tests
 {

@@ -1,4 +1,4 @@
-﻿namespace TUnitTesting.Tests.TemplateExamples.Data;
+﻿namespace TUnitTesting.Tests.TemplateExamples;
 
 public class DataClass : IAsyncInitializer, IAsyncDisposable
 {
