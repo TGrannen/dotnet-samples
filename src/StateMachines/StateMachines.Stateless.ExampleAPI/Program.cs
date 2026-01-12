@@ -1,4 +1,5 @@
-using Microsoft.OpenApi.Models;
+using System.Text.Json.Serialization;
+using Microsoft.OpenApi;
 using Serilog;
 using StateMachines.Stateless.ExampleAPI.DynamicSM;
 using StateMachines.Stateless.ExampleAPI.PhoneCall;
@@ -6,7 +7,8 @@ using StateMachines.Stateless.ExampleAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options => { options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });
+
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "StateMachines.Stateless.ExampleAPI", Version = "v1" });
@@ -34,5 +36,6 @@ app.UseRouting();
 
 app.UseAuthorization();
 
-app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+app.MapControllers();
+
 await app.RunAsync();

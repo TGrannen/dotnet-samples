@@ -1,12 +1,14 @@
 ﻿using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using Stateless.Graph;
 
 namespace StateMachines.Stateless.ExampleAPI.Services;
 
+[SuppressMessage("Interoperability", "CA1416:Validate platform compatibility")]
 public class StateMachineExporter
 {
-    public string ExportToJson<T, T2>(StateMachine<T, T2> stateMachine)
+    public static string ExportToJson<T, T2>(StateMachine<T, T2> stateMachine)
     {
         return UmlDotGraph.Format(stateMachine.GetInfo());
     }
@@ -24,7 +26,7 @@ public class StateMachineExporter
 
     private Image CreateStateMachineImage(string stateMachineJson)
     {
-        ProcessStartInfo processStartInfo = new ProcessStartInfo
+        var processStartInfo = new ProcessStartInfo
         {
             WorkingDirectory = Environment.CurrentDirectory,
             FileName = "docker",
@@ -33,8 +35,8 @@ public class StateMachineExporter
             RedirectStandardInput = true,
             RedirectStandardOutput = true
         };
-        Process process = Process.Start(processStartInfo);
-        process.StandardInput.Write(stateMachineJson);
+        var process = Process.Start(processStartInfo);
+        process!.StandardInput.Write(stateMachineJson);
         process.StandardInput.Close();
         var image = Image.FromStream(process.StandardOutput.BaseStream);
         return image;
@@ -42,7 +44,7 @@ public class StateMachineExporter
 
     private string CreateStateMachineSvgImage(string stateMachineJson)
     {
-        ProcessStartInfo processStartInfo = new ProcessStartInfo
+        var processStartInfo = new ProcessStartInfo
         {
             WorkingDirectory = Environment.CurrentDirectory,
             FileName = "docker",
@@ -51,8 +53,8 @@ public class StateMachineExporter
             RedirectStandardInput = true,
             RedirectStandardOutput = true
         };
-        Process process = Process.Start(processStartInfo);
-        process.StandardInput.Write(stateMachineJson);
+        var process = Process.Start(processStartInfo);
+        process!.StandardInput.Write(stateMachineJson);
         process.StandardInput.Close();
         return process.StandardOutput.ReadToEnd();
     }

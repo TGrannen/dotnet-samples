@@ -6,44 +6,39 @@ namespace StateMachines.Stateless.ExampleAPI.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class PhoneCallController : ControllerBase
+public class PhoneCallController(PhoneCallSm phoneCallSm, StateMachineExporter exporter, ILogger<PhoneCallController> logger)
+    : ControllerBase
 {
-    private readonly PhoneCallSm _phoneCallSm;
-    private readonly StateMachineExporter _exporter;
-    private readonly ILogger<PhoneCallController> _logger;
-
-    public PhoneCallController(PhoneCallSm phoneCallSm, StateMachineExporter exporter, ILogger<PhoneCallController> logger)
-    {
-        _phoneCallSm = phoneCallSm;
-        _exporter = exporter;
-        _logger = logger;
-    }
+    private readonly ILogger<PhoneCallController> _logger = logger;
 
     [HttpGet]
     public IActionResult Get()
     {
-        return Ok(SerializeState());
+        return Ok(new
+        {
+            State = phoneCallSm.State.ToString()
+        });
     }
 
     [HttpGet]
     [Route("Export")]
     public IActionResult Export()
     {
-        return Ok(_exporter.ExportToJson(_phoneCallSm.StateMachine));
+        return Ok(StateMachineExporter.ExportToJson(phoneCallSm.StateMachine));
     }
 
     [HttpGet]
     [Route("ExportImage")]
     public IActionResult ExportImage()
     {
-        return File(_exporter.ExportToImage(_phoneCallSm.StateMachine), "Image/png");
+        return File(exporter.ExportToImage(phoneCallSm.StateMachine), "Image/png");
     }
-        
+
     [HttpGet]
     [Route("ExportImageV2")]
     public IActionResult ExportImageV2()
     {
-        return File(_exporter.ExportToImage(new PhoneCallSMV2().StateMachine), "Image/png");
+        return File(exporter.ExportToImage(new PhoneCallSMV2().StateMachine), "Image/png");
     }
 
     [HttpPost]
@@ -51,22 +46,20 @@ public class PhoneCallController : ControllerBase
     {
         try
         {
-            _phoneCallSm.Fire(trigger);
+            phoneCallSm.Fire(trigger);
 
-            return Ok(SerializeState());
+            return Ok(new
+            {
+                State = phoneCallSm.State.ToString()
+            });
         }
         catch (Exception e)
         {
-            return BadRequest(SerializeState(e));
+            return BadRequest(new
+            {
+                State = phoneCallSm.State.ToString(),
+                Exception = e.Message,
+            });
         }
-    }
-
-    private object SerializeState(Exception exception = null)
-    {
-        return new
-        {
-            State = _phoneCallSm.State.ToString(),
-            Exception = exception?.Message,
-        };
     }
 }
