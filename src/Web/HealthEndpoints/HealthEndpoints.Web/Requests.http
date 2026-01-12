@@ -1,0 +1,11 @@
+﻿@HostAddress = https://localhost:5001/
+
+GET {{HostAddress}}/health
+Accept: application/json
+
+###
+
+GET {{HostAddress}}/health/sql
+Accept: application/json
+
+###

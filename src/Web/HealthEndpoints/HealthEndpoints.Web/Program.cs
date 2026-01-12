@@ -7,10 +7,10 @@ using Serilog;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services
     .AddHealthChecks()
-    .AddCheck<RandomHealthCheck>("Random", null, new[] { "Dummy" })
-    .AddCheck<RandomHealthCheck>("Random2", null, new[] { "Dummy" })
-    .AddCheck<RandomHealthCheck>("Random3", null, new[] { "Dummy" })
-    .AddCheck("Inline", () => HealthCheckResult.Degraded("I'm not sure what's going on here"), new[] { "sql" })
+    .AddCheck<RandomHealthCheck>("Random", null, ["Dummy"])
+    .AddCheck<RandomHealthCheck>("Random2", null, ["Dummy"])
+    .AddCheck<RandomHealthCheck>("Random3", null, ["Dummy"])
+    .AddCheck("Inline", () => HealthCheckResult.Degraded("I'm not sure what's going on here"), ["sql"])
     ;
 
 builder.Services
@@ -32,21 +32,17 @@ else
 }
 
 app.UseHttpsRedirection();
-
 app.UseRouting();
 
-app.UseEndpoints(endpoints =>
+app.MapHealthChecksUI();
+app.MapHealthChecks("/health", new HealthCheckOptions
 {
-    endpoints.MapHealthChecksUI();
-    endpoints.MapHealthChecks("/health", new HealthCheckOptions
-    {
-        ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-    });
-    endpoints.MapHealthChecks("/health/sql", new HealthCheckOptions
-    {
-        Predicate = c => c.Tags.Contains("sql"),
-        ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-    });
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
+app.MapHealthChecks("/health/sql", new HealthCheckOptions
+{
+    Predicate = c => c.Tags.Contains("sql"),
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
 });
 
 await app.RunAsync();

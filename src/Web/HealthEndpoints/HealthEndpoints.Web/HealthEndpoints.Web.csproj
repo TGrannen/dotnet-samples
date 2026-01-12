@@ -1,19 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <LangVersion>10</LangVersion>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>true</ImplicitUsings>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AspNetCore.HealthChecks.UI" Version="6.0.5" />
-    <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="6.0.5" />
-    <PackageReference Include="AspNetCore.HealthChecks.UI.Core" Version="6.0.5" />
-    <PackageReference Include="AspNetCore.HealthChecks.UI.InMemory.Storage" Version="6.0.5" />
-    <PackageReference Include="Bogus" Version="34.0.2" />
-    <PackageReference Include="Serilog.AspNetCore" Version="6.0.1" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+    <PackageReference Include="AspNetCore.HealthChecks.UI" Version="9.0.0" />
+    <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="9.0.0" />
+    <PackageReference Include="AspNetCore.HealthChecks.UI.Core" Version="9.0.0" />
+    <PackageReference Include="AspNetCore.HealthChecks.UI.InMemory.Storage" Version="9.0.0" />
+    <PackageReference Include="Bogus" Version="35.6.5" />
+    <PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
   </ItemGroup>
 
 </Project>

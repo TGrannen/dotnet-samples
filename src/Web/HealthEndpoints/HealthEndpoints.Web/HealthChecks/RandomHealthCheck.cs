@@ -3,16 +3,9 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace HealthEndpoints.Web.HealthChecks;
 
-public class RandomHealthCheck : IHealthCheck
+public class RandomHealthCheck(ILogger<RandomHealthCheck> logger) : IHealthCheck
 {
-    private readonly ILogger<RandomHealthCheck> _logger;
-    private readonly Faker _faker;
-
-    public RandomHealthCheck(ILogger<RandomHealthCheck> logger)
-    {
-        _logger = logger;
-        _faker = new Faker();
-    }
+    private readonly Faker _faker = new();
 
     public Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = new())
     {
@@ -28,7 +21,7 @@ public class RandomHealthCheck : IHealthCheck
         }
         catch (Exception exception)
         {
-            _logger.LogWarning("Error during check: {Message}", exception.Message);
+            logger.LogWarning("Error during check: {Message}", exception.Message);
             return Task.FromResult(HealthCheckResult.Unhealthy(exception.Message));
         }
     }
