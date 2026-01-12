@@ -3,9 +3,9 @@ using Microsoft.OpenApi.Models;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// needed to load configuration from appsettings.json
-builder.Services.AddOptions();
+builder.Host.UseSerilog((context, configuration) => { configuration.ReadFrom.Configuration(context.Configuration); });
+builder.Services.AddControllers();
+builder.Services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo { Title = "RateLimiting.WebApi", Version = "v1" }); });
 
 // needed to store rate limit counters and ip rules
 builder.Services.AddMemoryCache();
@@ -30,11 +30,6 @@ builder.Services.AddInMemoryRateLimiting();
 
 // configuration (resolvers, counter key builders)
 builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
-
-builder.Services.AddControllers();
-builder.Services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo { Title = "RateLimiting.WebApi", Version = "v1" }); });
-
-builder.Host.UseSerilog((context, configuration) => { configuration.ReadFrom.Configuration(context.Configuration); });
 
 var app = builder.Build();
 app.UseSerilogRequestLogging();
