@@ -1,39 +1,49 @@
-﻿using DotNet.Testcontainers.Builders;
-using DotNet.Testcontainers.Configurations;
-using DotNet.Testcontainers.Containers;
+﻿using Npgsql;
 using Respawn;
+using Testcontainers.PostgreSql;
 
 namespace SnapshotTesting.VerifyTests.EntityFramework.Fixtures;
 
 public class PostgresFixture : IAsyncLifetime
 {
-    public readonly PostgreSqlTestcontainer Container;
+    public readonly PostgreSqlContainer Container = new PostgreSqlBuilder("postgres:11")
+        .WithDatabase("test_db")
+        .WithUsername("postgres")
+        .WithPassword("postgres")
+        .WithImage("postgres:11")
+        .WithCleanUp(true)
+        .Build();
 
-    public static readonly Checkpoint Checkpoint = new()
+    private Respawner? _respawner;
+
+    public async Task<Respawner> GetRespawner()
     {
-        SchemasToInclude = new[]
+        if (_respawner != null)
         {
-            "public"
-        },
-        DbAdapter = DbAdapter.Postgres
-    };
+            return _respawner;
+        }
 
-    public PostgresFixture()
-    {
-        Container = new TestcontainersBuilder<PostgreSqlTestcontainer>()
-            .WithDatabase(new PostgreSqlTestcontainerConfiguration
-            {
-                Database = "test_db",
-                Username = "postgres",
-                Password = "postgres",
-            })
-            .WithImage("postgres:11")
-            .WithCleanUp(true)
-            .Build();
+        await using var connection = new NpgsqlConnection(Container.GetConnectionString());
+        await connection.OpenAsync();
+        return _respawner = await Respawner.CreateAsync(connection, new RespawnerOptions
+        {
+            SchemasToInclude =
+            [
+                "public"
+            ],
+            DbAdapter = DbAdapter.Postgres
+        });
     }
 
+    public async Task InitializeAsync()
+    {
+        await Container.StartAsync();
+        await using var connection = new NpgsqlConnection(Container.GetConnectionString());
+        await connection.OpenAsync();
+    }
 
-    public async Task InitializeAsync() => await Container.StartAsync();
-
-    public async Task DisposeAsync() => await Container.DisposeAsync();
+    public async Task DisposeAsync()
+    {
+        await Container.DisposeAsync();
+    }
 }

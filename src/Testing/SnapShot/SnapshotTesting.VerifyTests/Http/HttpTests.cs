@@ -3,7 +3,6 @@ using VerifyTests.Http;
 
 namespace SnapshotTesting.VerifyTests.Http;
 
-[UsesVerify]
 public class HttpTests
 {
     [Fact]
@@ -41,7 +40,10 @@ public class HttpTests
 
         // Resolve a HttpClient. All http calls done at any
         // resolved client will be added to `recording.Sends`
-        public MyService(HttpClient client) => _client = client;
+        public MyService(HttpClient client)
+        {
+            _client = client;
+        }
 
         // Some code that does some http calls
         public async Task<int> MethodThatDoesHttp()

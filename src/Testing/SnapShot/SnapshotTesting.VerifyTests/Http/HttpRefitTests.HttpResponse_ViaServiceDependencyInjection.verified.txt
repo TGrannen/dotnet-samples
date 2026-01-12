@@ -2,10 +2,17 @@
   {
     RequestUri: https://httpbin.org/json,
     RequestOptions: {
-      Refit.InterfaceType: HttpRefitTests.IHttpBinApi
+      Refit.InterfaceType: HttpRefitTests.IHttpBinApi,
+      Refit.RestMethodInfo: {
+        Name: GetJson,
+        HostingType: HttpRefitTests.IHttpBinApi,
+        MethodInfo: HttpRefitTests.IHttpBinApi.GetJson(),
+        RelativePath: /json,
+        ReturnType: Task<string>
+      }
     },
     RequestMethod: GET,
-    ResponseStatus: OK,
+    ResponseStatus: OK 200,
     ResponseHeaders: {
       Access-Control-Allow-Credentials: true,
       Access-Control-Allow-Origin: *,

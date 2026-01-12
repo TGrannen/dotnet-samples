@@ -3,7 +3,6 @@ using Newtonsoft.Json.Linq;
 
 namespace SnapshotTesting.VerifyTests.Json;
 
-[UsesVerify]
 public class JsonUnitTests
 {
     [Fact]

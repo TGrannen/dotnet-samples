@@ -1,10 +1,12 @@
 ﻿[
   {
     Method: ITarget.Method(int a, int b),
-    Arguments: [
-      1,
-      2
-    ],
+    Arguments: {
+      Arguments: {
+        a: 1,
+        b: 2
+      }
+    },
     ReturnValue: response
   }
 ]

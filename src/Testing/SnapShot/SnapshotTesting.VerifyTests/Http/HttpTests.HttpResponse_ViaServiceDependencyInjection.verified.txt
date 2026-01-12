@@ -4,7 +4,7 @@
     {
       RequestUri: https://httpbin.org/json,
       RequestMethod: GET,
-      ResponseStatus: OK,
+      ResponseStatus: OK 200,
       ResponseHeaders: {
         Access-Control-Allow-Credentials: true,
         Access-Control-Allow-Origin: *,
@@ -38,7 +38,7 @@
     {
       RequestUri: https://httpbin.org/xml,
       RequestMethod: GET,
-      ResponseStatus: OK,
+      ResponseStatus: OK 200,
       ResponseHeaders: {
         Access-Control-Allow-Credentials: true,
         Access-Control-Allow-Origin: *,

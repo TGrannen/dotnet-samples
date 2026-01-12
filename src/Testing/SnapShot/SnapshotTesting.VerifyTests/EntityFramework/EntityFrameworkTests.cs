@@ -5,36 +5,28 @@ using VerifyTests.EntityFramework;
 
 namespace SnapshotTesting.VerifyTests.EntityFramework;
 
-[UsesVerify]
-public class EntityFrameworkTests : IClassFixture<PostgresFixture>
+public class EntityFrameworkTests(PostgresFixture fixture) : IClassFixture<PostgresFixture>
 {
-    private readonly PostgresFixture _fixture;
-
-    public EntityFrameworkTests(PostgresFixture fixture)
-    {
-        _fixture = fixture;
-    }
-
     [Fact]
     public async Task GetEntitiesAsyncTest()
     {
-        await using var dbContext = await DbContextBuilder.GetDbContext(_fixture.Container.ConnectionString);
+        await using var dbContext = await DbContextBuilder.GetDbContext(fixture.Container.GetConnectionString());
         await DbContextBuilder.SeedDatabase(dbContext);
 
-        EfRecording.StartRecording();
+        Recording.Start();
 
         var companies = await dbContext.Companies.Where(x => x.Content == "Company2").ToListAsync();
         await Verify(companies);
 
         // Wipe Database
-        await dbContext.Reset();
+        await dbContext.Reset(fixture);
     }
 
     [Fact]
     public async Task AddEntityToDbTest()
     {
-        await using var dbContext = await DbContextBuilder.GetDbContext(_fixture.Container.ConnectionString);
-        EfRecording.StartRecording();
+        await using var dbContext = await DbContextBuilder.GetDbContext(fixture.Container.GetConnectionString());
+        Recording.Start();
 
         var employee1 = new Employee
         {
@@ -43,7 +35,7 @@ public class EntityFrameworkTests : IClassFixture<PostgresFixture>
         var company = new Company
         {
             Content = "Company A",
-            Employees = new List<Employee> { employee1 }
+            Employees = [employee1]
         };
         dbContext.Add(company);
         await dbContext.SaveChangesAsync();
@@ -52,6 +44,6 @@ public class EntityFrameworkTests : IClassFixture<PostgresFixture>
         await Verify(companies);
 
         // Wipe Database
-        await dbContext.Reset();
+        await dbContext.Reset(fixture);
     }
 }

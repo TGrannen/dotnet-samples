@@ -18,10 +18,7 @@ public static class DbContextBuilder
 
     public static async Task SeedDatabase(SampleDbContext data)
     {
-        if (data.Companies.Any())
-        {
-            return;
-        }
+        if (data.Companies.Any()) return;
 
         var company1 = new Company
         {

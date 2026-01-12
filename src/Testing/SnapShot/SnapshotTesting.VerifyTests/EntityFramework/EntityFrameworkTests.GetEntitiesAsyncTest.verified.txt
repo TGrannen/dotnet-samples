@@ -7,25 +7,18 @@
         {
           Id: 5,
           CompanyId: 4,
-          Company: {
-            Id: 4,
-            Content: Company2,
-            Employees: []
-          },
           Content: Employee4,
           Age: 34
         }
       ]
     }
   ],
-  sql: [
-    {
-      Type: ReaderExecutedAsync,
-      HasTransaction: false,
-      Text:
+  ef: {
+    Type: ReaderExecutedAsync,
+    HasTransaction: false,
+    Text:
 SELECT c."Id", c."Content"
 FROM "Companies" AS c
 WHERE c."Content" = 'Company2'
-    }
-  ]
+  }
 }

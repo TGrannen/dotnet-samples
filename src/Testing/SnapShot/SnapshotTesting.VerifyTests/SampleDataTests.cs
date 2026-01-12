@@ -1,6 +1,5 @@
 namespace SnapshotTesting.VerifyTests;
 
-[UsesVerify]
 public class SampleDataTests
 {
     [Fact]
