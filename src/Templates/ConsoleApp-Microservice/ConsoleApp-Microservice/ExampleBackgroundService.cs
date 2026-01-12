@@ -1,22 +1,23 @@
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System.Threading;
-using System.Threading.Tasks;
+using System;
 
 namespace ConsoleApp_Microservice;
 
-public class ExampleBackgroundService : BackgroundService
+public class ExampleBackgroundService(ILogger<ExampleBackgroundService> logger) : BackgroundService
 {
-    private readonly ILogger<ExampleBackgroundService> _logger;
-
-    public ExampleBackgroundService(ILogger<ExampleBackgroundService> logger)
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger = logger;
-    }
-
-    protected override Task ExecuteAsync(CancellationToken stoppingToken)
-    {
-        _logger.LogInformation("{Service} has started", nameof(ExampleBackgroundService));
-        return Task.CompletedTask;
+        logger.LogInformation("{Service} has started", nameof(ExampleBackgroundService));
+        while (!stoppingToken.IsCancellationRequested)
+        {
+            logger.LogInformation("{Service} has Executed", nameof(ExampleBackgroundService));
+            try
+            {
+                await Task.Delay(TimeSpan.FromSeconds(10), stoppingToken);
+            }
+            catch (TaskCanceledException)
+            {
+                break;
+            }
+        }
     }
 }

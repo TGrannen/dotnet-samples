@@ -1,0 +1,11 @@
+@HostAddress = https://localhost:5001/
+
+GET {{HostAddress}}/health
+Accept: application/json
+
+###
+
+GET {{HostAddress}}/openapi/v1.json
+Accept: application/json
+
+###
