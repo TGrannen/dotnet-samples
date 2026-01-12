@@ -4,6 +4,7 @@ using DotNet.Testcontainers.Containers;
 using IntegrationTesting.WebAPI.XUnitIntegrationTests.Database;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using Testcontainers.PostgreSql;
 
 namespace IntegrationTesting.WebAPI.XUnitIntegrationTests.Shared;
 
@@ -11,21 +12,19 @@ public class AppFactoryWithDb<TStartup> : AppFactory<TStartup>, IAsyncLifetime w
 {
     public bool ShouldSeed { get; set; }
 
-    private readonly PostgreSqlTestcontainer _container = new TestcontainersBuilder<PostgreSqlTestcontainer>()
-        .WithDatabase(new PostgreSqlTestcontainerConfiguration
-        {
-            Database = "integrationTestDb",
-            Username = "postgres",
-            Password = "test-password",
-        }).Build();
+    private readonly PostgreSqlContainer _container = new PostgreSqlBuilder("postgres:latest")
+        .WithDatabase("integrationTestDb")
+        .WithUsername("postgres")
+        .WithPassword("test-password")
+        .Build();
 
     protected override IHost CreateHost(IHostBuilder builder)
     {
         builder.ConfigureHostConfiguration(config =>
         {
-            config.AddInMemoryCollection(new Dictionary<string, string>
+            config.AddInMemoryCollection(new List<KeyValuePair<string, string?>>
             {
-                { "ConnectionStrings:DbConnectionString", _container.ConnectionString },
+                new("ConnectionStrings:DbConnectionString", _container.GetConnectionString()),
             });
         });
 
@@ -35,10 +34,10 @@ public class AppFactoryWithDb<TStartup> : AppFactory<TStartup>, IAsyncLifetime w
     public async Task InitializeAsync()
     {
         await _container.StartAsync();
-        await DbSeeder.CreateSchema(_container.ConnectionString);
+        await DbSeeder.CreateSchema(_container.GetConnectionString());
         if (ShouldSeed)
         {
-            await DbSeeder.SeedData(_container.ConnectionString);
+            await DbSeeder.SeedData(_container.GetConnectionString());
         }
     }
 
