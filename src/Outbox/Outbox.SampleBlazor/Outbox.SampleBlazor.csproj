@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>8c44d0f4-a1c1-410a-8fa7-f18bec6b13ba</UserSecretsId>
@@ -9,11 +9,11 @@
 
   <ItemGroup>
     <PackageReference Include="AutoBogus" Version="2.13.1" />
-    <PackageReference Include="Fluxor.Blazor.Web.ReduxDevTools" Version="5.7.0" />
-    <PackageReference Include="Humanizer" Version="2.14.1" />
-    <PackageReference Include="MudBlazor" Version="6.2.0" />
-    <PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
-    <PackageReference Include="Testcontainers" Version="3.0.0" />
+    <PackageReference Include="Fluxor.Blazor.Web.ReduxDevTools" Version="6.9.0" />
+    <PackageReference Include="Humanizer" Version="3.0.1" />
+    <PackageReference Include="MudBlazor" Version="8.15.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
+    <PackageReference Include="Testcontainers" Version="4.10.0" />
   </ItemGroup>
 
   <ItemGroup>

@@ -51,7 +51,7 @@ public static class DependencyInjection
             .WithEnvironment("DYNAMODB_SHARE_DB", "1")
             .WithEnvironment("DATA_DIR", "/tmp/localstack/data")
             .WithPortBinding(4566, assignRandomHostPort: true)
-            .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(4566)).Build();
+            .WithWaitStrategy(Wait.ForUnixContainer().UntilExternalTcpPortIsAvailable(4566)).Build();
 
         await container.StartAsync();
 

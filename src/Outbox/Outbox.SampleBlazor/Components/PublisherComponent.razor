@@ -1,7 +1,9 @@
 @inject MessagePublisherSettings Settings
 
-<MudCheckBox @bind-Checked="@Settings.ShouldThrowException" Label="Publisher Throws an exception" Color="Color.Primary"></MudCheckBox>
-<MudNumericField @bind-Value="Settings.PublishDelay" Label="Publish Delay (Ms)" Variant="Variant.Text" Min="0" Max="10000"/>
+<MudCheckBox @bind-Checked="@Settings.ShouldThrowException" Label="Publisher Throws an exception" Color="Color.Primary"
+             T="bool"></MudCheckBox>
+<MudNumericField @bind-Value="Settings.PublishDelay" Label="Publish Delay (Ms)" Variant="Variant.Text" Min="0"
+                 Max="10000"/>
 
 @code {
 
