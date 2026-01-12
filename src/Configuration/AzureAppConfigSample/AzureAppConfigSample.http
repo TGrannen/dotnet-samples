@@ -2,5 +2,6 @@
 
 GET {{AzureAppConfigSample_HostAddress}}/Settings/
 Accept: application/json
-
 ###
+
+POST {{AzureAppConfigSample_HostAddress}}/Refresh

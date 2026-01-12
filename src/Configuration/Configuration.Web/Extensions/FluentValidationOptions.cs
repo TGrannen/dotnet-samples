@@ -2,27 +2,19 @@
 
 namespace Configuration.Web.Extensions;
 
-public class FluentValidationOptions<T> : IValidateOptions<T> where T : class
+public class FluentValidationOptions<T>(string optionsBuilderName, IEnumerable<IValidator<T>> validators) : IValidateOptions<T>
+    where T : class
 {
-    private readonly string _name;
-    private readonly IEnumerable<IValidator<T>> _validators;
-
-    public FluentValidationOptions(string optionsBuilderName, IEnumerable<IValidator<T>> validators)
-    {
-        _name = optionsBuilderName;
-        _validators = validators;
-    }
-
     public ValidateOptionsResult Validate(string name, T options)
     {
         // Name mismatches should be skipped
         // Null name is used to configure all named options.
-        if (_name != null && name != _name)
+        if (optionsBuilderName != null && name != optionsBuilderName)
         {
             return ValidateOptionsResult.Skip;
         }
 
-        var results = _validators?.Select(x => x.Validate(options)).ToArray() ?? Array.Empty<ValidationResult>();
+        var results = validators?.Select(x => x.Validate(options)).ToArray() ?? [];
         if (results.Length == 0)
         {
             return ValidateOptionsResult.Skip;

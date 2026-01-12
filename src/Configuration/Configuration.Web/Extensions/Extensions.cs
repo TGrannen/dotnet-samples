@@ -4,25 +4,27 @@ namespace Configuration.Web.Extensions;
 
 public static class Extensions
 {
-    public static OptionsBuilder<TC> ConfigureValidated<TC>(this IServiceCollection services, IConfiguration configuration,
-        bool onStart = true) where TC : class
+    extension(IServiceCollection services)
     {
-        var optionsBuilder = services.AddOptions<TC>().Bind(configuration);
-        optionsBuilder.Services.AddTransient<IValidateOptions<TC>>(sp =>
-            new FluentValidationOptions<TC>(optionsBuilder.Name, sp.GetServices<IValidator<TC>>()));
-
-        if (onStart)
+        public OptionsBuilder<TC> ConfigureValidated<TC>(IConfiguration configuration, bool onStart = true) where TC : class
         {
-            optionsBuilder.ValidateOnStart();
+            var optionsBuilder = services.AddOptions<TC>().Bind(configuration);
+            optionsBuilder.Services.AddTransient<IValidateOptions<TC>>(sp =>
+                new FluentValidationOptions<TC>(optionsBuilder.Name, sp.GetServices<IValidator<TC>>()));
+
+            if (onStart)
+            {
+                optionsBuilder.ValidateOnStart();
+            }
+
+            return optionsBuilder;
         }
 
-        return optionsBuilder;
-    }
-
-    public static IServiceCollection AddCustomRuntimeConfiguration(this IServiceCollection services, IConfigurationBuilder builder)
-    {
-        services.AddTransient<ICustomRuntimeConfiguration, CustomRuntimeConfiguration>();
-        builder.Add(new CustomRuntimeConfigurationSource());
-        return services;
+        public IServiceCollection AddCustomRuntimeConfiguration(IConfigurationBuilder builder)
+        {
+            services.AddTransient<ICustomRuntimeConfiguration, CustomRuntimeConfiguration>();
+            builder.Add(new CustomRuntimeConfigurationSource());
+            return services;
+        }
     }
 }
