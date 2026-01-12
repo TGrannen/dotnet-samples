@@ -19,10 +19,18 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var reloadAfter = builder.Configuration.GetValue("AWS:SystemsManager:ReloadAfter", TimeSpan.FromMinutes(2));
-Log.Information("AWS Parameter Store Reload Interval: {ReloadInterval}", reloadAfter);
-builder.Configuration.AddSystemsManager("/shared", reloadAfter);
-builder.Configuration.AddSystemsManager("/production/my-app", reloadAfter);
+var systemsManagerEnabled = builder.Configuration.GetValue("AWS:SystemsManager:Enabled", false);
+if (systemsManagerEnabled)
+{
+    var reloadAfter = builder.Configuration.GetValue("AWS:SystemsManager:ReloadAfter", TimeSpan.FromMinutes(2));
+    Log.Information("AWS Parameter Store Reload Interval: {ReloadInterval}", reloadAfter);
+    builder.Configuration.AddSystemsManager("/shared", reloadAfter);
+    builder.Configuration.AddSystemsManager("/production/my-app", reloadAfter);
+}
+else
+{
+    Log.Information("AWS Systems Manager integration is disabled");
+}
 
 builder.Services.AddValidatorsFromAssemblyContaining(typeof(Program), ServiceLifetime.Transient);
 builder.Services.ConfigureValidated<Settings1>(builder.Configuration.GetSection("Settings1"));
