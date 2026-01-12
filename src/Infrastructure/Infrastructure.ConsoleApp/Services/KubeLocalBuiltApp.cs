@@ -1,4 +1,6 @@
-﻿namespace Infrastructure.ConsoleApp.Services;
+﻿using Pulumi.Docker.Inputs;
+
+namespace Infrastructure.ConsoleApp.Services;
 
 using Docker = Pulumi.Docker;
 
@@ -12,14 +14,13 @@ public class KubeLocalBuiltApp
     {
         var appImage = new Docker.Image(app.Name, new Docker.ImageArgs
         {
-            Build = new Docker.DockerBuild
+            Build = new DockerBuildArgs
             {
                 Context = app.Context,
                 Dockerfile = app.Dockerfile,
             },
             ImageName = app.ImageName,
-            SkipPush = true,
-            LocalImageName = app.ImageName
+            SkipPush = true
         });
         Image = appImage.ImageName;
         Repo = appImage.RegistryServer;
