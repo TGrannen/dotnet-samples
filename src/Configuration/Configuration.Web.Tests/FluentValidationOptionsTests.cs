@@ -1,65 +1,56 @@
-using Configuration.Web.Extensions;
-
 namespace Configuration.Web.Tests;
 
 public class FluentValidationOptionsTests
 {
     [Fact]
-    public void Validate_ShouldReturnSuccess_WhenValidationPassed()
+    public void Validate_ReturnsSuccess_WhenOptionsAreValid()
     {
-        var options = new FluentValidationOptions<TestOptions>("TEST", new[] { new TestOptionsValidator() });
-        var result = options.Validate("TEST", new TestOptions { Value = "My Value" });
-        result.Skipped.ShouldBe(false);
-        result.Failed.ShouldBe(false);
-        result.Succeeded.ShouldBe(true);
+        var result = Validate(new TestOptions { Value = "Valid Value" });
+
+        result.Succeeded.ShouldBeTrue();
     }
 
     [Fact]
-    public void Validate_ShouldReturnFailed_WhenValidationFailed()
+    public void Validate_ReturnsFailed_WhenOptionsAreInvalid()
     {
-        var options = new FluentValidationOptions<TestOptions>("TEST", new[] { new TestOptionsValidator() });
-        var result = options.Validate("TEST", new TestOptions { Value = "NOPE" });
+        var result = Validate(new TestOptions { Value = "NOPE" });
 
-        result.Skipped.ShouldBe(false);
-        result.Failed.ShouldBe(true);
-        result.Succeeded.ShouldBe(false);
+        result.Failed.ShouldBeTrue();
     }
 
-    [Theory]
-    [InlineData("TEST", "TEST2")]
-    public void Validate_ShouldReturnSkipped_WhenNamesDoNotMatch(string builderName, string validateName)
+    [Fact]
+    public void Validate_ReturnsSkipped_WhenNameDoesNotMatch()
     {
-        var options = new FluentValidationOptions<TestOptions>(builderName, new[] { new TestOptionsValidator() });
-        var result = options.Validate(validateName, new TestOptions());
+        var result = Validate(new TestOptions(), "TEST", "OTHER");
 
-        result.Skipped.ShouldBe(true);
-        result.Failed.ShouldBe(false);
-        result.Succeeded.ShouldBe(false);
+        result.Skipped.ShouldBeTrue();
     }
 
     [Theory]
     [InlineData(null)]
     [InlineData("")]
     [InlineData("TEST")]
-    public void Validate_ShouldReturnSkipped_WhenNoValidatorsInjected(string name)
+    public void Validate_ReturnsSkipped_WhenNoValidatorsProvided(string name)
     {
-        var options = new FluentValidationOptions<TestOptions>(name, new List<IValidator<TestOptions>>());
-        var result = options.Validate(name, new TestOptions());
+        var validator = new FluentValidationOptions<TestOptions>(name, []);
+        var result = validator.Validate(name, new TestOptions());
 
-        result.Skipped.ShouldBe(true);
-        result.Failed.ShouldBe(false);
-        result.Succeeded.ShouldBe(false);
+        result.Skipped.ShouldBeTrue();
     }
 
     [Fact]
-    public void Validate_ShouldReturnSkipped_WhenInjectedListIsNull()
+    public void Validate_ReturnsSkipped_WhenValidatorsIsNull()
     {
-        var options = new FluentValidationOptions<TestOptions>("TEST", null);
-        var result = options.Validate("TEST", new TestOptions());
+        var validator = new FluentValidationOptions<TestOptions>("TEST", null);
+        var result = validator.Validate("TEST", new TestOptions());
 
-        result.Skipped.ShouldBe(true);
-        result.Failed.ShouldBe(false);
-        result.Succeeded.ShouldBe(false);
+        result.Skipped.ShouldBeTrue();
+    }
+
+    private static ValidateOptionsResult Validate(TestOptions options, string builderName = "TEST", string validateName = "TEST")
+    {
+        var validator = new FluentValidationOptions<TestOptions>(builderName, [new TestOptionsValidator()]);
+        return validator.Validate(validateName, options);
     }
 }
 
