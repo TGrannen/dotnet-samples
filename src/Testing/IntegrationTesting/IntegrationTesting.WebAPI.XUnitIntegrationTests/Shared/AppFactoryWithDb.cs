@@ -1,7 +1,4 @@
-﻿using DotNet.Testcontainers.Builders;
-using DotNet.Testcontainers.Configurations;
-using DotNet.Testcontainers.Containers;
-using IntegrationTesting.WebAPI.XUnitIntegrationTests.Database;
+﻿using IntegrationTesting.WebAPI.XUnitIntegrationTests.Database;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Testcontainers.PostgreSql;

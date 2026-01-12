@@ -8,3 +8,4 @@ global using IntegrationTesting.WebAPI.NUnitIntegrationTests.Shared;
 global using Microsoft.AspNetCore.Mvc.Testing;
 global using Refit;
 global using NUnit.Framework;
+global using Testcontainers.PostgreSql;

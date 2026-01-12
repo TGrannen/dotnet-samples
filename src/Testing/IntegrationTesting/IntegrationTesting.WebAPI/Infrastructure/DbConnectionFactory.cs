@@ -8,18 +8,11 @@ public interface IDbConnectionFactory
     IDbConnection CreateConnection();
 }
 
-public class DbConnectionFactory : IDbConnectionFactory
+public class DbConnectionFactory(IConfiguration configuration) : IDbConnectionFactory
 {
-    private readonly IConfiguration _configuration;
-
-    public DbConnectionFactory(IConfiguration configuration)
-    {
-        _configuration = configuration;
-    }
-
     public IDbConnection CreateConnection()
     {
-        var connectionString = _configuration.GetConnectionString("DbConnectionString");
+        var connectionString = configuration.GetConnectionString("DbConnectionString");
         return new NpgsqlConnection(connectionString);
     }
 }
