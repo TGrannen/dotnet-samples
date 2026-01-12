@@ -1,9 +1,7 @@
 ﻿@baseUrl = https://localhost:5001
 
-###
 GET {{baseUrl}}/Settings
-
 ###
 
-@settingsValue=wow
+@settingsValue=test
 POST {{baseUrl}}/Settings?value={{settingsValue}}

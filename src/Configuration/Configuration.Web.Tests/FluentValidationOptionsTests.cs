@@ -30,7 +30,7 @@ public class FluentValidationOptionsTests
     [InlineData(null)]
     [InlineData("")]
     [InlineData("TEST")]
-    public void Validate_ReturnsSkipped_WhenNoValidatorsProvided(string name)
+    public void Validate_ReturnsSkipped_WhenNoValidatorsProvided(string? name)
     {
         var validator = new FluentValidationOptions<TestOptions>(name, []);
         var result = validator.Validate(name, new TestOptions());
