@@ -2,7 +2,10 @@
 
 [ApiController]
 [Route("[controller]")]
-public class ExampleController(IFusionCache cache, ILogger<ExampleController> logger, TimeProvider timeProvider) : ControllerBase
+public class ExampleController(
+    [FromKeyedServices("product-cache")] IFusionCache cache,
+    ILogger<ExampleController> logger,
+    TimeProvider timeProvider) : ControllerBase
 {
     [HttpGet]
     [Route("Get")]

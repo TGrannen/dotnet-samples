@@ -14,7 +14,8 @@ builder.Services.AddOpenApi();
 builder.AddRedisDistributedCache("cache");
 
 builder.Services
-    .AddFusionCache()
+    .AddFusionCache("product-cache")
+    .AsKeyedServiceByCacheName()
     .WithDefaultEntryOptions(options =>
     {
         options.Duration = TimeSpan.FromMinutes(10);
@@ -23,6 +24,7 @@ builder.Services
         options.FailSafeThrottleDuration = TimeSpan.FromSeconds(30);
         options.FactorySoftTimeout = TimeSpan.FromSeconds(1);
         options.FactoryHardTimeout = TimeSpan.FromSeconds(2);
+        options.JitterMaxDuration = TimeSpan.FromSeconds(30);
     })
     .WithSystemTextJsonSerializer()
     .WithDistributedCache(serviceProvider => serviceProvider.GetRequiredService<Microsoft.Extensions.Caching.Distributed.IDistributedCache>());
