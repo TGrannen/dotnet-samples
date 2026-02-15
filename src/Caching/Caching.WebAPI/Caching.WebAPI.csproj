@@ -9,6 +9,7 @@
   <ItemGroup>
     <PackageReference Include="Aspire.StackExchange.Redis.DistributedCaching" Version="13.1.0"/>
     <PackageReference Include="Serilog.AspNetCore" Version="9.0.0"/>
+    <PackageReference Include="Serilog.Sinks.OpenTelemetry" Version="4.2.0"/>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0"/>
     <PackageReference Include="ZiggyCreatures.FusionCache" Version="2.0.0"/>
     <PackageReference Include="ZiggyCreatures.FusionCache.OpenTelemetry" Version="2.0.0"/>

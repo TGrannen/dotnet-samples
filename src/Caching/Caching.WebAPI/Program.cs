@@ -10,7 +10,23 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 builder.Logging.ClearProviders();
-builder.Host.UseSerilog((context, configuration) => { configuration.ReadFrom.Configuration(context.Configuration); }, writeToProviders: true);
+builder.Host.UseSerilog((context, configuration) =>
+{
+    configuration.ReadFrom.Configuration(context.Configuration);
+    var otlpEndpoint = context.Configuration["OTEL_EXPORTER_OTLP_ENDPOINT"];
+    if (!string.IsNullOrWhiteSpace(otlpEndpoint))
+    {
+        configuration.WriteTo.OpenTelemetry(options =>
+        {
+            options.Endpoint = otlpEndpoint;
+            options.ResourceAttributes = new Dictionary<string, object>
+            {
+                ["service.name"] = context.Configuration["OTEL_SERVICE_NAME"] ?? context.HostingEnvironment.ApplicationName ?? "Caching.WebAPI"
+            };
+        });
+    }
+}, writeToProviders: false);
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSingleton(TimeProvider.System);
@@ -29,17 +45,10 @@ builder.Services
         options.FactorySoftTimeout = TimeSpan.FromSeconds(1);
         options.FactoryHardTimeout = TimeSpan.FromSeconds(2);
     })
-    .WithSerializer(new FusionCacheSystemTextJsonSerializer())
+    .WithSystemTextJsonSerializer()
     .WithDistributedCache(serviceProvider => serviceProvider.GetRequiredService<Microsoft.Extensions.Caching.Distributed.IDistributedCache>());
 
-builder.Logging.AddOpenTelemetry(logging =>
-{
-    logging.IncludeFormattedMessage = true;
-    logging.IncludeScopes = true;
-});
-
 builder.Services.AddOpenTelemetry()
-    .ConfigureResource(c => c.AddService("ConsoleApp"))
     .WithMetrics(metrics => { metrics.AddFusionCacheInstrumentation(); })
     .WithTracing(tracing =>
     {
