@@ -7,13 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="13.1.0"/>
-    <PackageReference Include="Aspire.StackExchange.Redis.DistributedCaching" Version="13.1.0"/>
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.1"/>
+    <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="13.1.1" />
+    <PackageReference Include="Aspire.StackExchange.Redis.DistributedCaching" Version="13.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.3" />
     <PackageReference Include="Scalar.AspNetCore" Version="2.12.40"/>
-    <PackageReference Include="ZiggyCreatures.FusionCache" Version="2.0.0"/>
-    <PackageReference Include="ZiggyCreatures.FusionCache.OpenTelemetry" Version="2.0.0"/>
-    <PackageReference Include="ZiggyCreatures.FusionCache.Serialization.SystemTextJson" Version="2.0.0"/>
+    <PackageReference Include="ZiggyCreatures.FusionCache" Version="2.5.0" />
+    <PackageReference Include="ZiggyCreatures.FusionCache.OpenTelemetry" Version="2.5.0" />
+    <PackageReference Include="ZiggyCreatures.FusionCache.Serialization.SystemTextJson" Version="2.5.0" />
   </ItemGroup>
 
   <ItemGroup>
