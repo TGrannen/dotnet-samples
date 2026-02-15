@@ -8,6 +8,8 @@ using Serilog;
 using ZiggyCreatures.Caching.Fusion.Serialization.SystemTextJson;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.AddServiceDefaults();
 builder.Logging.ClearProviders();
 builder.Host.UseSerilog((context, configuration) => { configuration.ReadFrom.Configuration(context.Configuration); }, writeToProviders: true);
 builder.Services.AddControllers();
@@ -35,6 +37,8 @@ builder.Services
 ConfigureOpenTelemetry(builder);
 
 var app = builder.Build();
+
+app.MapDefaultEndpoints();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

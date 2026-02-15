@@ -11,6 +11,12 @@ EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Caching.WebAPI", "Caching.WebAPI\Caching.WebAPI.csproj", "{33339324-6496-4154-A223-84E6E8C596BC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Caching.AppHost", "Caching.AppHost\Caching.AppHost.csproj", "{C40CE122-A369-46AD-8FC5-CF84DE1556CB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Caching.ServiceDefaults", "Caching.ServiceDefaults\Caching.ServiceDefaults.csproj", "{54E636C5-8D57-4761-A111-8DD89DE02D27}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Aspire", "Aspire", "{76B8C8B5-C0AB-48CE-8D62-278EC7DAF963}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +30,17 @@ Global
 		{33339324-6496-4154-A223-84E6E8C596BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{33339324-6496-4154-A223-84E6E8C596BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{33339324-6496-4154-A223-84E6E8C596BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C40CE122-A369-46AD-8FC5-CF84DE1556CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C40CE122-A369-46AD-8FC5-CF84DE1556CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C40CE122-A369-46AD-8FC5-CF84DE1556CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C40CE122-A369-46AD-8FC5-CF84DE1556CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54E636C5-8D57-4761-A111-8DD89DE02D27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54E636C5-8D57-4761-A111-8DD89DE02D27}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54E636C5-8D57-4761-A111-8DD89DE02D27}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54E636C5-8D57-4761-A111-8DD89DE02D27}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C40CE122-A369-46AD-8FC5-CF84DE1556CB} = {76B8C8B5-C0AB-48CE-8D62-278EC7DAF963}
+		{54E636C5-8D57-4761-A111-8DD89DE02D27} = {76B8C8B5-C0AB-48CE-8D62-278EC7DAF963}
 	EndGlobalSection
 EndGlobal
