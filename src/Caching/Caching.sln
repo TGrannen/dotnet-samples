@@ -6,7 +6,6 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{463E3899-C04E-4A31-BD38-8E485AF1A017}"
 ProjectSection(SolutionItems) = preProject
 	README.md = README.md
-	docker-compose.yml = docker-compose.yml
 EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Caching.WebAPI", "Caching.WebAPI\Caching.WebAPI.csproj", "{33339324-6496-4154-A223-84E6E8C596BC}"

@@ -6,7 +6,7 @@ public class ExampleController(IFusionCache cache, ILogger<ExampleController> lo
 {
     [HttpGet]
     [Route("Get")]
-    public async Task<IActionResult> GetValue(string key)
+    public async Task<IActionResult> GetValue(string key = "demo-key")
     {
         var cachedResponse = await cache.GetOrDefaultAsync<Product>($"product:{key}");
         if (cachedResponse != null)
@@ -19,7 +19,7 @@ public class ExampleController(IFusionCache cache, ILogger<ExampleController> lo
 
     [HttpGet]
     [Route("GetOrSet")]
-    public async Task<IActionResult> GetOrSet(string key, [FromQuery] string[]? tags = null)
+    public async Task<IActionResult> GetOrSet(string key = "demo-key", [FromQuery] string[]? tags = null)
     {
         var response = await cache.GetOrSetAsync<Product>($"product:{key}", _ => GetProductFromDb(key), tags: tags);
         return Ok(response);
@@ -44,7 +44,7 @@ public class ExampleController(IFusionCache cache, ILogger<ExampleController> lo
 
     [HttpDelete]
     [Route("Remove")]
-    public async Task<IActionResult> Remove(string key)
+    public async Task<IActionResult> Remove(string key = "demo-key")
     {
         await cache.RemoveAsync($"product:{key}");
         return Ok();
