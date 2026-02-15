@@ -1,4 +1,7 @@
 using Caching.WebAPI;
+using Caching.WebAPI.Data;
+using Caching.WebAPI.Services;
+using Microsoft.EntityFrameworkCore;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
 using Scalar.AspNetCore;
@@ -11,7 +14,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddOpenApi();
 
-builder.AddRedisDistributedCache("cache");
+builder.AddNpgsqlDbContext<AppDbContext>("postgresdb");
+builder.Services.AddScoped<IProductService, ProductService>();
+
+builder.AddRedisDistributedCache("redis");
 
 builder.Services
     .AddFusionCache("product-cache")
@@ -39,6 +45,21 @@ builder.Services.AddOpenTelemetry()
     });
 
 var app = builder.Build();
+
+// Ensure database exists and seed initial product data (development)
+await using (var scope = app.Services.CreateAsyncScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await db.Database.EnsureCreatedAsync();
+    if (!await db.Products.AnyAsync())
+    {
+        db.Products.AddRange(
+            new ProductEntity { Name = "Widget A", Sku = "SKU-001", UnitPrice = 19.99m, CreatedAt = DateTime.UtcNow },
+            new ProductEntity { Name = "Gadget B", Sku = "SKU-002", UnitPrice = 49.99m, CreatedAt = DateTime.UtcNow },
+            new ProductEntity { Name = "Gizmo C", Sku = "SKU-003", UnitPrice = 9.99m, CreatedAt = DateTime.UtcNow });
+        await db.SaveChangesAsync();
+    }
+}
 
 app.MapDefaultEndpoints();
 

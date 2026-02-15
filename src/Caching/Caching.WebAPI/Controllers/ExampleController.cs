@@ -1,15 +1,18 @@
-﻿namespace Caching.WebAPI.Controllers;
+using Caching.WebAPI.Models;
+using Caching.WebAPI.Services;
+
+namespace Caching.WebAPI.Controllers;
 
 [ApiController]
 [Route("[controller]")]
 public class ExampleController(
     [FromKeyedServices("product-cache")] IFusionCache cache,
-    ILogger<ExampleController> logger,
-    TimeProvider timeProvider) : ControllerBase
+    IProductService productService,
+    ILogger<ExampleController> logger) : ControllerBase
 {
     [HttpGet]
     [Route("Get")]
-    public async Task<IActionResult> GetValue(string key = "demo-key")
+    public async Task<IActionResult> GetValue(string key = "1")
     {
         var cachedResponse = await cache.GetOrDefaultAsync<Product>($"product:{key}");
         if (cachedResponse != null)
@@ -22,32 +25,49 @@ public class ExampleController(
 
     [HttpGet]
     [Route("GetOrSet")]
-    public async Task<IActionResult> GetOrSet(string key = "demo-key", [FromQuery] string[]? tags = null)
+    public async Task<IActionResult> GetOrSet(int id = 1, [FromQuery] string[]? tags = null)
     {
-        var response = await cache.GetOrSetAsync<Product>($"product:{key}", _ => GetProductFromDb(key), tags: tags);
-        return Ok(response);
+        try
+        {
+            var response = await cache.GetOrSetAsync<Product>(
+                $"product:{id}",
+                async _ =>
+                {
+                    var product = await GetProductFromDb(id);
+                    if (product == null)
+                        throw new InvalidOperationException($"Product {id} not found.");
+                    return product;
+                },
+                tags: tags);
+            return Ok(response);
+        }
+        catch (InvalidOperationException ex) when (ex.Message.Contains("not found"))
+        {
+            return NotFound();
+        }
     }
 
     [HttpPost]
     [Route("Create")]
-    public async Task<IActionResult> SetCacheValue(Product value, [FromQuery] string[]? tags = null)
+    public async Task<IActionResult> SetCacheValue(ProductCreateDto value, [FromQuery] string[]? tags = null)
     {
         try
         {
-            value.Created = timeProvider.GetLocalNow().DateTime;
-            await cache.SetAsync($"product:{value.Id}", value, tags: tags);
+            var product = await productService.CreateAsync(value);
+            if (product == null)
+                return BadRequest("Failed to create product.");
+            await cache.SetAsync($"product:{product.Id}", product, tags: tags);
+            return CreatedAtAction(nameof(GetValue), new { key = product.Id.ToString() }, product);
         }
         catch (Exception e)
         {
             return BadRequest(e.Message);
         }
-
-        return Ok();
     }
 
     [HttpDelete]
     [Route("Remove")]
-    public async Task<IActionResult> Remove(string key = "demo-key")
+    public async Task<IActionResult> Remove(string key = "1")
     {
         await cache.RemoveAsync($"product:{key}");
         return Ok();
@@ -61,21 +81,10 @@ public class ExampleController(
         return Ok();
     }
 
-    private async Task<Product> GetProductFromDb(string id)
+    private async Task<Product?> GetProductFromDb(int id)
     {
         using var activity = Tracing.Source.StartActivity();
         logger.LogInformation("Database call made with {ID}", id);
-        await Task.Delay(TimeSpan.FromMilliseconds(600));
-        return new Product
-        {
-            Id = id,
-            Created = timeProvider.GetLocalNow().DateTime
-        };
+        return await productService.GetByIdAsync(id);
     }
-}
-
-public class Product
-{
-    public required string Id { get; set; }
-    public DateTime Created { get; set; }
 }
