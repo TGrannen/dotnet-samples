@@ -1,6 +1,5 @@
 using Caching.WebAPI;
 using Caching.WebAPI.Data;
-using Caching.WebAPI.Services;
 using Microsoft.EntityFrameworkCore;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
@@ -15,8 +14,6 @@ builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddOpenApi();
 
 builder.AddNpgsqlDbContext<AppDbContext>("postgresdb");
-builder.Services.AddScoped<IProductService, ProductService>();
-
 builder.AddRedisDistributedCache("redis");
 
 builder.Services
@@ -37,12 +34,7 @@ builder.Services
 
 builder.Services.AddOpenTelemetry()
     .WithMetrics(metrics => { metrics.AddFusionCacheInstrumentation(); })
-    .WithTracing(tracing =>
-    {
-        tracing
-            .AddFusionCacheInstrumentation()
-            .AddSource(Tracing.SourceName);
-    });
+    .WithTracing(tracing => { tracing.AddFusionCacheInstrumentation(); });
 
 var app = builder.Build();
 

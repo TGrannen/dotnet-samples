@@ -1,5 +1,6 @@
+using Caching.WebAPI.Data;
 using Caching.WebAPI.Models;
-using Caching.WebAPI.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace Caching.WebAPI.Controllers;
 
@@ -7,7 +8,7 @@ namespace Caching.WebAPI.Controllers;
 [Route("[controller]")]
 public class ExampleController(
     [FromKeyedServices("product-cache")] IFusionCache cache,
-    IProductService productService,
+    AppDbContext db,
     ILogger<ExampleController> logger) : ControllerBase
 {
     [HttpGet]
@@ -53,9 +54,16 @@ public class ExampleController(
     {
         try
         {
-            var product = await productService.CreateAsync(value);
-            if (product == null)
-                return BadRequest("Failed to create product.");
+            var entity = new ProductEntity
+            {
+                Name = value.Name,
+                Sku = value.Sku,
+                UnitPrice = value.UnitPrice,
+                CreatedAt = DateTime.UtcNow
+            };
+            db.Products.Add(entity);
+            await db.SaveChangesAsync();
+            var product = MapToProduct(entity);
             await cache.SetAsync($"product:{product.Id}", product, tags: tags);
             return CreatedAtAction(nameof(GetValue), new { key = product.Id.ToString() }, product);
         }
@@ -83,8 +91,19 @@ public class ExampleController(
 
     private async Task<Product?> GetProductFromDb(int id)
     {
-        using var activity = Tracing.Source.StartActivity();
         logger.LogInformation("Database call made with {ID}", id);
-        return await productService.GetByIdAsync(id);
+        var entity = await db.Products
+            .AsNoTracking()
+            .FirstOrDefaultAsync(p => p.Id == id);
+        return entity == null ? null : MapToProduct(entity);
     }
+
+    private static Product MapToProduct(ProductEntity entity) => new()
+    {
+        Id = entity.Id,
+        Name = entity.Name,
+        Sku = entity.Sku,
+        UnitPrice = entity.UnitPrice,
+        Created = entity.CreatedAt
+    };
 }
