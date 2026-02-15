@@ -9,6 +9,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.Redis" Version="13.1.0" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Caching.WebAPI\Caching.WebAPI.csproj" />
   </ItemGroup>
 

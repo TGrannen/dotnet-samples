@@ -10,7 +10,13 @@ FusionCache is an easy to use, fast and robust hybrid cache with advanced resili
 
 [Step By Step](https://github.com/ZiggyCreatures/FusionCache/blob/main/docs/StepByStep.md) Fusion Cache setup
 
+## Running
+
+Run the solution from the **Caching.AppHost** project. The AppHost starts Redis (with Redis Insight), the Web API, and the Aspire Dashboard.
+
 ## Links
 
-- [Redis Insight](http://localhost:5540/)
-- [Aspire Dashboard](http://localhost:18888/)
+When running via the AppHost:
+
+- **Aspire Dashboard** – [http://localhost:18888/](http://localhost:18888/) (or the port shown in the console)
+- **Redis Insight** – available from the dashboard when Redis is configured with `WithRedisInsight()`
