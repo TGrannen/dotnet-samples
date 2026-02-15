@@ -32,12 +32,10 @@ public class ExampleController(
         {
             var response = await cache.GetOrSetAsync<Product>(
                 $"product:{id}",
-                async _ =>
+                async token =>
                 {
-                    var product = await GetProductFromDb(id);
-                    if (product == null)
-                        throw new InvalidOperationException($"Product {id} not found.");
-                    return product;
+                    var product = await GetProductFromDb(id, token);
+                    return product ?? throw new InvalidOperationException($"Product {id} not found.");
                 },
                 tags: tags);
             return Ok(response);
@@ -63,7 +61,7 @@ public class ExampleController(
             };
             db.Products.Add(entity);
             await db.SaveChangesAsync();
-            var product = MapToProduct(entity);
+            var product = MapToProduct(entity)!;
             await cache.SetAsync($"product:{product.Id}", product, tags: tags);
             return CreatedAtAction(nameof(GetValue), new { key = product.Id.ToString() }, product);
         }
@@ -89,21 +87,23 @@ public class ExampleController(
         return Ok();
     }
 
-    private async Task<Product?> GetProductFromDb(int id)
+    private async Task<Product?> GetProductFromDb(int id, CancellationToken cancellationToken = default)
     {
         logger.LogInformation("Database call made with {ID}", id);
         var entity = await db.Products
             .AsNoTracking()
-            .FirstOrDefaultAsync(p => p.Id == id);
-        return entity == null ? null : MapToProduct(entity);
+            .FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
+        return MapToProduct(entity);
     }
 
-    private static Product MapToProduct(ProductEntity entity) => new()
-    {
-        Id = entity.Id,
-        Name = entity.Name,
-        Sku = entity.Sku,
-        UnitPrice = entity.UnitPrice,
-        Created = entity.CreatedAt
-    };
+    private static Product? MapToProduct(ProductEntity? entity) => entity == null
+        ? null
+        : new Product
+        {
+            Id = entity.Id,
+            Name = entity.Name,
+            Sku = entity.Sku,
+            UnitPrice = entity.UnitPrice,
+            Created = entity.CreatedAt
+        };
 }
