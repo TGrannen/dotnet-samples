@@ -1,32 +1,10 @@
 using Caching.WebAPI;
-using OpenTelemetry;
 using OpenTelemetry.Metrics;
-using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
-using Serilog;
-using ZiggyCreatures.Caching.Fusion.Serialization.SystemTextJson;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
-builder.Logging.ClearProviders();
-builder.Host.UseSerilog((context, configuration) =>
-{
-    configuration.ReadFrom.Configuration(context.Configuration);
-    var otlpEndpoint = context.Configuration["OTEL_EXPORTER_OTLP_ENDPOINT"];
-    if (!string.IsNullOrWhiteSpace(otlpEndpoint))
-    {
-        configuration.WriteTo.OpenTelemetry(options =>
-        {
-            options.Endpoint = otlpEndpoint;
-            options.ResourceAttributes = new Dictionary<string, object>
-            {
-                ["service.name"] = context.Configuration["OTEL_SERVICE_NAME"] ?? context.HostingEnvironment.ApplicationName ?? "Caching.WebAPI"
-            };
-        });
-    }
-}, writeToProviders: false);
-
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSingleton(TimeProvider.System);
@@ -68,7 +46,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseSerilogRequestLogging();
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
