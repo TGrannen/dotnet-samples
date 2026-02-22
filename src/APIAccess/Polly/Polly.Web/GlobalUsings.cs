@@ -1,6 +1,6 @@
-﻿// Global using directives
+// Global using directives
 
-global using Microsoft.OpenApi.Models;
+global using Microsoft.OpenApi;
 global using Polly;
 global using Polly.CircuitBreaker;
 global using Polly.Extensions.Http;

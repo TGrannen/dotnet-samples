@@ -1,12 +1,4 @@
-using App.Metrics;
-using App.Metrics.AspNetCore;
-using App.Metrics.Formatters.Prometheus;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 using Observability.WebAPI.Services;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Metrics;
@@ -18,7 +10,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
-builder.Services.AddSingleton<AppMetricsMetricService>();
 builder.Services.AddSingleton<OtelMetricService>();
 builder.Services.AddSingleton<ActivityService>();
 
@@ -40,20 +31,8 @@ builder.Services.AddOpenTelemetryMetrics((meterBuilder) => meterBuilder
 );
 builder.Services.Configure<PrometheusExporterOptions>(builder.Configuration.GetSection("OpenTelemetry:Prometheus"));
 
-// AppMetrics
-builder.Services.AddMetrics();
-builder.WebHost.UseMetricsWebTracking()
-    .UseMetrics(
-        options =>
-        {
-            options.EndpointOptions = endpointsOptions =>
-            {
-                endpointsOptions.MetricsTextEndpointOutputFormatter = new MetricsPrometheusTextOutputFormatter();
-                endpointsOptions.MetricsEndpointOutputFormatter = new MetricsPrometheusProtobufOutputFormatter();
-                endpointsOptions.EnvironmentInfoEndpointEnabled = false;
-            };
-        });
-builder.WebHost.UseSerilog((context, configuration) => { configuration.ReadFrom.Configuration(context.Configuration); });
+builder.Host.UseSerilog((context, configuration) => { configuration.ReadFrom.Configuration(context.Configuration); });
+
 var app = builder.Build();
 
 // Metrics scraping

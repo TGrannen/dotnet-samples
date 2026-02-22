@@ -31,7 +31,12 @@ else
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+// Only redirect HTTP->HTTPS when the app is actually listening on HTTPS (e.g. avoids failing smoke tests that use http only)
+var urls = builder.Configuration["ASPNETCORE_URLS"] ?? builder.Configuration["urls"] ?? "";
+if (urls.Contains("https://", StringComparison.OrdinalIgnoreCase))
+{
+    app.UseHttpsRedirection();
+}
 app.UseRouting();
 
 app.MapHealthChecksUI();

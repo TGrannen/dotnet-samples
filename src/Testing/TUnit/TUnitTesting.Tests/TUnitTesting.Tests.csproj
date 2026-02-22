@@ -1,11 +1,9 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net10.0</TargetFramework>
-    <UserSecretsId>7017cdf8-276a-4237-a5d1-6ff11d1a154e</UserSecretsId>
+    <OutputType>Exe</OutputType>    <UserSecretsId>7017cdf8-276a-4237-a5d1-6ff11d1a154e</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

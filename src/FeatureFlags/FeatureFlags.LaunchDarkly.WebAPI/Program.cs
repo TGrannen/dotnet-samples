@@ -1,6 +1,6 @@
 using FeatureFlags.LaunchDarkly.WebAPI.Services;
 using FeatureFlags.Library.LaunchDarkly;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);

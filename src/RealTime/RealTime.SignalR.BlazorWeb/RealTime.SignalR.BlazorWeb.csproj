@@ -1,8 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
-    <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
-        <LangVersion>10</LangVersion>
+    <PropertyGroup>        <LangVersion>10</LangVersion>
         <ImplicitUsings>true</ImplicitUsings>
     </PropertyGroup>
 

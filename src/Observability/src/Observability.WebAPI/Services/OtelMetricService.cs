@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Metrics;
@@ -13,6 +13,8 @@ namespace Observability.WebAPI.Services
         private static readonly Meter MyMeter = new(MeterName);
         private static readonly Counter<long> MyFruitCounter = MyMeter.CreateCounter<long>("MyFruitCounter");
         private static readonly Histogram<long> MyHistogram = MyMeter.CreateHistogram<long>("RequestHistorgram");
+        private static readonly Counter<long> ForecastRequestsCounter = MyMeter.CreateCounter<long>("forecast_requests", "Requests", "Number of weather forecast requests");
+        private static readonly Histogram<int> ForecastCallsHistogram = MyMeter.CreateHistogram<int>("forecast_calls", "Requests", "Number of forecasts returned per call");
         private readonly Random _random = new();
 
         public void RandomFruitAmount()
@@ -27,6 +29,22 @@ namespace Observability.WebAPI.Services
 
             // Measure the duration in ms of requests and includes the host in the tags
             MyHistogram.Record(stopwatch.ElapsedMilliseconds, KeyValuePair.Create<string, object?>("Host", "github.com"));
+        }
+
+        /// <summary>
+        /// Records that a weather forecast request was made (replaces App.Metrics forecast_requests counter).
+        /// </summary>
+        public void WeatherForecastRequestIncrement()
+        {
+            ForecastRequestsCounter.Add(1, KeyValuePair.Create<string, object?>("Context", "TestApi"));
+        }
+
+        /// <summary>
+        /// Records the number of forecast items returned (replaces App.Metrics forecast_calls histogram).
+        /// </summary>
+        public void WeatherForecastReturned(int count)
+        {
+            ForecastCallsHistogram.Record(count, KeyValuePair.Create<string, object?>("Context", "TestApi"));
         }
     }
 }

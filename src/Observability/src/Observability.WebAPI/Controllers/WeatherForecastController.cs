@@ -17,18 +17,16 @@ namespace Observability.WebAPI.Controllers
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
 
-        private readonly AppMetricsMetricService _appMetricsMetricService;
         private readonly ILogger<WeatherForecastController> _logger;
         private readonly ActivityService _service;
         private readonly OtelMetricService _metricService;
         private readonly Random _random = new();
 
-        public WeatherForecastController(AppMetricsMetricService appMetricsMetricService,
+        public WeatherForecastController(
             ILogger<WeatherForecastController> logger,
             ActivityService service,
             OtelMetricService metricService)
         {
-            _appMetricsMetricService = appMetricsMetricService;
             _logger = logger;
             _service = service;
             _metricService = metricService;
@@ -39,10 +37,10 @@ namespace Observability.WebAPI.Controllers
         public async Task<IEnumerable<WeatherForecast>> GetWeatherForecastMetrics()
         {
             _logger.LogWarning("Getting Weather Forecasts - Metrics");
-            _appMetricsMetricService.WeatherForecastIncrement();
+            _metricService.WeatherForecastRequestIncrement();
 
             var number = _random.Next(2, 10);
-            _appMetricsMetricService.WeatherForecastReturned(number);
+            _metricService.WeatherForecastReturned(number);
 
             _metricService.RandomFruitAmount();
 

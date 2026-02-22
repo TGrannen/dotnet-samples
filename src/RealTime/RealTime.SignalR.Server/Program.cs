@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.ResponseCompression;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using RealTime.SignalR.Server.Hub;
 using Serilog;
 
