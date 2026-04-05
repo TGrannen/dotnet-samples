@@ -22,24 +22,27 @@ jobs:
           dotnet-version: '10.0.x'
 
       - name: Restore dependencies
-        run: dotnet restore
-        working-directory: src/Testing/TUnit/TUnitTesting.Tests
+        run: dotnet restore TUnitTesting.sln
+        working-directory: src/Testing/TUnit
 
       - name: Build
-        run: dotnet build --no-restore -c Release
-        working-directory: src/Testing/TUnit/TUnitTesting.Tests
+        run: dotnet build TUnitTesting.sln --no-restore -c Release
+        working-directory: src/Testing/TUnit
 
-      - name: Run Tests without Playwright
+      - name: Run unit and integration tests
         if: ${{ !inputs.run_playwright }}
-        run: dotnet test --no-build -c Release --verbosity normal  --treenode-filter "/*/(!*Playwright*)/*/*"
-        working-directory: src/Testing/TUnit/TUnitTesting.Tests
+        working-directory: src/Testing/TUnit
+        run: |
+          dotnet test --project TUnitTesting.UnitTests/TUnitTesting.UnitTests.csproj --no-build -c Release --verbosity normal
+          dotnet test --project TUnitTesting.IntegrationTests/TUnitTesting.IntegrationTests.csproj --no-build -c Release --verbosity normal
 
       - name: Install Playwright Browsers
         if: ${{ inputs.run_playwright }}
         working-directory: src/Testing/TUnit
-        run: pwsh TUnitTesting.Tests/bin/Release/net10.0/playwright.ps1 install --with-deps chromium
+        run: pwsh TUnitTesting.PlaywrightTests/bin/Release/net10.0/playwright.ps1 install --with-deps chromium
 
-      - name: Run Tests With Playwright
+      - name: Run Playwright tests
         if: ${{ inputs.run_playwright }}
-        run: dotnet test --no-build -c Release --verbosity normal
-        working-directory: src/Testing/TUnit/TUnitTesting.Tests
+        working-directory: src/Testing/TUnit
+        run: |
+          dotnet test --project TUnitTesting.PlaywrightTests/TUnitTesting.PlaywrightTests.csproj --no-build -c Release --verbosity normal

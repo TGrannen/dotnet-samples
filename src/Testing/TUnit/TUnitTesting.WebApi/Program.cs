@@ -42,6 +42,9 @@ app.MapControllers();
 
 app.Run();
 
-public partial class Program
+namespace TUnitTesting.WebApi
 {
+    public partial class Program
+    {
+    }
 }
