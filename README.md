@@ -100,7 +100,7 @@ This repository's purpose is to showcase common design patterns, best practices,
 
 ### RealTime
 
-* [SignalR](src/RealTime/)
+* [SignalR + Blazor WebAssembly + Redis backplane (Aspire)](src/RealTime/)
 
 ### ReverseProxy
 

@@ -1,0 +1,115 @@
+@page "/chat"
+@using Microsoft.AspNetCore.SignalR.Client
+@implements IAsyncDisposable
+@inject IConfiguration Configuration
+
+<PageTitle>Chat</PageTitle>
+
+<h1>SignalR chat</h1>
+
+<p class="text-muted">
+    Messages broadcast to all clients. With Redis backplane (Aspire), multiple API instances share the same hub scale-out.
+</p>
+
+<div class="mb-3">
+    <label class="form-label">Your name</label>
+    <input class="form-control" @bind="userInput" @bind:event="oninput" disabled="@(!IsConnected)" />
+</div>
+<div class="mb-3">
+    <label class="form-label">Message</label>
+    <input class="form-control" @bind="messageInput" @bind:event="oninput" disabled="@(!IsConnected)" />
+</div>
+<button class="btn btn-primary" @onclick="Send" disabled="@(!IsConnected)">Send</button>
+
+<p class="mt-3">
+    <strong>Status:</strong> @status
+</p>
+
+<hr />
+
+<ul class="list-unstyled">
+    @foreach (var line in messages)
+    {
+        <li>@line</li>
+    }
+</ul>
+
+@code {
+    private HubConnection? hubConnection;
+    private readonly List<string> messages = [];
+    private string userInput = "User";
+    private string messageInput = "";
+    private string status = "Connecting…";
+
+    private bool IsConnected => hubConnection?.State == HubConnectionState.Connected;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var baseUrl = (Configuration["ApiBaseUrl"] ?? "https://localhost:5107").TrimEnd('/');
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl($"{baseUrl}/chathub")
+            .WithAutomaticReconnect()
+            .Build();
+
+        hubConnection.On<string, string>("ReceiveMessage", (user, message) =>
+        {
+            var encoded = $"{user}: {message}";
+            messages.Insert(0, encoded);
+            InvokeAsync(StateHasChanged);
+        });
+
+        hubConnection.Reconnecting += _ =>
+        {
+            status = "Reconnecting…";
+            return Task.CompletedTask;
+        };
+
+        hubConnection.Reconnected += _ =>
+        {
+            status = "Connected";
+            return Task.CompletedTask;
+        };
+
+        hubConnection.Closed += _ =>
+        {
+            status = "Disconnected";
+            return Task.CompletedTask;
+        };
+
+        try
+        {
+            await hubConnection.StartAsync();
+            status = "Connected";
+        }
+        catch (Exception ex)
+        {
+            status = $"Could not connect: {ex.Message}";
+        }
+    }
+
+    private async Task Send()
+    {
+        if (hubConnection is null || !IsConnected)
+        {
+            return;
+        }
+
+        try
+        {
+            await hubConnection.SendAsync("SendMessage", userInput, messageInput);
+            messageInput = "";
+        }
+        catch (Exception ex)
+        {
+            messages.Insert(0, $"Error: {ex.Message}");
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.DisposeAsync();
+        }
+    }
+}

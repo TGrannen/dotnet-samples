@@ -33,20 +33,10 @@ $ErrorActionPreference = "Stop"
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $ProjectRoot = Split-Path -Parent $ScriptDir
 
-# Find the playwright.ps1 script - try net10.0 first, then net9.0, then net8.0
-$TargetFrameworks = @("net10.0", "net9.0", "net8.0")
-$PlaywrightScript = $null
+$PlaywrightScript = Join-Path $ProjectRoot "bin\Debug\net10.0\playwright.ps1"
 
-foreach ($framework in $TargetFrameworks) {
-    $PossiblePath = Join-Path $ProjectRoot "bin\Debug\$framework\playwright.ps1"
-    if (Test-Path $PossiblePath) {
-        $PlaywrightScript = $PossiblePath
-        break
-    }
-}
-
-if (-not $PlaywrightScript) {
-    Write-Error "Could not find playwright.ps1 in bin\Debug\net10.0, net9.0, or net8.0. Please build the project first."
+if (-not (Test-Path $PlaywrightScript)) {
+    Write-Error "Could not find playwright.ps1 at bin\Debug\net10.0\playwright.ps1. Please build the project first."
     exit 1
 }
 

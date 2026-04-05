@@ -17,7 +17,7 @@ https://playwright.dev/dotnet/docs/codegen#running-codegen
 
 ```shell
 # From within the PlaywrightTests directory
-pwsh bin/Debug/net6.0/playwright.ps1 codegen URL_TO_LAUNCH
+pwsh bin/Debug/net10.0/playwright.ps1 codegen URL_TO_LAUNCH
 ```
 
 ## Debugging Tests
@@ -62,5 +62,5 @@ You can open the saved trace using Playwright CLI or in your browser on trace.pl
 
 ```shell
 # From within the PlaywrightTests directory
-pwsh bin/Debug/net6.0/playwright.ps1 show-trace bin/Debug/net6.0/trace.zip
+pwsh bin/Debug/net10.0/playwright.ps1 show-trace bin/Debug/net10.0/trace.zip
 ```
