@@ -19,7 +19,7 @@ public class BlogPostWithStateTests : BlogPostTestBase
         var response = await PostAPI.CreatePost(newPost);
 
         using var _ = Assert.Multiple();
-        await Assert.That(response.IsSuccessStatusCode).IsEqualTo(true);
+        await Assert.That(response.IsSuccessStatusCode).IsTrue();
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.Created);
         await Assert.That(response.Content).IsNotNull();
         await Assert.That(response.Content!.Title).IsEqualTo(newPost.Title);
@@ -36,7 +36,7 @@ public class BlogPostWithStateTests : BlogPostTestBase
 
         var postId = GetPostId();
         using var _ = Assert.Multiple();
-        await Assert.That(response.IsSuccessStatusCode).IsEqualTo(true);
+        await Assert.That(response.IsSuccessStatusCode).IsTrue();
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.OK);
         await Assert.That(response.Content).IsNotNull();
         await Assert.That(response.Content).Contains(x => x.Id == postId);
@@ -52,7 +52,7 @@ public class BlogPostWithStateTests : BlogPostTestBase
         var response = await PostAPI.UpdatePost(postId, updatedPostDto);
 
         using var _ = Assert.Multiple();
-        await Assert.That(response.IsSuccessStatusCode).IsEqualTo(true);
+        await Assert.That(response.IsSuccessStatusCode).IsTrue();
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.NoContent);
     }
 
@@ -72,7 +72,7 @@ public class BlogPostWithStateTests : BlogPostTestBase
         var response = await PostAPI.DeletePost(postId);
 
         using var _ = Assert.Multiple();
-        await Assert.That(response.IsSuccessStatusCode).IsEqualTo(true);
+        await Assert.That(response.IsSuccessStatusCode).IsTrue();
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.NoContent);
     }
 
@@ -84,7 +84,7 @@ public class BlogPostWithStateTests : BlogPostTestBase
         var response = await PostAPI.GetPostById(postId);
 
         using var _ = Assert.Multiple();
-        await Assert.That(response.IsSuccessStatusCode).IsEqualTo(false);
+        await Assert.That(response.IsSuccessStatusCode).IsFalse();
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.NotFound);
     }
 

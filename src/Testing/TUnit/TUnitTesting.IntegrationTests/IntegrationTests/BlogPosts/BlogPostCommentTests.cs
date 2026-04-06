@@ -12,7 +12,7 @@ public class BlogPostCommentTests : BlogPostTestBase
         var response = await CommentAPI.CreatePost(newPost);
 
         using var _ = Assert.Multiple();
-        await Assert.That(response.IsSuccessStatusCode).IsEqualTo(true);
+        await Assert.That(response.IsSuccessStatusCode).IsTrue();
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.Created);
         await Assert.That(response.Content).IsNotNull();
     }
@@ -26,7 +26,7 @@ public class BlogPostCommentTests : BlogPostTestBase
         var response = await CommentAPI.CreateComment(postId, newCommentDto);
 
         using var _ = Assert.Multiple();
-        await Assert.That(response.IsSuccessStatusCode).IsEqualTo(true);
+        await Assert.That(response.IsSuccessStatusCode).IsTrue();
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.Created);
         await Assert.That(response.Content).IsNotNull();
         await Assert.That(response.Content!.Text).IsEqualTo(newCommentDto.Text);
@@ -41,7 +41,7 @@ public class BlogPostCommentTests : BlogPostTestBase
 
         var response = await CommentAPI.GetComments(postId);
 
-        await Assert.That(response.IsSuccessStatusCode).IsEqualTo(true);
+        await Assert.That(response.IsSuccessStatusCode).IsTrue();
 
         using var _ = Assert.Multiple();
         await Assert.That(response.Content).IsNotNull();
@@ -57,7 +57,7 @@ public class BlogPostCommentTests : BlogPostTestBase
         var response = await CommentAPI.DeleteComment(postId, commentId);
 
         using var _ = Assert.Multiple();
-        await Assert.That(response.IsSuccessStatusCode).IsEqualTo(true);
+        await Assert.That(response.IsSuccessStatusCode).IsTrue();
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.NoContent);
     }
 

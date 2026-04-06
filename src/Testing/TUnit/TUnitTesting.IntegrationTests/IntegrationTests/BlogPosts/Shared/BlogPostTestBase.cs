@@ -2,9 +2,6 @@ namespace TUnitTesting.IntegrationTests.IntegrationTests.BlogPosts.Shared;
 
 public abstract class BlogPostTestBase : WebApplicationTest<BlogPostWebAppFactory, WebApi.Program>
 {
-    [ClassDataSource<PostgresContainer>(Shared = SharedType.PerTestSession)]
-    private PostgresContainer Postgres { get; init; } = null!;
-
     protected IBlogPostCommentApi CommentAPI { get; private set; } = null!;
 
     protected IBlogPostApi PostAPI { get; private set; } = null!;
@@ -18,6 +15,6 @@ public abstract class BlogPostTestBase : WebApplicationTest<BlogPostWebAppFactor
 
     protected async Task ResetBlogPostsAsync()
     {
-        await Postgres.Respawn();
+        await GlobalFactory.Postgres.Respawn();
     }
 }

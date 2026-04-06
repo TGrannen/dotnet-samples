@@ -1,14 +1,12 @@
 namespace TUnitTesting.IntegrationTests.IntegrationTests.WeatherForecast;
 
-public class IntegrationTests
+[Category("Integration")]
+public class IntegrationTests : WebApplicationTest<WeatherForecastWebAppFactory, WebApi.Program>
 {
-    [ClassDataSource<WeatherForecastWebAppFactory>(Shared = SharedType.PerTestSession)]
-    public required WeatherForecastWebAppFactory WeatherForecastWebAppFactory { get; init; }
-
     [Test]
     public async Task Test1()
     {
-        var client = WeatherForecastWebAppFactory.CreateClient();
+        var client = Factory.CreateClient();
 
         var response = await client.GetAsync("/weatherforecast");
 
