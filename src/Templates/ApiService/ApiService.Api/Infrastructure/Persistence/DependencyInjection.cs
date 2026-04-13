@@ -7,16 +7,23 @@ public static class DependencyInjection
     public static IServiceCollection AddPersistence(this IServiceCollection services, IConfiguration configuration)
     {
         var connectionString = configuration.GetConnectionString("DefaultConnection")
-            ?? throw new InvalidOperationException("Connection string 'DefaultConnection' is not configured.");
+                               ?? throw new InvalidOperationException("Connection string 'DefaultConnection' is not configured.");
 
         services.AddSingleton(TimeProvider.System);
         services.AddSingleton<AuditingSaveChangesInterceptor>();
-        services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =>
+        services.AddDbContextPool<ApplicationDbContext>((sp, options) =>
         {
             options.UseNpgsql(connectionString);
-            options.AddInterceptors(serviceProvider.GetRequiredService<AuditingSaveChangesInterceptor>());
+            options.AddInterceptors(sp.GetRequiredService<AuditingSaveChangesInterceptor>());
         });
 
         return services;
+    }
+
+    public static IHostApplicationBuilder AddPersistenceInstrumentation(this IHostApplicationBuilder builder)
+    {
+        builder.EnrichNpgsqlDbContext<ApplicationDbContext>();
+
+        return builder;
     }
 }

@@ -13,6 +13,7 @@ builder.AddCaching();
 builder.Services.AddOpenApiWithFullNames();
 builder.Services.AddApiVersioningServices();
 builder.Services.AddPersistence(builder.Configuration);
+builder.AddPersistenceInstrumentation();
 builder.Services.AddApplication();
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<FluentValidationExceptionHandler>();

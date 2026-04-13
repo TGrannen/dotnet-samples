@@ -5,7 +5,10 @@ var postgres = builder.AddPostgres("postgres")
     .WithLifetime(ContainerLifetime.Persistent);
 var postgresDb = postgres.AddDatabase("apiservice");
 
-var redis = builder.AddRedis("cache").WithRedisInsight();
+var redis = builder.AddRedis("cache")
+    .WithDataVolume()
+    .WithLifetime(ContainerLifetime.Persistent)
+    .WithRedisInsight(x => x.WithLifetime(ContainerLifetime.Persistent).WithDataVolume());
 
 var migrator = builder.AddProject<Projects.ApiService_Migrator>("apiservice-migrator")
     .WithReference(postgresDb, connectionName: "DefaultConnection")
