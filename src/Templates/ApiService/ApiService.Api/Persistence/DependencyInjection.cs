@@ -1,5 +1,3 @@
-using Microsoft.EntityFrameworkCore;
-
 namespace ApiService.Api.Persistence;
 
 public static class DependencyInjection

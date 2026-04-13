@@ -1,9 +1,3 @@
-using ApiService.Api.Common.Web;
-using ApiService.Api.Persistence;
-using ApiService.Api.Persistence.Entities;
-using Microsoft.EntityFrameworkCore;
-using OneOf;
-
 namespace ApiService.Api.Features.Customers;
 
 public sealed class CreateCustomer : IEndpoint

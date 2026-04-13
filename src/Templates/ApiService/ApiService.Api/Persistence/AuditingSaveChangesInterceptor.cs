@@ -1,5 +1,3 @@
-using ApiService.Api.Persistence.Entities;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace ApiService.Api.Persistence;

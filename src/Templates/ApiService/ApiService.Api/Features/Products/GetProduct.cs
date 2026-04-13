@@ -1,7 +1,4 @@
-using ApiService.Api.Common.Web;
 using ApiService.Api.Features.Products.Extensions;
-using ApiService.Api.Persistence;
-using Microsoft.EntityFrameworkCore;
 
 namespace ApiService.Api.Features.Products;
 

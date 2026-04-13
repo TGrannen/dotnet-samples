@@ -1,5 +1,3 @@
-using ApiService.Api.Persistence.Entities;
-
 namespace ApiService.Api.Features.Products.Extensions;
 
 public static class ProductQueryableExtensions

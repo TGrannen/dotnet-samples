@@ -1,8 +1,3 @@
-using ApiService.Api.Common.Web;
-using ApiService.Api.Persistence;
-using Microsoft.EntityFrameworkCore;
-using OneOf;
-
 namespace ApiService.Api.Features.Products;
 
 public sealed class DeleteProduct : IEndpoint

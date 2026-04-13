@@ -1,7 +1,6 @@
 using ApiService.Api.Common;
 using ApiService.Api.Common.Web.ErrorHandling;
 using ApiService.Api.Common.Web.Versioning;
-using ApiService.Api.Persistence;
 using ApiService.ServiceDefaults;
 using Scalar.AspNetCore;
 

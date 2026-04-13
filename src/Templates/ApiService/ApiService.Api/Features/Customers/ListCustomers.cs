@@ -1,7 +1,3 @@
-using ApiService.Api.Common.Web;
-using ApiService.Api.Persistence;
-using Microsoft.EntityFrameworkCore;
-
 namespace ApiService.Api.Features.Customers;
 
 public sealed class ListCustomers : IEndpoint

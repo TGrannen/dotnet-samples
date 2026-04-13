@@ -1,7 +1,3 @@
-using ApiService.Api.Common.Web;
-using ApiService.Api.Persistence;
-using ApiService.Api.Persistence.Entities;
-
 namespace ApiService.Api.Features.Products;
 
 public sealed class CreateProduct : IEndpoint

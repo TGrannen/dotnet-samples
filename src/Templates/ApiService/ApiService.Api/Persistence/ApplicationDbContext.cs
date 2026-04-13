@@ -1,6 +1,4 @@
 using System.Reflection;
-using ApiService.Api.Persistence.Entities;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace ApiService.Api.Persistence;

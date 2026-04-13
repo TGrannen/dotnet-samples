@@ -1,4 +1,4 @@
-namespace ApiService.Api.Infrastructure.Caching;
+namespace ApiService.Api.Common.Caching;
 
 internal static class CacheKeys
 {
