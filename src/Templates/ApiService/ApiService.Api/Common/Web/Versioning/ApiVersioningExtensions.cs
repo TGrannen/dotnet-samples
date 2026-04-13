@@ -13,9 +13,7 @@ public static class ApiVersioningExtensions
                 options.DefaultApiVersion = SupportedApiVersions.V1;
                 options.AssumeDefaultVersionWhenUnspecified = true;
                 options.ReportApiVersions = true;
-                options.ApiVersionReader = ApiVersionReader.Combine(
-                    new QueryStringApiVersionReader(SupportedApiVersions.QueryParameterName),
-                    new HeaderApiVersionReader(SupportedApiVersions.HeaderName));
+                options.ApiVersionReader = new HeaderApiVersionReader(SupportedApiVersions.HeaderName);
             })
             .AddApiExplorer(options =>
             {
