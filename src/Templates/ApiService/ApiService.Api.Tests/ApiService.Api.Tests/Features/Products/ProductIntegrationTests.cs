@@ -15,7 +15,6 @@ public class ProductIntegrationTests : IntegrationTestsBase
                 Id = productId,
                 Name = "Test Product",
                 Price = 99.99m,
-                IsDeleted = false,
                 StockCount = 1,
             });
             return Task.CompletedTask;
@@ -64,7 +63,6 @@ public class ProductIntegrationTests : IntegrationTestsBase
                     Id = Guid.NewGuid(),
                     Name = "List A",
                     Price = 10m,
-                    IsDeleted = false,
                     StockCount = 1,
                 },
                 new Product
@@ -72,7 +70,6 @@ public class ProductIntegrationTests : IntegrationTestsBase
                     Id = Guid.NewGuid(),
                     Name = "List B",
                     Price = 20m,
-                    IsDeleted = false,
                     StockCount = 1,
                 });
             return Task.CompletedTask;

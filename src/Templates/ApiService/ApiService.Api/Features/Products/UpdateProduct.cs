@@ -34,9 +34,7 @@ public sealed class UpdateProduct : IEndpoint
     {
         public async Task<OneOf<ProductUpdated, ProductNotFound>> Handle(Command request, CancellationToken cancellationToken)
         {
-            var product = await db.Products.FirstOrDefaultAsync(
-                p => p.Id == request.Id && !p.IsDeleted,
-                cancellationToken);
+            var product = await db.Products.FirstOrDefaultAsync(p => p.Id == request.Id, cancellationToken);
 
             if (product is null)
             {

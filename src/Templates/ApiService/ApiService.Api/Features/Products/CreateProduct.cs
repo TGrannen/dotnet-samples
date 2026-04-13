@@ -28,7 +28,6 @@ public sealed class CreateProduct : IEndpoint
                 Id = Guid.NewGuid(),
                 Name = request.Name,
                 Price = request.Price,
-                IsDeleted = false,
                 StockCount = 1,
             };
             db.Products.Add(product);

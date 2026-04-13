@@ -32,7 +32,9 @@ public sealed class DeleteProduct : IEndpoint
     {
         public async Task<OneOf<ProductMissing, ProductDeleted>> Handle(Command request, CancellationToken cancellationToken)
         {
-            var product = await db.Products.FirstOrDefaultAsync(p => p.Id == request.Id, cancellationToken);
+            var product = await db.Products
+                .IgnoreQueryFilters()
+                .FirstOrDefaultAsync(p => p.Id == request.Id, cancellationToken);
             if (product is null)
             {
                 return new ProductMissing();
@@ -43,7 +45,7 @@ public sealed class DeleteProduct : IEndpoint
                 return new ProductDeleted();
             }
 
-            product.IsDeleted = true;
+            db.Products.Remove(product);
             await db.SaveChangesAsync(cancellationToken);
             return new ProductDeleted();
         }
