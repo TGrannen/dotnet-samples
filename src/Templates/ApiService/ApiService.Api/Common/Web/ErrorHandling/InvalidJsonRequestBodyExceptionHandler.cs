@@ -20,16 +20,11 @@ public sealed class InvalidJsonRequestBodyExceptionHandler(IProblemDetailsServic
         var fieldKey = JsonPathToFieldKey(jsonException.Path);
         var message = GetLeafErrorMessage(jsonException);
 
-        var errors = new Dictionary<string, string[]>(StringComparer.Ordinal)
-        {
-            [fieldKey] = [message],
-        };
+        var errors = new Dictionary<string, string[]>(StringComparer.Ordinal) { [fieldKey] = [message], };
 
         var problem = new HttpValidationProblemDetails(errors)
         {
-            Status = StatusCodes.Status400BadRequest,
-            Title = "Invalid JSON request body",
-            Detail = BuildDetail(jsonException, message),
+            Status = StatusCodes.Status400BadRequest, Title = "Invalid JSON request body", Detail = BuildDetail(jsonException, message),
         };
 
         if (!string.IsNullOrEmpty(jsonException.Path))
@@ -47,13 +42,11 @@ public sealed class InvalidJsonRequestBodyExceptionHandler(IProblemDetailsServic
             problem.Extensions["bytePositionInLine"] = col;
         }
 
-        await problemDetailsService.WriteAsync(
-            new ProblemDetailsContext
-            {
-                HttpContext = httpContext,
-                ProblemDetails = problem,
-                Exception = exception,
-            });
+        httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
+        await problemDetailsService.WriteAsync(new ProblemDetailsContext
+        {
+            HttpContext = httpContext, ProblemDetails = problem, Exception = exception,
+        });
 
         return true;
     }

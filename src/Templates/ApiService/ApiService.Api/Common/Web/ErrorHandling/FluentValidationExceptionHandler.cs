@@ -15,18 +15,13 @@ public sealed class FluentValidationExceptionHandler(IProblemDetailsService prob
             .GroupBy(e => e.PropertyName)
             .ToDictionary(g => g.Key, g => g.Select(e => e.ErrorMessage).ToArray());
 
-        var problemDetails = new HttpValidationProblemDetails(errors)
-        {
-            Status = StatusCodes.Status400BadRequest,
-        };
+        var problemDetails = new HttpValidationProblemDetails(errors) { Status = StatusCodes.Status400BadRequest, };
 
-        await problemDetailsService.WriteAsync(
-            new ProblemDetailsContext
-            {
-                HttpContext = httpContext,
-                ProblemDetails = problemDetails,
-                Exception = exception,
-            });
+        httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
+        await problemDetailsService.WriteAsync(new ProblemDetailsContext
+        {
+            HttpContext = httpContext, ProblemDetails = problemDetails, Exception = exception,
+        });
 
         return true;
     }

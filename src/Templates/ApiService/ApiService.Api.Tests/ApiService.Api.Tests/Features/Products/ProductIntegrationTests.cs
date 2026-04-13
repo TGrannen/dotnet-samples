@@ -2,17 +2,13 @@ using ApiService.Api.Domain.Entities;
 
 namespace ApiService.Api.Tests.Features.Products;
 
-[Repeat(100)]
-public class ProductIntegrationTests
+public class ProductIntegrationTests : IntegrationTestsBase
 {
-    [ClassDataSource<WebApplicationFactory>(Shared = SharedType.PerTestSession)]
-    public required WebApplicationFactory Factory { get; init; }
-
     [Test]
     public async Task GetProduct_WhenSeeded_ReturnsProduct()
     {
         var productId = Guid.NewGuid();
-        await Factory.SeedAsync(db =>
+        await SeedAsync(db =>
         {
             db.Products.Add(new Product
             {
@@ -60,7 +56,7 @@ public class ProductIntegrationTests
     [Test]
     public async Task ListProducts_WhenSeeded_ReturnsAvailableProducts()
     {
-        await Factory.SeedAsync(db =>
+        await SeedAsync(db =>
         {
             db.Products.AddRange(
                 new Product

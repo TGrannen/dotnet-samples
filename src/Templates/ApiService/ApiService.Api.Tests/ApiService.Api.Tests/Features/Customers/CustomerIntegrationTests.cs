@@ -2,12 +2,8 @@ using ApiService.Api.Domain.Entities;
 
 namespace ApiService.Api.Tests.Features.Customers;
 
-[Repeat(100)]
-public class CustomerIntegrationTests
+public class CustomerIntegrationTests : IntegrationTestsBase
 {
-    [ClassDataSource<WebApplicationFactory>(Shared = SharedType.PerTestSession)]
-    public required WebApplicationFactory Factory { get; init; }
-
     [Test]
     public async Task CreateCustomer_ThenGet_ReturnsCustomer()
     {
@@ -31,7 +27,7 @@ public class CustomerIntegrationTests
         var zetaId = Guid.Empty;
 
         var sortKey = Guid.NewGuid().ToString("N");
-        await Factory.SeedAsync(db =>
+        await SeedAsync(db =>
         {
             alphaId = Guid.NewGuid();
             zetaId = Guid.NewGuid();
