@@ -10,12 +10,12 @@ public class ValidationBehavior<TRequest, TResponse>(IEnumerable<IValidator<TReq
             return await next(cancellationToken);
         }
 
-        var context = new ValidationContext<TRequest>(request);
+        var context = new FluentValidation.ValidationContext<TRequest>(request);
         var validationResults = await Task.WhenAll(validators.Select(v => v.ValidateAsync(context, cancellationToken)));
         var failures = validationResults.SelectMany(r => r.Errors).Where(f => f is not null).ToList();
         if (failures.Count != 0)
         {
-            throw new ValidationException(failures);
+            throw new FluentValidation.ValidationException(failures);
         }
 
         return await next(cancellationToken);

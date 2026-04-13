@@ -6,7 +6,7 @@ public sealed class FluentValidationExceptionHandler(IProblemDetailsService prob
 {
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
     {
-        if (exception is not ValidationException vx)
+        if (exception is not FluentValidation.ValidationException vx)
         {
             return false;
         }
