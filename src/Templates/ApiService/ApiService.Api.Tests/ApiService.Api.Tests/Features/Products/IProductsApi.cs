@@ -1,6 +1,4 @@
-using ApiService.Api.Common.Web;
 using ApiService.Api.Common.Web.Versioning;
-using Refit;
 
 namespace ApiService.Api.Tests.Features.Products;
 

@@ -1,5 +1,4 @@
 using ApiService.Api.Common;
-using ApiService.Api.Common.Web;
 using ApiService.Api.Common.Web.ErrorHandling;
 using ApiService.Api.Common.Web.Versioning;
 using ApiService.Api.Infrastructure.Persistence;

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Diagnostics;
 
 namespace ApiService.Api.Common.Web.ErrorHandling;
 
-public sealed class InvalidJsonRequestBodyExceptionHandler : IExceptionHandler
+public sealed class InvalidJsonRequestBodyExceptionHandler(IProblemDetailsService problemDetailsService) : IExceptionHandler
 {
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
     {
@@ -17,8 +17,6 @@ public sealed class InvalidJsonRequestBodyExceptionHandler : IExceptionHandler
             return false;
         }
 
-        httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
-
         var fieldKey = JsonPathToFieldKey(jsonException.Path);
         var message = GetLeafErrorMessage(jsonException);
 
@@ -29,6 +27,7 @@ public sealed class InvalidJsonRequestBodyExceptionHandler : IExceptionHandler
 
         var problem = new HttpValidationProblemDetails(errors)
         {
+            Status = StatusCodes.Status400BadRequest,
             Title = "Invalid JSON request body",
             Detail = BuildDetail(jsonException, message),
         };
@@ -48,7 +47,13 @@ public sealed class InvalidJsonRequestBodyExceptionHandler : IExceptionHandler
             problem.Extensions["bytePositionInLine"] = col;
         }
 
-        await httpContext.Response.WriteAsJsonAsync(problem, cancellationToken: cancellationToken);
+        await problemDetailsService.WriteAsync(
+            new ProblemDetailsContext
+            {
+                HttpContext = httpContext,
+                ProblemDetails = problem,
+                Exception = exception,
+            });
 
         return true;
     }
