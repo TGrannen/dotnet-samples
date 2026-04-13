@@ -1,13 +1,15 @@
 using Microsoft.AspNetCore.Diagnostics;
 
-namespace ApiService.Api.Common.Web;
+namespace ApiService.Api.Common.Web.ErrorHandling;
 
 public sealed class FluentValidationExceptionHandler : IExceptionHandler
 {
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
     {
         if (exception is not ValidationException vx)
+        {
             return false;
+        }
 
         httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
         var errors = vx.Errors

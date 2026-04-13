@@ -1,8 +1,7 @@
 using System.Reflection;
 using Asp.Versioning;
-using Asp.Versioning.Builder;
 
-namespace ApiService.Api.Common.Web;
+namespace ApiService.Api.Common.Web.Versioning;
 
 public static class ApiVersioningExtensions
 {
@@ -43,7 +42,9 @@ public static class ApiVersioningExtensions
         foreach (var type in endpointTypes)
         {
             if (type.GetConstructor(Type.EmptyTypes) is null)
+            {
                 continue;
+            }
 
             var endpoint = (IEndpoint)Activator.CreateInstance(type)!;
             endpoint.MapEndpoint(api);

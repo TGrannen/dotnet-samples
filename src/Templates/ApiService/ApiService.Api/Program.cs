@@ -1,6 +1,9 @@
 using ApiService.Api.Common;
 using ApiService.Api.Common.Web;
+using ApiService.Api.Common.Web.ErrorHandling;
+using ApiService.Api.Common.Web.Versioning;
 using ApiService.Api.Infrastructure.Persistence;
+using ApiService.ServiceDefaults;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +16,7 @@ builder.Services.AddPersistence(builder.Configuration);
 builder.Services.AddApplication();
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<FluentValidationExceptionHandler>();
+builder.Services.AddExceptionHandler<InvalidJsonRequestBodyExceptionHandler>();
 
 var app = builder.Build();
 

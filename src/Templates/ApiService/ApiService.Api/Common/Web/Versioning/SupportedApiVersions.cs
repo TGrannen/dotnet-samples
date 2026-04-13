@@ -1,6 +1,6 @@
 using Asp.Versioning;
 
-namespace ApiService.Api.Common.Web;
+namespace ApiService.Api.Common.Web.Versioning;
 
 public static class SupportedApiVersions
 {
