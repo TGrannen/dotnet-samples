@@ -30,7 +30,7 @@ public sealed class UpdateProduct : IEndpoint
 
     public sealed record Command(Guid Id, string Name, decimal Price) : IRequest<OneOf<ProductUpdated, ProductNotFound>>;
 
-    public sealed class Handler(ApplicationDbContext db) : IRequestHandler<Command, OneOf<ProductUpdated, ProductNotFound>>
+    public sealed class Handler(ApplicationDbContext db, IFusionCache cache) : IRequestHandler<Command, OneOf<ProductUpdated, ProductNotFound>>
     {
         public async Task<OneOf<ProductUpdated, ProductNotFound>> Handle(Command request, CancellationToken cancellationToken)
         {
@@ -44,6 +44,7 @@ public sealed class UpdateProduct : IEndpoint
             product.Name = request.Name;
             product.Price = request.Price;
             await db.SaveChangesAsync(cancellationToken);
+            await cache.RemoveAsync(CacheKeys.ForProductId(request.Id), null, cancellationToken);
             return new ProductUpdated();
         }
     }

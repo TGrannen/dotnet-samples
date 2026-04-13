@@ -28,7 +28,7 @@ public sealed class DeleteProduct : IEndpoint
 
     public sealed record Command(Guid Id) : IRequest<OneOf<ProductMissing, ProductDeleted>>;
 
-    public sealed class Handler(ApplicationDbContext db) : IRequestHandler<Command, OneOf<ProductMissing, ProductDeleted>>
+    public sealed class Handler(ApplicationDbContext db, IFusionCache cache) : IRequestHandler<Command, OneOf<ProductMissing, ProductDeleted>>
     {
         public async Task<OneOf<ProductMissing, ProductDeleted>> Handle(Command request, CancellationToken cancellationToken)
         {
@@ -47,6 +47,7 @@ public sealed class DeleteProduct : IEndpoint
 
             db.Products.Remove(product);
             await db.SaveChangesAsync(cancellationToken);
+            await cache.RemoveAsync(CacheKeys.ForProductId(request.Id), null, cancellationToken);
             return new ProductDeleted();
         }
     }

@@ -9,7 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 
-builder.Services.AddOpenApi();
+builder.AddCaching();
+builder.Services.AddOpenApiWithFullNames();
 builder.Services.AddApiVersioningServices();
 builder.Services.AddPersistence(builder.Configuration);
 builder.Services.AddApplication();

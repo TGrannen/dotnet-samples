@@ -22,16 +22,23 @@ public sealed class GetProduct : IEndpoint
 
     public sealed record Query(Guid Id) : IRequest<ProductDto?>;
 
-    public sealed class Handler(ApplicationDbContext db) : IRequestHandler<Query, ProductDto?>
+    public sealed class Handler(ApplicationDbContext db, IFusionCache cache) : IRequestHandler<Query, ProductDto?>
     {
         public async Task<ProductDto?> Handle(Query request, CancellationToken cancellationToken)
         {
-            var product = await db.Products
-                .AvailableForSale()
-                .AsNoTracking()
-                .FirstOrDefaultAsync(p => p.Id == request.Id, cancellationToken);
+            return await cache.GetOrSetAsync<ProductDto?>(
+                CacheKeys.ForProductId(request.Id),
+                async ct =>
+                {
+                    var product = await db.Products
+                        .AvailableForSale()
+                        .AsNoTracking()
+                        .FirstOrDefaultAsync(p => p.Id == request.Id, ct);
 
-            return product is null ? null : new ProductDto(product.Id, product.Name, product.Price);
+                    return product is null ? null : new ProductDto(product.Id, product.Name, product.Price);
+                },
+                options: null,
+                cancellationToken);
         }
     }
 }

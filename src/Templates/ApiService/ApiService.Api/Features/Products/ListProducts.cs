@@ -18,18 +18,20 @@ public sealed class ListProducts : IEndpoint
             .WithTags("Products");
     }
 
-    public sealed record Query : IRequest<IReadOnlyList<GetProduct.ProductDto>>;
+    public sealed record ProductDto(Guid Id, string Name, decimal Price);
 
-    public sealed class Handler(ApplicationDbContext db) : IRequestHandler<Query, IReadOnlyList<GetProduct.ProductDto>>
+    public sealed record Query : IRequest<IReadOnlyList<ProductDto>>;
+
+    public sealed class Handler(ApplicationDbContext db) : IRequestHandler<Query, IReadOnlyList<ProductDto>>
     {
-        public async Task<IReadOnlyList<GetProduct.ProductDto>> Handle(Query request, CancellationToken cancellationToken)
+        public async Task<IReadOnlyList<ProductDto>> Handle(Query request, CancellationToken cancellationToken)
         {
             var items = await db.Products
                 .AvailableForSale()
                 .AsNoTracking()
                 .OrderBy(p => p.Name)
                 .ThenBy(p => p.Id)
-                .Select(p => new GetProduct.ProductDto(p.Id, p.Name, p.Price))
+                .Select(p => new ProductDto(p.Id, p.Name, p.Price))
                 .ToListAsync(cancellationToken);
 
             return items;
