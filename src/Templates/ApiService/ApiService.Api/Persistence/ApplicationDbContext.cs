@@ -1,9 +1,9 @@
 using System.Reflection;
-using ApiService.Api.Domain.Entities;
+using ApiService.Api.Persistence.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace ApiService.Api.Infrastructure.Persistence;
+namespace ApiService.Api.Persistence;
 
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options)
 {

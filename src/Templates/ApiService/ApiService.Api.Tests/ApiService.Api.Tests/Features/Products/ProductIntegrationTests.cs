@@ -1,4 +1,4 @@
-using ApiService.Api.Domain.Entities;
+using ApiService.Api.Persistence.Entities;
 
 namespace ApiService.Api.Tests.Features.Products;
 

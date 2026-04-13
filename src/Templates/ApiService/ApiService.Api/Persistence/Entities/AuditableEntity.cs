@@ -1,4 +1,4 @@
-namespace ApiService.Api.Domain.Entities;
+namespace ApiService.Api.Persistence.Entities;
 
 public abstract class AuditableEntity
 {

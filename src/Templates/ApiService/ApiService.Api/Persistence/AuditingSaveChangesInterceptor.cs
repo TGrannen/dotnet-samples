@@ -1,8 +1,8 @@
-using ApiService.Api.Domain.Entities;
+using ApiService.Api.Persistence.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
-namespace ApiService.Api.Infrastructure.Persistence;
+namespace ApiService.Api.Persistence;
 
 public sealed class AuditingSaveChangesInterceptor(TimeProvider timeProvider) : SaveChangesInterceptor
 {

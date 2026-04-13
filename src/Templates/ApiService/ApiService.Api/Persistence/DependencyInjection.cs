@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace ApiService.Api.Infrastructure.Persistence;
+namespace ApiService.Api.Persistence;
 
 public static class DependencyInjection
 {
@@ -11,10 +11,10 @@ public static class DependencyInjection
 
         services.AddSingleton(TimeProvider.System);
         services.AddSingleton<AuditingSaveChangesInterceptor>();
-        services.AddDbContextPool<ApplicationDbContext>((sp, options) =>
+        services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =>
         {
             options.UseNpgsql(connectionString);
-            options.AddInterceptors(sp.GetRequiredService<AuditingSaveChangesInterceptor>());
+            options.AddInterceptors(serviceProvider.GetRequiredService<AuditingSaveChangesInterceptor>());
         });
 
         return services;

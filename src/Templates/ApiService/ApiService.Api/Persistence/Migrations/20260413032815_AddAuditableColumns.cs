@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace ApiService.Api.Infrastructure.Persistence.Migrations
+namespace ApiService.Api.Persistence.Migrations
 {
     /// <inheritdoc />
     public partial class AddAuditableColumns : Migration

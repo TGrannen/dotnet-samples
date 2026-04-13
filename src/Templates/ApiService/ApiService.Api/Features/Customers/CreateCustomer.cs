@@ -1,6 +1,6 @@
 using ApiService.Api.Common.Web;
-using ApiService.Api.Domain.Entities;
-using ApiService.Api.Infrastructure.Persistence;
+using ApiService.Api.Persistence;
+using ApiService.Api.Persistence.Entities;
 using Microsoft.EntityFrameworkCore;
 using OneOf;
 

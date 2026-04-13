@@ -1,4 +1,4 @@
-using ApiService.Api.Infrastructure.Persistence;
+using ApiService.Api.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
