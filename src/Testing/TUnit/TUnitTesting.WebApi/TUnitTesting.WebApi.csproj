@@ -9,6 +9,7 @@
     <InternalsVisibleTo Include="TUnitTesting.UnitTests" />
     <InternalsVisibleTo Include="TUnitTesting.IntegrationTests" />
     <InternalsVisibleTo Include="TUnitTesting.PlaywrightTests" />
+    <InternalsVisibleTo Include="TUnitTesting.WireMockTests" />
   </ItemGroup>
 
   <ItemGroup>
@@ -19,7 +20,9 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.5" />
+    <PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="10.4.0" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.1" />
+    <PackageReference Include="Refit.HttpClientFactory" Version="10.1.6" />
     <PackageReference Include="Scalar.AspNetCore" Version="2.13.20" />
     <PackageReference Include="Serilog.AspNetCore" Version="10.0.0"/>
   </ItemGroup>
