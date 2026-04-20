@@ -92,7 +92,7 @@ This repository's purpose is to showcase common design patterns, best practices,
 
 ### Pdf Generation
 
-* [QuestPDF — Console](src/PdfGeneration/QuestPdf.Console/)
+* [QuestPDF](src/PdfGeneration/)
 
 ### Observability
 
