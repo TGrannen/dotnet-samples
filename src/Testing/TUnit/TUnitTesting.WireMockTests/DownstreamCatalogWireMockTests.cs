@@ -1,4 +1,3 @@
-using System.Net.Http.Json;
 using TUnitTesting.WebApi.Clients;
 
 namespace TUnitTesting.WireMockTests;
@@ -13,8 +12,7 @@ public class DownstreamCatalogWireMockTests : WireMockTestBase
             .InScenario(IsolationSegment)
             .RespondWithJson(new CatalogItemResponse { Id = 1, Name = "alpha" });
 
-        var client = Factory.CreateClient();
-        var response = await client.GetFromJsonAsync<CatalogItemResponse>("/api/catalog/items/1");
+        var response = await CatalogApi.GetItemAsync(1);
 
         await Assert.That(response).IsNotNull();
         await Assert.That(response!.Id).IsEqualTo(1);
@@ -35,8 +33,7 @@ public class DownstreamCatalogWireMockTests : WireMockTestBase
             .WhenStateIs("failedOnce")
             .RespondWithJson(new CatalogItemResponse { Id = 42, Name = "after retry" });
 
-        var client = Factory.CreateClient();
-        var requestTask = client.GetFromJsonAsync<CatalogItemResponse>("/api/catalog/items/42");
+        var requestTask = CatalogApi.GetItemAsync(42);
 
         while (!requestTask.IsCompleted)
         {

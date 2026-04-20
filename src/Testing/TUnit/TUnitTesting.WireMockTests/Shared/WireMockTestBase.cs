@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Time.Testing;
+using Refit;
 using WireMock.RequestBuilders;
 using WireMock.Server;
 
@@ -9,7 +10,15 @@ public class WireMockTestBase : WebApplicationTest<WireMockWebAppFactory, WebApi
     [ClassDataSource<WireMockFixture>(Shared = SharedType.PerTestSession)]
     public WireMockFixture WireMock { get; init; } = null!;
 
+    protected ICatalogApi CatalogApi { get; private set; } = null!;
+
     protected readonly FakeTimeProvider FakeTimeProvider = new();
+
+    [Before(Test)]
+    public void CreateRefitClients()
+    {
+        CatalogApi = RestService.For<ICatalogApi>(Factory.CreateClient());
+    }
 
     protected WireMockServer WireMockServer => WireMock.Server;
 
