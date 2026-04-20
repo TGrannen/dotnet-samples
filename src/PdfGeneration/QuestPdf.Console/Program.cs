@@ -7,11 +7,17 @@ using QuestPDF.Infrastructure;
 QuestPDF.Settings.License = LicenseType.Community;
 
 var model = InvoiceDocumentDataSource.GetInvoiceDetails();
-var document = new InvoiceDocument(model);
+var invoice = new InvoiceDocument(model);
+var showcase = new GraphicsShowcaseDocument();
 
-var outputPath = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "invoice.pdf"));
-document.GeneratePdf(outputPath);
+var invoicePath = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "invoice.pdf"));
+var showcasePath = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "graphics-showcase.pdf"));
 
-document.ShowInCompanion();
+invoice.GeneratePdf(invoicePath);
+showcase.GeneratePdf(showcasePath);
 
-Console.WriteLine($"Wrote {outputPath}");
+// invoice.ShowInCompanion();
+showcase.ShowInCompanion();
+
+Console.WriteLine($"Wrote {invoicePath}");
+Console.WriteLine($"Wrote {showcasePath}");

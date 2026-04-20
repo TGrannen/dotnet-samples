@@ -6,6 +6,8 @@
 
   <ItemGroup>
     <PackageReference Include="QuestPDF" Version="2026.2.4" />
+    <PackageReference Include="ScottPlot" Version="5.1.58" />
+    <PackageReference Include="ZXing.Net" Version="0.16.11" />
   </ItemGroup>
 
 </Project>
