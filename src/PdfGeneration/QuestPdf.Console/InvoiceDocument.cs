@@ -56,7 +56,7 @@ public class InvoiceDocument(InvoiceModel model) : IDocument
                 });
             });
 
-            row.ConstantItem(100).Height(50).Placeholder();
+            row.ConstantItem(100).Height(50).Background(Colors.Grey.Lighten2);
         });
     }
 
