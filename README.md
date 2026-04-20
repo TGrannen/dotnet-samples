@@ -90,6 +90,10 @@ This repository's purpose is to showcase common design patterns, best practices,
 
 * [Outbox Pattern](src/Outbox/)
 
+### Pdf Generation
+
+* [QuestPDF — Console](src/PdfGeneration/QuestPdf.Console/)
+
 ### Observability
 
 * [Observability - OpenTelemetry](src/Observability/)
