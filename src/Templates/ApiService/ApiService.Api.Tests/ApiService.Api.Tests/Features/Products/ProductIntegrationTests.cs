@@ -12,10 +12,7 @@ public class ProductIntegrationTests : IntegrationTestsBase
         {
             db.Products.Add(new Product
             {
-                Id = productId,
-                Name = "Test Product",
-                Price = 99.99m,
-                StockCount = 1,
+                Id = productId, Name = "Test Product", Price = 99.99m, StockCount = 1,
             });
             return Task.CompletedTask;
         });
@@ -60,17 +57,11 @@ public class ProductIntegrationTests : IntegrationTestsBase
             db.Products.AddRange(
                 new Product
                 {
-                    Id = Guid.NewGuid(),
-                    Name = "List A",
-                    Price = 10m,
-                    StockCount = 1,
+                    Id = Guid.NewGuid(), Name = "List A", Price = 10m, StockCount = 1,
                 },
                 new Product
                 {
-                    Id = Guid.NewGuid(),
-                    Name = "List B",
-                    Price = 20m,
-                    StockCount = 1,
+                    Id = Guid.NewGuid(), Name = "List B", Price = 20m, StockCount = 1,
                 });
             return Task.CompletedTask;
         });
@@ -87,6 +78,7 @@ public class ProductIntegrationTests : IntegrationTestsBase
     {
         var api = RestService.For<IProductsApi>(Factory.CreateClient());
         var id = await api.CreateAsync<Guid>(new CreateProductRequest("Before", 50m));
+        SaveChangesTrackerReset();
 
         await api.UpdateAsync(id, new UpdateProductRequest("After", 75m));
         var product = await api.GetAsync<ProductResponse>(id);
@@ -114,6 +106,7 @@ public class ProductIntegrationTests : IntegrationTestsBase
     {
         var api = RestService.For<IProductsApi>(Factory.CreateClient());
         var id = await api.CreateAsync<Guid>(new CreateProductRequest("To Remove", 10m));
+        SaveChangesTrackerReset();
 
         await api.DeleteAsync(id);
 

@@ -8,4 +8,5 @@ global using FluentValidation;
 global using MediatR;
 global using Microsoft.EntityFrameworkCore;
 global using OneOf;
+global using OneOf.Types;
 global using ZiggyCreatures.Caching.Fusion;

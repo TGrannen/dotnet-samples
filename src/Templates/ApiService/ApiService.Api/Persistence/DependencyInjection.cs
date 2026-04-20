@@ -7,12 +7,21 @@ public static class DependencyInjection
         var connectionString = configuration.GetConnectionString("DefaultConnection")
                                ?? throw new InvalidOperationException("Connection string 'DefaultConnection' is not configured.");
 
+        services.AddPersistence(connectionString);
+        return services;
+    }
+
+    public static IServiceCollection AddPersistence(this IServiceCollection services,
+        string connectionString,
+        Action<IServiceProvider, DbContextOptionsBuilder>? optionsAction = null)
+    {
         services.AddSingleton(TimeProvider.System);
         services.AddSingleton<AuditingSaveChangesInterceptor>();
         services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =>
         {
             options.UseNpgsql(connectionString);
             options.AddInterceptors(serviceProvider.GetRequiredService<AuditingSaveChangesInterceptor>());
+            optionsAction?.Invoke(serviceProvider, options);
         });
 
         return services;

@@ -17,33 +17,29 @@ public sealed class DeleteProduct : IEndpoint
             .WithTags("Products");
     }
 
-    public readonly record struct ProductMissing;
+    public sealed record Command(Guid Id) : IRequest<OneOf<NotFound, Success>>;
 
-    public readonly record struct ProductDeleted;
-
-    public sealed record Command(Guid Id) : IRequest<OneOf<ProductMissing, ProductDeleted>>;
-
-    public sealed class Handler(ApplicationDbContext db, IFusionCache cache) : IRequestHandler<Command, OneOf<ProductMissing, ProductDeleted>>
+    public sealed class Handler(ApplicationDbContext db, IFusionCache cache) : IRequestHandler<Command, OneOf<NotFound, Success>>
     {
-        public async Task<OneOf<ProductMissing, ProductDeleted>> Handle(Command request, CancellationToken cancellationToken)
+        public async Task<OneOf<NotFound, Success>> Handle(Command request, CancellationToken cancellationToken)
         {
             var product = await db.Products
                 .IgnoreQueryFilters()
                 .FirstOrDefaultAsync(p => p.Id == request.Id, cancellationToken);
             if (product is null)
             {
-                return new ProductMissing();
+                return new NotFound();
             }
 
             if (product.IsDeleted)
             {
-                return new ProductDeleted();
+                return new Success();
             }
 
             db.Products.Remove(product);
             await db.SaveChangesAsync(cancellationToken);
             await cache.RemoveAsync(CacheKeys.ForProductId(request.Id), null, cancellationToken);
-            return new ProductDeleted();
+            return new Success();
         }
     }
 }

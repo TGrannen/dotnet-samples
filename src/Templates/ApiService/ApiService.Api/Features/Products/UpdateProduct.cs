@@ -19,28 +19,24 @@ public sealed class UpdateProduct : IEndpoint
 
     public sealed record UpdateProductBody(string Name, decimal Price);
 
-    public readonly record struct ProductUpdated;
+    public sealed record Command(Guid Id, string Name, decimal Price) : IRequest<OneOf<Success, NotFound>>;
 
-    public readonly record struct ProductNotFound;
-
-    public sealed record Command(Guid Id, string Name, decimal Price) : IRequest<OneOf<ProductUpdated, ProductNotFound>>;
-
-    public sealed class Handler(ApplicationDbContext db, IFusionCache cache) : IRequestHandler<Command, OneOf<ProductUpdated, ProductNotFound>>
+    public sealed class Handler(ApplicationDbContext db, IFusionCache cache) : IRequestHandler<Command, OneOf<Success, NotFound>>
     {
-        public async Task<OneOf<ProductUpdated, ProductNotFound>> Handle(Command request, CancellationToken cancellationToken)
+        public async Task<OneOf<Success, NotFound>> Handle(Command request, CancellationToken cancellationToken)
         {
             var product = await db.Products.FirstOrDefaultAsync(p => p.Id == request.Id, cancellationToken);
 
             if (product is null)
             {
-                return new ProductNotFound();
+                return new NotFound();
             }
 
             product.Name = request.Name;
             product.Price = request.Price;
             await db.SaveChangesAsync(cancellationToken);
             await cache.RemoveAsync(CacheKeys.ForProductId(request.Id), null, cancellationToken);
-            return new ProductUpdated();
+            return new Success();
         }
     }
 
