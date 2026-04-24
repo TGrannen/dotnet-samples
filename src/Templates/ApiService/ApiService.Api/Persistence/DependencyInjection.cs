@@ -19,7 +19,7 @@ public static class DependencyInjection
         services.AddSingleton<AuditingSaveChangesInterceptor>();
         services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =>
         {
-            options.UseNpgsql(connectionString);
+            options.UseSqlServer(connectionString);
             options.AddInterceptors(serviceProvider.GetRequiredService<AuditingSaveChangesInterceptor>());
             optionsAction?.Invoke(serviceProvider, options);
         });
@@ -29,7 +29,7 @@ public static class DependencyInjection
 
     public static IHostApplicationBuilder AddPersistenceInstrumentation(this IHostApplicationBuilder builder)
     {
-        builder.EnrichNpgsqlDbContext<ApplicationDbContext>();
+        builder.EnrichSqlServerDbContext<ApplicationDbContext>();
 
         return builder;
     }

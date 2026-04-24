@@ -1,9 +1,9 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
-var postgres = builder.AddPostgres("postgres")
+var sql = builder.AddSqlServer("sql")
     .WithDataVolume()
     .WithLifetime(ContainerLifetime.Persistent);
-var postgresDb = postgres.AddDatabase("apiservice");
+var sqlDb = sql.AddDatabase("apiservice");
 
 var redis = builder.AddRedis("cache")
     .WithDataVolume()
@@ -11,13 +11,13 @@ var redis = builder.AddRedis("cache")
     .WithRedisInsight(x => x.WithLifetime(ContainerLifetime.Persistent).WithDataVolume());
 
 var migrator = builder.AddProject<Projects.ApiService_Migrator>("apiservice-migrator")
-    .WithReference(postgresDb, connectionName: "DefaultConnection")
-    .WaitFor(postgres);
+    .WithReference(sqlDb, connectionName: "DefaultConnection")
+    .WaitFor(sql);
 
 builder.AddProject<Projects.ApiService_Api>("apiservice-api")
-    .WithReference(postgresDb, connectionName: "DefaultConnection")
+    .WithReference(sqlDb, connectionName: "DefaultConnection")
     .WithReference(redis)
-    .WaitFor(postgresDb)
+    .WaitFor(sqlDb)
     .WaitFor(redis)
     .WaitForCompletion(migrator);
 
