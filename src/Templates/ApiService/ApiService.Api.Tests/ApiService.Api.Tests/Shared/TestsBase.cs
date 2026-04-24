@@ -12,6 +12,14 @@ public abstract class IntegrationTestsBase : WebApplicationTest<WebApplicationFa
         var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         await seedAction(db);
         await db.SaveChangesAsync();
+        SaveChangesTrackerReset();
+    }
+
+    protected async Task<T> SeedAsync<T>(Func<Task<T>> seedAction)
+    {
+       var value = await seedAction();
+        SaveChangesTrackerReset();
+        return value;
     }
 
     protected void SaveChangesTrackerReset()

@@ -1,17 +1,22 @@
-using ApiService.Api.Persistence.Entities;
-
 namespace ApiService.Api.Tests.Features.Customers;
 
 public class CustomerIntegrationTests : IntegrationTestsBase
 {
+    private ICustomersApi _api = null!;
+
+    [Before(Test)]
+    public void SetupApiAsync()
+    {
+        _api = RestService.For<ICustomersApi>(Factory.CreateClient());
+    }
+
     [Test]
     public async Task CreateCustomer_ThenGet_ReturnsCustomer()
     {
-        var api = RestService.For<ICustomersApi>(Factory.CreateClient());
         var email = $"acme-{Guid.NewGuid():N}@example.com";
 
-        var id = await api.CreateAsync<Guid>(new CreateCustomerRequest("Acme Corp", email));
-        var customer = await api.GetAsync<CustomerResponse>(id);
+        var id = await _api.CreateAsync<Guid>(new CreateCustomerRequest("Acme Corp", email));
+        var customer = await _api.GetAsync<CustomerResponse>(id);
 
         await Assert.That(id).IsNotEqualTo(Guid.Empty);
         await Assert.That(customer.Name).IsEqualTo("Acme Corp");
@@ -37,14 +42,12 @@ public class CustomerIntegrationTests : IntegrationTestsBase
             return Task.CompletedTask;
         });
 
-        var api = RestService.For<ICustomersApi>(Factory.CreateClient());
-
-        var alpha = await api.GetAsync<CustomerResponse>(alphaId);
-        var zeta = await api.GetAsync<CustomerResponse>(zetaId);
+        var alpha = await _api.GetAsync<CustomerResponse>(alphaId);
+        var zeta = await _api.GetAsync<CustomerResponse>(zetaId);
         await Assert.That(alpha.Email).IsEqualTo(alphaEmail);
         await Assert.That(zeta.Email).IsEqualTo(zetaEmail);
 
-        var list = await api.ListAsync(new ListCustomersQuery(0, 500));
+        var list = await _api.ListAsync(new ListCustomersQuery(0, 500));
         await Assert.That(list.Any(c => c.Id == alphaId)).IsTrue();
         await Assert.That(list.Any(c => c.Id == zetaId)).IsTrue();
     }
@@ -52,10 +55,8 @@ public class CustomerIntegrationTests : IntegrationTestsBase
     [Test]
     public async Task CreateCustomer_WithEmptyEmail_ReturnsBadRequest()
     {
-        var api = RestService.For<ICustomersApi>(Factory.CreateClient());
-
         var exception = await Assert.That(async () =>
-                await api.CreateAsync<Guid>(new CreateCustomerRequest("Name", string.Empty)))
+                await _api.CreateAsync<Guid>(new CreateCustomerRequest("Name", string.Empty)))
             .Throws<ApiException>();
 
         await Assert.That(exception).IsNotNull();
@@ -65,13 +66,12 @@ public class CustomerIntegrationTests : IntegrationTestsBase
     [Test]
     public async Task CreateCustomer_WithDuplicateEmail_ReturnsConflict()
     {
-        var api = RestService.For<ICustomersApi>(Factory.CreateClient());
         var email = $"dup-{Guid.NewGuid():N}@example.com";
 
-        _ = await api.CreateAsync<Guid>(new CreateCustomerRequest("First", email));
+        _ = await _api.CreateAsync<Guid>(new CreateCustomerRequest("First", email));
 
         var exception = await Assert.That(async () =>
-                await api.CreateAsync<Guid>(new CreateCustomerRequest("Second", email)))
+                await _api.CreateAsync<Guid>(new CreateCustomerRequest("Second", email)))
             .Throws<ApiException>();
 
         await Assert.That(exception).IsNotNull();
