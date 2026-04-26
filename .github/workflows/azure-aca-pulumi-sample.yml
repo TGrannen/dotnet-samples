@@ -49,18 +49,15 @@ jobs:
             }
 
       - name: Read Pulumi outputs (json)
-        id: outputs
         working-directory: src/Infrastructure/Infrastructure.AzureContainerApps.Sample
         shell: bash
-        run: |
-          echo "json=$(pulumi stack output --json)" >> "$GITHUB_OUTPUT"
+        run: pulumi stack output --json > "${{ github.workspace }}/.pulumi-outputs-infra.json"
 
       - name: Export outputs
         id: export
         run: |
-          echo '${{ steps.outputs.outputs.json }}' > outputs.json
-          ACR_NAME=$(jq -r '.acrName' outputs.json)
-          ACR_LOGIN_SERVER=$(jq -r '.acrLoginServer' outputs.json)
+          ACR_NAME=$(jq -r '.acrName' "${{ github.workspace }}/.pulumi-outputs-infra.json")
+          ACR_LOGIN_SERVER=$(jq -r '.acrLoginServer' "${{ github.workspace }}/.pulumi-outputs-infra.json")
           echo "acr_name=$ACR_NAME" >> "$GITHUB_OUTPUT"
           echo "acr_login_server=$ACR_LOGIN_SERVER" >> "$GITHUB_OUTPUT"
 
@@ -127,18 +124,15 @@ jobs:
             }
 
       - name: Read Pulumi outputs
-        id: outputs
         working-directory: src/Infrastructure/Infrastructure.AzureContainerApps.Sample
         shell: bash
-        run: |
-          echo "json=$(pulumi stack output --json)" >> "$GITHUB_OUTPUT"
+        run: pulumi stack output --json > "${{ github.workspace }}/.pulumi-outputs-staging.json"
 
       - name: Export outputs
         id: export
         run: |
-          echo '${{ steps.outputs.outputs.json }}' > outputs.json
-          STAGING_URL=$(jq -r '.latestRevisionUrl' outputs.json)
-          LATEST_REVISION_NAME=$(jq -r '.latestRevisionName' outputs.json)
+          STAGING_URL=$(jq -r '.latestRevisionUrl' "${{ github.workspace }}/.pulumi-outputs-staging.json")
+          LATEST_REVISION_NAME=$(jq -r '.latestRevisionName' "${{ github.workspace }}/.pulumi-outputs-staging.json")
           echo "staging_url=$STAGING_URL" >> "$GITHUB_OUTPUT"
           echo "latest_revision_name=$LATEST_REVISION_NAME" >> "$GITHUB_OUTPUT"
 
