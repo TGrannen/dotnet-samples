@@ -40,7 +40,9 @@ return await Pulumi.Deployment.RunAsync(() =>
     };
 
     if (appLogsConfiguration is not null)
+    {
         environmentArgs.AppLogsConfiguration = appLogsConfiguration;
+    }
 
     var environment = new ManagedEnvironment("aca-sample-env", environmentArgs);
 
@@ -69,8 +71,6 @@ return await Pulumi.Deployment.RunAsync(() =>
     // Always keep the Container App in the Pulumi state so infra-only runs don't delete it.
     // When deployApp=false, we "freeze" it by protecting it from deletion and ignoring changes,
     // so the stack can still update infra (RG/ACR/env/identity) safely.
-    var traffic = ContainerAppSupport.BuildTraffic(cfg.StableRevisionName);
-    var containerAppOptions = ContainerAppSupport.BuildContainerAppOptions(cfg.DeployApp);
 
     var containerApp = ContainerAppSupport.CreateContainerApp(
         appName: appName,
@@ -79,9 +79,7 @@ return await Pulumi.Deployment.RunAsync(() =>
         location: resourceGroup.Location,
         environment: environment,
         acr: acr,
-        pullIdentity: pullIdentity,
-        traffic: traffic,
-        options: containerAppOptions);
+        pullIdentity: pullIdentity);
 
     var latestRevisionName = containerApp.LatestRevisionName;
     var stableRevisionName = string.IsNullOrWhiteSpace(cfg.StableRevisionName)
@@ -103,4 +101,3 @@ return await Pulumi.Deployment.RunAsync(() =>
         ["latestRevisionUrl"] = latestRevisionUrl,
     };
 });
-

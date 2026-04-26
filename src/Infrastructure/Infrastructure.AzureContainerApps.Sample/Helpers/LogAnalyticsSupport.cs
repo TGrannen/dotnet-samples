@@ -13,7 +13,9 @@ internal static class LogAnalyticsSupport
         ResourceGroup resourceGroup)
     {
         if (!enableLogAnalytics)
+        {
             return (Workspace: null, SharedKey: null, AppLogsConfiguration: null);
+        }
 
         var workspace = new Workspace("acasamplelaw", new WorkspaceArgs
         {

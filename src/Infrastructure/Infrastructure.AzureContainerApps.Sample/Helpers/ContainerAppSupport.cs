@@ -9,51 +9,7 @@ namespace Infrastructure.AzureContainerApps.Sample.Helpers;
 internal static class ContainerAppSupport
 {
     // Exists on MCR without ACR; used when DeployApp is false so the first up succeeds before CI pushes sample-api.
-    private const string PlaceholderImage = "mcr.microsoft.com/dotnet/samples:aspnetapp";
-    public static TrafficWeightArgs[] BuildTraffic(string? stableRevisionNameConfig)
-    {
-        return string.IsNullOrWhiteSpace(stableRevisionNameConfig)
-            ? new[]
-            {
-                new TrafficWeightArgs
-                {
-                    Label = "stable",
-                    LatestRevision = true,
-                    Weight = 100,
-                },
-            }
-            : new[]
-            {
-                new TrafficWeightArgs
-                {
-                    Label = "stable",
-                    RevisionName = stableRevisionNameConfig,
-                    Weight = 100,
-                },
-                new TrafficWeightArgs
-                {
-                    Label = "staging",
-                    LatestRevision = true,
-                    Weight = 0,
-                },
-            };
-    }
-
-    public static CustomResourceOptions BuildContainerAppOptions(bool deployApp)
-    {
-        return new CustomResourceOptions
-        {
-            Protect = !deployApp,
-            IgnoreChanges = deployApp
-                ? new List<string>()
-                : new List<string>
-                {
-                    "configuration",
-                    "template",
-                    "identity",
-                },
-        };
-    }
+    private const string PlaceholderImage = "mcr.microsoft.com/azuredocs/containerapps-helloworld";
 
     public static ContainerApp CreateContainerApp(
         string appName,
@@ -62,10 +18,10 @@ internal static class ContainerAppSupport
         Output<string> location,
         ManagedEnvironment environment,
         Registry acr,
-        UserAssignedIdentity pullIdentity,
-        TrafficWeightArgs[] traffic,
-        CustomResourceOptions options)
+        UserAssignedIdentity pullIdentity)
     {
+        var traffic = BuildTraffic(cfg.StableRevisionName);
+
         // Infra-only runs must not reference ACR tags that do not exist yet (IgnoreChanges does not apply on create).
         var image = cfg.DeployApp
             ? Output.Format($"{acr.LoginServer}/{cfg.ImageName}:{cfg.ImageTag}")
@@ -139,7 +95,17 @@ internal static class ContainerAppSupport
                     MaxReplicas = 1,
                 },
             },
-        }, options);
+        }, new CustomResourceOptions
+        {
+            IgnoreChanges = cfg.DeployApp
+                ? []
+                :
+                [
+                    "configuration",
+                    "template",
+                    "identity"
+                ],
+        });
     }
 
     public static Output<string> StableUrl(string appName, ManagedEnvironment environment) =>
@@ -147,5 +113,36 @@ internal static class ContainerAppSupport
 
     public static Output<string> LatestRevisionUrl(ContainerApp app) =>
         app.LatestRevisionFqdn.Apply(fqdn => $"https://{fqdn}");
-}
 
+    private static TrafficWeightArgs[] BuildTraffic(string? stableRevisionNameConfig)
+    {
+        if (string.IsNullOrWhiteSpace(stableRevisionNameConfig))
+        {
+            return
+            [
+                new TrafficWeightArgs
+                {
+                    Label = "stable",
+                    LatestRevision = true,
+                    Weight = 100,
+                }
+            ];
+        }
+
+        return
+        [
+            new TrafficWeightArgs
+            {
+                Label = "stable",
+                RevisionName = stableRevisionNameConfig,
+                Weight = 100,
+            },
+            new TrafficWeightArgs
+            {
+                Label = "staging",
+                LatestRevision = true,
+                Weight = 0,
+            }
+        ];
+    }
+}
