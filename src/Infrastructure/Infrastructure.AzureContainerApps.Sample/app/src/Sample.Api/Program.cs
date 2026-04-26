@@ -1,4 +1,5 @@
 using Scalar.AspNetCore;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +13,9 @@ app.MapGet("/health", () => Results.Ok(new { status = "ok" }))
 
 app.MapGet("/version", () =>
     {
-        var sha = Environment.GetEnvironmentVariable("APP_VERSION_SHA");
+        var sha = Assembly.GetExecutingAssembly()
+            .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
+            ?.InformationalVersion;
         return Results.Ok(new
         {
             commit = string.IsNullOrWhiteSpace(sha) ? "dev" : sha,

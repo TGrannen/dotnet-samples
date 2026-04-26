@@ -25,6 +25,7 @@ internal static class ContainerAppSupport
             ManagedEnvironmentId = environment.Id,
             Configuration = new ConfigurationArgs
             {
+                MaxInactiveRevisions = 1,
                 ActiveRevisionsMode = ActiveRevisionsMode.Multiple,
                 Ingress = new IngressArgs
                 {
@@ -36,26 +37,26 @@ internal static class ContainerAppSupport
                         new TrafficWeightArgs
                         {
                             LatestRevision = true,
-                            Weight = 100,
-                        },
-                    ],
+                            Weight = 100
+                        }
+                    ]
                 },
                 Registries =
                 {
                     new RegistryCredentialsArgs
                     {
                         Server = acr.LoginServer,
-                        Identity = pullIdentity.Id,
-                    },
-                },
+                        Identity = pullIdentity.Id
+                    }
+                }
             },
             Identity = new Pulumi.AzureNative.Commontypesv5.Inputs.ManagedServiceIdentityArgs
             {
                 Type = "UserAssigned",
                 UserAssignedIdentities =
                 {
-                    pullIdentity.Id,
-                },
+                    pullIdentity.Id
+                }
             },
             Template = new TemplateArgs
             {
@@ -70,37 +71,32 @@ internal static class ContainerAppSupport
                             new EnvironmentVarArgs
                             {
                                 Name = "ASPNETCORE_URLS",
-                                Value = $"http://0.0.0.0:{cfg.ContainerPort}",
-                            },
-                            new EnvironmentVarArgs
-                            {
-                                Name = "APP_VERSION_SHA",
-                                Value = "pulumi-placeholder",
-                            },
+                                Value = $"http://0.0.0.0:{cfg.ContainerPort}"
+                            }
                         },
                         Resources = new ContainerResourcesArgs
                         {
                             Cpu = cfg.Cpu,
-                            Memory = cfg.Memory,
-                        },
-                    },
+                            Memory = cfg.Memory
+                        }
+                    }
                 },
                 Scale = new ScaleArgs
                 {
                     // Cheapest behavior for samples: allow scale-to-zero.
                     // With ingress enabled, ACA will use HTTP scaling by default.
                     MinReplicas = 0,
-                    MaxReplicas = 1,
-                },
-            },
+                    MaxReplicas = 1
+                }
+            }
         }, new CustomResourceOptions
         {
             // CI updates image, env, scale, and traffic weights via Azure CLI; do not reconcile those from Pulumi.
             IgnoreChanges =
             [
                 "template",
-                "configuration.ingress.traffic",
-            ],
+                "configuration.ingress.traffic"
+            ]
         });
     }
 

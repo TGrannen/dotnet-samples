@@ -16,11 +16,13 @@ RUN dotnet build "Sample.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "Sample.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+ARG GIT_SHA=dev
+RUN dotnet publish "Sample.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false /p:InformationalVersion=$GIT_SHA /p:SourceRevisionId=$GIT_SHA
 
 FROM base AS final
 WORKDIR /app
-ENV APP_VERSION_SHA=$GIT_SHA
+ARG GIT_SHA=dev
+LABEL org.opencontainers.image.revision=$GIT_SHA
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "Sample.Api.dll"]
 

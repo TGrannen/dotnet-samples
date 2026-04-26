@@ -23,16 +23,16 @@ internal static class LogAnalyticsSupport
             Location = resourceGroup.Location,
             Sku = new WorkspaceSkuArgs
             {
-                Name = "PerGB2018",
+                Name = "PerGB2018"
             },
             // Retention has a cost impact; 30 is the common minimum depending on SKU/region.
-            RetentionInDays = 30,
+            RetentionInDays = 30
         });
 
         var sharedKeys = GetSharedKeys.Invoke(new GetSharedKeysInvokeArgs
         {
             ResourceGroupName = resourceGroup.Name,
-            WorkspaceName = workspace.Name,
+            WorkspaceName = workspace.Name
         });
 
         var sharedKey = sharedKeys.Apply(k => k.PrimarySharedKey!);
@@ -43,8 +43,8 @@ internal static class LogAnalyticsSupport
             LogAnalyticsConfiguration = new LogAnalyticsConfigurationArgs
             {
                 CustomerId = workspace.CustomerId,
-                SharedKey = sharedKey,
-            },
+                SharedKey = sharedKey
+            }
         };
 
         return (Workspace: workspace, SharedKey: sharedKey, AppLogsConfiguration: appLogsConfiguration);

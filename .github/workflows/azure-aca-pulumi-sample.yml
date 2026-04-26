@@ -102,6 +102,7 @@ jobs:
     outputs:
       staging_url: ${{ steps.export.outputs.staging_url }}
       latest_revision_name: ${{ steps.export.outputs.latest_revision_name }}
+      previous_revision_name: ${{ steps.deploy.outputs.previous_revision_name }}
     steps:
       - name: Azure login (OIDC)
         uses: azure/login@v2
@@ -112,6 +113,7 @@ jobs:
           audience: ${{ env.AZURE_AUDIENCE }}
 
       - name: Deploy candidate revision (image + 0% traffic to latest)
+        id: deploy
         shell: bash
         env:
           RG: ${{ needs.infra.outputs.resource_group_name }}
@@ -125,6 +127,7 @@ jobs:
           az containerapp ingress traffic set -g "$RG" -n "$APP" \
             --revision-weight "${PREV_REV}=100" \
             --revision-weight "${NEW_REV}=0"
+          echo "previous_revision_name=$PREV_REV" >> "$GITHUB_OUTPUT"
 
       - name: Export outputs
         id: export
@@ -184,4 +187,23 @@ jobs:
           set -euo pipefail
           REV="${{ needs.smoke_test.outputs.new_revision_name }}"
           az containerapp ingress traffic set -g "$RG" -n "$APP" --revision-weight "${REV}=100"
+
+      - name: Deactivate previous revision
+        shell: bash
+        env:
+          RG: ${{ needs.infra.outputs.resource_group_name }}
+          APP: ${{ needs.infra.outputs.container_app_name }}
+          PREV_REV: ${{ needs.deploy_staging.outputs.previous_revision_name }}
+          REV: ${{ needs.smoke_test.outputs.new_revision_name }}
+        run: |
+          set -euo pipefail
+          if [ -z "${PREV_REV:-}" ]; then
+            echo "No previous revision captured; skipping deactivation."
+            exit 0
+          fi
+          if [ "$PREV_REV" = "$REV" ]; then
+            echo "Previous revision equals promoted revision; skipping deactivation."
+            exit 0
+          fi
+          az containerapp revision deactivate -g "$RG" -n "$APP" --revision "$PREV_REV"
 

@@ -14,7 +14,7 @@ return await Pulumi.Deployment.RunAsync(() =>
 
     var resourceGroup = new ResourceGroup("aca-sample-rg", new ResourceGroupArgs
     {
-        Location = cfg.Location,
+        Location = cfg.Location
     });
 
     var acr = new Registry(Naming.BuildAcrName(cfg.AcrSafeSuffix), new RegistryArgs
@@ -23,9 +23,9 @@ return await Pulumi.Deployment.RunAsync(() =>
         Location = resourceGroup.Location,
         Sku = new SkuArgs
         {
-            Name = SkuName.Basic,
+            Name = SkuName.Basic
         },
-        AdminUserEnabled = false,
+        AdminUserEnabled = false
     });
 
     var (_, _, appLogsConfiguration) = LogAnalyticsSupport.MaybeCreate(cfg.EnableLogAnalytics, resourceGroup);
@@ -33,7 +33,7 @@ return await Pulumi.Deployment.RunAsync(() =>
     var environmentArgs = new ManagedEnvironmentArgs
     {
         ResourceGroupName = resourceGroup.Name,
-        Location = resourceGroup.Location,
+        Location = resourceGroup.Location
     };
 
     if (appLogsConfiguration is not null)
@@ -46,7 +46,7 @@ return await Pulumi.Deployment.RunAsync(() =>
     var pullIdentity = new UserAssignedIdentity("aca-sample-pull-identity", new UserAssignedIdentityArgs
     {
         ResourceGroupName = resourceGroup.Name,
-        Location = resourceGroup.Location,
+        Location = resourceGroup.Location
     });
 
     // Allow the ACA managed identity to pull from ACR.
@@ -60,7 +60,7 @@ return await Pulumi.Deployment.RunAsync(() =>
         PrincipalId = pullIdentity.PrincipalId,
         PrincipalType = PrincipalType.ServicePrincipal,
         RoleDefinitionId = acrPullRoleDefinitionId,
-        Scope = acr.Id,
+        Scope = acr.Id
     });
 
     // Container app shell (ingress, registry identity, scale mode) is managed here; image and traffic weights are updated in CI via Azure CLI.
@@ -79,6 +79,6 @@ return await Pulumi.Deployment.RunAsync(() =>
         ["acrName"] = acr.Name,
         ["acrLoginServer"] = acr.LoginServer,
         ["containerAppName"] = app.Name,
-        ["stableUrl"] = stableUrl,
+        ["stableUrl"] = stableUrl
     };
 });
