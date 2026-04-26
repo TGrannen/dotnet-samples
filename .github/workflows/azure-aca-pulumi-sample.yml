@@ -1,0 +1,224 @@
+name: Azure ACA Blue-Green (Pulumi C# Sample)
+
+on:
+  # push:
+  #   branches: [ main ]
+  #   paths:
+  #     - "src/Infrastructure/Infrastructure.AzureContainerApps.Sample/**"
+  #     - ".github/workflows/azure-aca-pulumi-sample.yml"
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  infra:
+    runs-on: ubuntu-latest
+    outputs:
+      acr_name: ${{ steps.export.outputs.acr_name }}
+      acr_login_server: ${{ steps.export.outputs.acr_login_server }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Azure login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Configure Pulumi (infra only)
+        uses: pulumi/actions@v6
+        with:
+          command: config
+          stack-name: dev
+          work-dir: src/Infrastructure/Infrastructure.AzureContainerApps.Sample
+          args: set deployApp false
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+
+      - name: Pulumi up (provision RG/ACR/ACA env/identity)
+        uses: pulumi/actions@v6
+        with:
+          command: up
+          stack-name: dev
+          work-dir: src/Infrastructure/Infrastructure.AzureContainerApps.Sample
+          args: --yes --skip-preview
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+          PULUMI_CONFIG_PASSPHRASE: ""
+
+      - name: Read Pulumi outputs (json)
+        id: outputs
+        uses: pulumi/actions@v6
+        with:
+          command: output
+          stack-name: dev
+          work-dir: src/Infrastructure/Infrastructure.AzureContainerApps.Sample
+          args: --json
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+
+      - name: Export outputs
+        id: export
+        run: |
+          echo '${{ steps.outputs.outputs.stdout }}' > outputs.json
+          ACR_NAME=$(jq -r '.acrName' outputs.json)
+          ACR_LOGIN_SERVER=$(jq -r '.acrLoginServer' outputs.json)
+          echo "acr_name=$ACR_NAME" >> "$GITHUB_OUTPUT"
+          echo "acr_login_server=$ACR_LOGIN_SERVER" >> "$GITHUB_OUTPUT"
+
+  build_and_push:
+    runs-on: ubuntu-latest
+    needs: [ infra ]
+    outputs:
+      image_tag: ${{ steps.meta.outputs.image_tag }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set image tag
+        id: meta
+        run: echo "image_tag=${GITHUB_SHA}" >> "$GITHUB_OUTPUT"
+
+      - name: Azure login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: ACR login
+        run: az acr login --name "${{ needs.infra.outputs.acr_name }}"
+
+      - name: Build and push image
+        working-directory: src/Infrastructure/Infrastructure.AzureContainerApps.Sample/app
+        run: |
+          docker build \
+            --file Dockerfile \
+            --build-arg GIT_SHA="${{ steps.meta.outputs.image_tag }}" \
+            --tag "${{ needs.infra.outputs.acr_login_server }}/sample-api:${{ steps.meta.outputs.image_tag }}" \
+            .
+          docker push "${{ needs.infra.outputs.acr_login_server }}/sample-api:${{ steps.meta.outputs.image_tag }}"
+
+  deploy_staging:
+    runs-on: ubuntu-latest
+    needs: [ build_and_push, infra ]
+    outputs:
+      staging_url: ${{ steps.export.outputs.staging_url }}
+      latest_revision_name: ${{ steps.export.outputs.latest_revision_name }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Azure login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Configure Pulumi for staging deploy
+        uses: pulumi/actions@v6
+        with:
+          command: config
+          stack-name: dev
+          work-dir: src/Infrastructure/Infrastructure.AzureContainerApps.Sample
+          args: set deployApp true
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+
+      - name: Set imageTag to commit SHA
+        uses: pulumi/actions@v6
+        with:
+          command: config
+          stack-name: dev
+          work-dir: src/Infrastructure/Infrastructure.AzureContainerApps.Sample
+          args: set imageTag ${{ needs.build_and_push.outputs.image_tag }}
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+
+      - name: Pulumi up (deploy staging revision, 0% traffic)
+        uses: pulumi/actions@v6
+        with:
+          command: up
+          stack-name: dev
+          work-dir: src/Infrastructure/Infrastructure.AzureContainerApps.Sample
+          args: --yes --skip-preview
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+          PULUMI_CONFIG_PASSPHRASE: ""
+
+      - name: Read Pulumi outputs
+        id: outputs
+        uses: pulumi/actions@v6
+        with:
+          command: output
+          stack-name: dev
+          work-dir: src/Infrastructure/Infrastructure.AzureContainerApps.Sample
+          args: --json
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+
+      - name: Export outputs
+        id: export
+        run: |
+          echo '${{ steps.outputs.outputs.stdout }}' > outputs.json
+          STAGING_URL=$(jq -r '.latestRevisionUrl' outputs.json)
+          LATEST_REVISION_NAME=$(jq -r '.latestRevisionName' outputs.json)
+          echo "staging_url=$STAGING_URL" >> "$GITHUB_OUTPUT"
+          echo "latest_revision_name=$LATEST_REVISION_NAME" >> "$GITHUB_OUTPUT"
+
+  smoke_test:
+    runs-on: ubuntu-latest
+    needs: [ deploy_staging, build_and_push ]
+    outputs:
+      new_revision_name: ${{ steps.capture.outputs.new_revision_name }}
+    steps:
+      - name: Smoke test /health
+        run: |
+          curl --retry 12 --retry-delay 5 --retry-all-errors -f "${{ needs.deploy_staging.outputs.staging_url }}/health"
+
+      - name: Smoke test /version matches SHA
+        run: |
+          EXPECTED="${{ needs.build_and_push.outputs.image_tag }}"
+          ACTUAL=$(curl -fsSL "${{ needs.deploy_staging.outputs.staging_url }}/version" | jq -r '.commit')
+          test "$ACTUAL" = "$EXPECTED"
+
+      - name: Capture new revision name
+        id: capture
+        run: echo "new_revision_name=${{ needs.deploy_staging.outputs.latest_revision_name }}" >> "$GITHUB_OUTPUT"
+
+  promote_to_production:
+    runs-on: ubuntu-latest
+    needs: [ smoke_test, build_and_push ]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Azure login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Set Pulumi config for promotion
+        uses: pulumi/actions@v6
+        with:
+          command: config
+          stack-name: dev
+          work-dir: src/Infrastructure/Infrastructure.AzureContainerApps.Sample
+          args: set stableRevisionName ${{ needs.smoke_test.outputs.new_revision_name }}
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+
+      - name: Pulumi up (promote stable -> 100%)
+        uses: pulumi/actions@v6
+        with:
+          command: up
+          stack-name: dev
+          work-dir: src/Infrastructure/Infrastructure.AzureContainerApps.Sample
+          args: --yes --skip-preview
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+          PULUMI_CONFIG_PASSPHRASE: ""
+
