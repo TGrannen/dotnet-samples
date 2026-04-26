@@ -2,6 +2,7 @@ using Scalar.AspNetCore;
 using Serilog;
 using System.Reflection;
 
+// Minimal Web API for the Azure Container Apps (Pulumi) sample pipeline.
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog((context, configuration) =>
     configuration.ReadFrom.Configuration(context.Configuration));
