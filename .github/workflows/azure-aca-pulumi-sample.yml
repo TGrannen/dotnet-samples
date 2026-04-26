@@ -1,11 +1,11 @@
 name: Azure ACA Blue-Green (Pulumi C# Sample)
 
 on:
-  # push:
-  #   branches: [ main ]
-  #   paths:
-  #     - "src/Infrastructure/Infrastructure.AzureContainerApps.Sample/**"
-  #     - ".github/workflows/azure-aca-pulumi-sample.yml"
+  push:
+    branches: [ deployments ]
+    paths:
+      - "src/Infrastructure/Infrastructure.AzureContainerApps.Sample/**"
+      - ".github/workflows/azure-aca-pulumi-sample.yml"
   workflow_dispatch:
 
 permissions:
@@ -43,7 +43,6 @@ jobs:
           command: up
           stack-name: dev
           work-dir: src/Infrastructure/Infrastructure.AzureContainerApps.Sample
-          args: --yes --skip-preview
           config-map: |
             {
               "infrastructure-samples:deployApp": { "value": false }
@@ -51,17 +50,15 @@ jobs:
 
       - name: Read Pulumi outputs (json)
         id: outputs
-        uses: pulumi/actions@v6
-        with:
-          command: output
-          stack-name: dev
-          work-dir: src/Infrastructure/Infrastructure.AzureContainerApps.Sample
-          args: --json
+        working-directory: src/Infrastructure/Infrastructure.AzureContainerApps.Sample
+        shell: bash
+        run: |
+          echo "json=$(pulumi stack output --json)" >> "$GITHUB_OUTPUT"
 
       - name: Export outputs
         id: export
         run: |
-          echo '${{ steps.outputs.outputs.stdout }}' > outputs.json
+          echo '${{ steps.outputs.outputs.json }}' > outputs.json
           ACR_NAME=$(jq -r '.acrName' outputs.json)
           ACR_LOGIN_SERVER=$(jq -r '.acrLoginServer' outputs.json)
           echo "acr_name=$ACR_NAME" >> "$GITHUB_OUTPUT"
@@ -123,7 +120,6 @@ jobs:
           command: up
           stack-name: dev
           work-dir: src/Infrastructure/Infrastructure.AzureContainerApps.Sample
-          args: --yes --skip-preview
           config-map: |
             {
               "infrastructure-samples:deployApp": { "value": true },
@@ -132,17 +128,15 @@ jobs:
 
       - name: Read Pulumi outputs
         id: outputs
-        uses: pulumi/actions@v6
-        with:
-          command: output
-          stack-name: dev
-          work-dir: src/Infrastructure/Infrastructure.AzureContainerApps.Sample
-          args: --json
+        working-directory: src/Infrastructure/Infrastructure.AzureContainerApps.Sample
+        shell: bash
+        run: |
+          echo "json=$(pulumi stack output --json)" >> "$GITHUB_OUTPUT"
 
       - name: Export outputs
         id: export
         run: |
-          echo '${{ steps.outputs.outputs.stdout }}' > outputs.json
+          echo '${{ steps.outputs.outputs.json }}' > outputs.json
           STAGING_URL=$(jq -r '.latestRevisionUrl' outputs.json)
           LATEST_REVISION_NAME=$(jq -r '.latestRevisionName' outputs.json)
           echo "staging_url=$STAGING_URL" >> "$GITHUB_OUTPUT"
@@ -188,7 +182,6 @@ jobs:
           command: up
           stack-name: dev
           work-dir: src/Infrastructure/Infrastructure.AzureContainerApps.Sample
-          args: --yes --skip-preview
           config-map: |
             {
               "infrastructure-samples:stableRevisionName": { "value": "${{ needs.smoke_test.outputs.new_revision_name }}" }
