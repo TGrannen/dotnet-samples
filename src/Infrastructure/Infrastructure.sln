@@ -21,7 +21,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure.AzureContain
 		..\..\.github\workflows\azure-aca-pulumi-sample.yml = ..\..\.github\workflows\azure-aca-pulumi-sample.yml
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.Api", "Infrastructure.AzureContainerApps.Sample\app\src\Sample.Api\Sample.Api.csproj", "{3DEB10EC-078A-425A-B894-A41E933BDB59}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.AzureContainerApps.Sample.Api", "Infrastructure.AzureContainerApps.Sample.Api\Infrastructure.AzureContainerApps.Sample.Api.csproj", "{3DEB10EC-078A-425A-B894-A41E933BDB59}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

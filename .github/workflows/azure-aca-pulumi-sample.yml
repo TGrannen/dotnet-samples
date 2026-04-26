@@ -5,6 +5,7 @@ on:
     branches: [ deployments ]
     paths:
       - "src/Infrastructure/Infrastructure.AzureContainerApps.Sample/**"
+      - "src/Infrastructure/Infrastructure.AzureContainerApps.Sample.Api/**"
       - ".github/workflows/azure-aca-pulumi-sample.yml"
   workflow_dispatch:
 
@@ -21,8 +22,25 @@ env:
   PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
 
 jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      pulumi: ${{ steps.filter.outputs.pulumi }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            pulumi:
+              - "src/Infrastructure/Infrastructure.AzureContainerApps.Sample/**"
+
   infra:
     runs-on: ubuntu-latest
+    needs: [ changes ]
     outputs:
       acr_name: ${{ steps.export.outputs.acr_name }}
       acr_login_server: ${{ steps.export.outputs.acr_login_server }}
@@ -30,6 +48,10 @@ jobs:
       container_app_name: ${{ steps.export.outputs.container_app_name }}
     steps:
       - uses: actions/checkout@v4
+
+      - name: Install Pulumi CLI (read outputs when stack was not updated)
+        if: needs.changes.outputs.pulumi != 'true'
+        uses: pulumi/setup-pulumi@v2
 
       - name: Azure login (OIDC)
         uses: azure/login@v2
@@ -40,6 +62,7 @@ jobs:
           audience: ${{ env.AZURE_AUDIENCE }}
 
       - name: Pulumi up (provision RG/ACR/ACA env/identity)
+        if: needs.changes.outputs.pulumi == 'true'
         uses: pulumi/actions@v6
         with:
           command: up
@@ -49,7 +72,7 @@ jobs:
       - name: Read Pulumi outputs (json)
         working-directory: src/Infrastructure/Infrastructure.AzureContainerApps.Sample
         shell: bash
-        run: pulumi stack output --json > "${{ github.workspace }}/.pulumi-outputs-infra.json"
+        run: pulumi stack output --stack dev --json > "${{ github.workspace }}/.pulumi-outputs-infra.json"
 
       - name: Export outputs
         id: export
@@ -87,7 +110,7 @@ jobs:
         run: az acr login --name "${{ needs.infra.outputs.acr_name }}"
 
       - name: Build and push image
-        working-directory: src/Infrastructure/Infrastructure.AzureContainerApps.Sample/app
+        working-directory: src/Infrastructure/Infrastructure.AzureContainerApps.Sample.Api
         run: |
           docker build \
             --file Dockerfile \

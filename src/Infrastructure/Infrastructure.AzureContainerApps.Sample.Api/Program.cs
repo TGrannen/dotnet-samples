@@ -33,4 +33,3 @@ app.MapOpenApi();
 app.MapScalarApiReference();
 
 app.Run();
-

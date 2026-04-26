@@ -28,6 +28,10 @@ Create an Azure AD app registration (service principal) and configure a **Federa
 
 Grant the service principal **Contributor** at the subscription scope (or at least rights to create: RG, ACR, Log Analytics, Managed Identity, Role Assignments, Container Apps).
 
+## Application
+
+The sample HTTP API (Docker image source) lives in **`src/Infrastructure/Infrastructure.AzureContainerApps.Sample.Api`**. CI builds with that folder as the Docker context, same as `docker build -f Dockerfile .` from that directory.
+
 ## Local run
 
 From `src/Infrastructure/Infrastructure.AzureContainerApps.Sample`:
