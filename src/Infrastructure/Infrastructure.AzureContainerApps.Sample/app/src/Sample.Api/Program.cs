@@ -1,11 +1,16 @@
 using Scalar.AspNetCore;
+using Serilog;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Host.UseSerilog((context, configuration) =>
+    configuration.ReadFrom.Configuration(context.Configuration));
 
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
+
+app.UseSerilogRequestLogging();
 
 app.MapGet("/health", () => Results.Ok(new { status = "ok" }))
     .WithName("Health")
