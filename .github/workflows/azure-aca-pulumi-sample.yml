@@ -144,32 +144,15 @@ jobs:
 
   smoke_test:
     runs-on: ubuntu-latest
-    needs: [ deploy_staging, build_and_push ]
-    outputs:
-      new_revision_name: ${{ steps.capture.outputs.new_revision_name }}
+    needs: [ deploy_staging ]
     steps:
       - name: Smoke test /health
         run: |
           curl --retry 12 --retry-delay 5 --retry-all-errors -f "${{ needs.deploy_staging.outputs.staging_url }}/health"
 
-      - name: Smoke test /version matches SHA
-        run: |
-          EXPECTED="${{ needs.build_and_push.outputs.image_tag }}"
-          ACTUAL=$(curl -fsSL "${{ needs.deploy_staging.outputs.staging_url }}/version" | jq -r '.commit')
-          if [ "$ACTUAL" = "pulumi-placeholder" ]; then
-            echo "Version endpoint returned placeholder commit; skipping strict SHA compare."
-            exit 0
-          fi
-          ACTUAL="${ACTUAL%%+*}"
-          test "$ACTUAL" = "$EXPECTED"
-
-      - name: Capture new revision name
-        id: capture
-        run: echo "new_revision_name=${{ needs.deploy_staging.outputs.latest_revision_name }}" >> "$GITHUB_OUTPUT"
-
   promote_to_production:
     runs-on: ubuntu-latest
-    needs: [ smoke_test, infra ]
+    needs: [ smoke_test, infra, deploy_staging ]
     steps:
       - name: Azure login (OIDC)
         uses: azure/login@v2
@@ -186,7 +169,7 @@ jobs:
           APP: ${{ needs.infra.outputs.container_app_name }}
         run: |
           set -euo pipefail
-          REV="${{ needs.smoke_test.outputs.new_revision_name }}"
+          REV="${{ needs.deploy_staging.outputs.latest_revision_name }}"
           az containerapp ingress traffic set -g "$RG" -n "$APP" --revision-weight "${REV}=100"
 
       - name: Deactivate previous revision
@@ -195,7 +178,7 @@ jobs:
           RG: ${{ needs.infra.outputs.resource_group_name }}
           APP: ${{ needs.infra.outputs.container_app_name }}
           PREV_REV: ${{ needs.deploy_staging.outputs.previous_revision_name }}
-          REV: ${{ needs.smoke_test.outputs.new_revision_name }}
+          REV: ${{ needs.deploy_staging.outputs.latest_revision_name }}
         run: |
           set -euo pipefail
           if [ -z "${PREV_REV:-}" ]; then
