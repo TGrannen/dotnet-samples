@@ -10,17 +10,14 @@ using Infrastructure.AzureContainerApps.Sample.Helpers;
 
 return await Pulumi.Deployment.RunAsync(() =>
 {
-    var cfg = SampleConfig.FromPulumiConfig(new Config());
-
-    var stackSuffix = Naming.ToAcrSafeSuffix(Pulumi.Deployment.Instance.StackName);
-    var acrName = Naming.BuildAcrName(stackSuffix);
+    var cfg = SampleConfig.FromPulumiConfig(new Config(), Pulumi.Deployment.Instance.StackName);
 
     var resourceGroup = new ResourceGroup("aca-sample-rg", new ResourceGroupArgs
     {
         Location = cfg.Location,
     });
 
-    var acr = new Registry(acrName, new RegistryArgs
+    var acr = new Registry(Naming.BuildAcrName(cfg.AcrSafeSuffix), new RegistryArgs
     {
         ResourceGroupName = resourceGroup.Name,
         Location = resourceGroup.Location,
@@ -66,13 +63,10 @@ return await Pulumi.Deployment.RunAsync(() =>
         Scope = acr.Id,
     });
 
-    var appName = Naming.BuildAppName(stackSuffix);
+    var appName = Naming.BuildAppName(cfg.AcrSafeSuffix);
 
-    // Always keep the Container App in the Pulumi state so infra-only runs don't delete it.
-    // When deployApp=false, we "freeze" it by protecting it from deletion and ignoring changes,
-    // so the stack can still update infra (RG/ACR/env/identity) safely.
-
-    var containerApp = ContainerAppSupport.CreateContainerApp(
+    // Container app shell (ingress, registry identity, scale mode) is managed here; image and traffic weights are updated in CI via Azure CLI.
+    _ = ContainerAppSupport.CreateContainerApp(
         appName: appName,
         cfg: cfg,
         resourceGroupName: resourceGroup.Name,
@@ -81,13 +75,7 @@ return await Pulumi.Deployment.RunAsync(() =>
         acr: acr,
         pullIdentity: pullIdentity);
 
-    var latestRevisionName = containerApp.LatestRevisionName;
-    var stableRevisionName = string.IsNullOrWhiteSpace(cfg.StableRevisionName)
-        ? latestRevisionName
-        : Output.Create(cfg.StableRevisionName);
-
     var stableUrl = ContainerAppSupport.StableUrl(appName, environment);
-    var latestRevisionUrl = ContainerAppSupport.LatestRevisionUrl(containerApp);
 
     return new Dictionary<string, object?>
     {
@@ -95,9 +83,6 @@ return await Pulumi.Deployment.RunAsync(() =>
         ["acrName"] = acr.Name,
         ["acrLoginServer"] = acr.LoginServer,
         ["containerAppName"] = appName,
-        ["latestRevisionName"] = latestRevisionName,
-        ["stableRevisionName"] = stableRevisionName,
         ["stableUrl"] = stableUrl,
-        ["latestRevisionUrl"] = latestRevisionUrl,
     };
 });

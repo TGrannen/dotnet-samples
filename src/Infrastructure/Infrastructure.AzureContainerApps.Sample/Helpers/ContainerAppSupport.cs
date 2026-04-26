@@ -8,7 +8,7 @@ namespace Infrastructure.AzureContainerApps.Sample.Helpers;
 
 internal static class ContainerAppSupport
 {
-    // Exists on MCR without ACR; used when DeployApp is false so the first up succeeds before CI pushes sample-api.
+    // MCR image so the first `pulumi up` succeeds before CI pushes to ACR. Image updates are done with Azure CLI.
     private const string PlaceholderImage = "mcr.microsoft.com/azuredocs/containerapps-helloworld";
 
     public static ContainerApp CreateContainerApp(
@@ -20,13 +20,6 @@ internal static class ContainerAppSupport
         Registry acr,
         UserAssignedIdentity pullIdentity)
     {
-        var traffic = BuildTraffic(cfg.StableRevisionName);
-
-        // Infra-only runs must not reference ACR tags that do not exist yet (IgnoreChanges does not apply on create).
-        var image = cfg.DeployApp
-            ? Output.Format($"{acr.LoginServer}/{cfg.ImageName}:{cfg.ImageTag}")
-            : Output.Create(PlaceholderImage);
-
         return new ContainerApp(appName, new ContainerAppArgs
         {
             ResourceGroupName = resourceGroupName,
@@ -40,7 +33,14 @@ internal static class ContainerAppSupport
                     External = true,
                     TargetPort = cfg.ContainerPort,
                     Transport = IngressTransportMethod.Auto,
-                    Traffic = traffic,
+                    Traffic =
+                    [
+                        new TrafficWeightArgs
+                        {
+                            LatestRevision = true,
+                            Weight = 100,
+                        },
+                    ],
                 },
                 Registries =
                 {
@@ -66,7 +66,7 @@ internal static class ContainerAppSupport
                     new ContainerArgs
                     {
                         Name = "api",
-                        Image = image,
+                        Image = PlaceholderImage,
                         Env =
                         {
                             new EnvironmentVarArgs
@@ -77,7 +77,7 @@ internal static class ContainerAppSupport
                             new EnvironmentVarArgs
                             {
                                 Name = "APP_VERSION_SHA",
-                                Value = cfg.ImageTag,
+                                Value = "pulumi-placeholder",
                             },
                         },
                         Resources = new ContainerResourcesArgs
@@ -97,52 +97,15 @@ internal static class ContainerAppSupport
             },
         }, new CustomResourceOptions
         {
-            IgnoreChanges = cfg.DeployApp
-                ? []
-                :
-                [
-                    "configuration",
-                    "template",
-                    "identity"
-                ],
+            // CI updates image, env, scale, and traffic weights via Azure CLI; do not reconcile those from Pulumi.
+            IgnoreChanges =
+            [
+                "template",
+                "configuration.ingress.traffic",
+            ],
         });
     }
 
     public static Output<string> StableUrl(string appName, ManagedEnvironment environment) =>
         Output.Format($"https://{appName}.{environment.DefaultDomain}");
-
-    public static Output<string> LatestRevisionUrl(ContainerApp app) =>
-        app.LatestRevisionFqdn.Apply(fqdn => $"https://{fqdn}");
-
-    private static TrafficWeightArgs[] BuildTraffic(string? stableRevisionNameConfig)
-    {
-        if (string.IsNullOrWhiteSpace(stableRevisionNameConfig))
-        {
-            return
-            [
-                new TrafficWeightArgs
-                {
-                    Label = "stable",
-                    LatestRevision = true,
-                    Weight = 100,
-                }
-            ];
-        }
-
-        return
-        [
-            new TrafficWeightArgs
-            {
-                Label = "stable",
-                RevisionName = stableRevisionNameConfig,
-                Weight = 100,
-            },
-            new TrafficWeightArgs
-            {
-                Label = "staging",
-                LatestRevision = true,
-                Weight = 0,
-            }
-        ];
-    }
 }

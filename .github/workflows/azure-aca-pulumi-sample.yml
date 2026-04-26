@@ -26,6 +26,8 @@ jobs:
     outputs:
       acr_name: ${{ steps.export.outputs.acr_name }}
       acr_login_server: ${{ steps.export.outputs.acr_login_server }}
+      resource_group_name: ${{ steps.export.outputs.resource_group_name }}
+      container_app_name: ${{ steps.export.outputs.container_app_name }}
     steps:
       - uses: actions/checkout@v4
 
@@ -43,10 +45,6 @@ jobs:
           command: up
           stack-name: dev
           work-dir: src/Infrastructure/Infrastructure.AzureContainerApps.Sample
-          config-map: |
-            {
-              "infrastructure-samples:deployApp": { "value": false }
-            }
 
       - name: Read Pulumi outputs (json)
         working-directory: src/Infrastructure/Infrastructure.AzureContainerApps.Sample
@@ -58,8 +56,12 @@ jobs:
         run: |
           ACR_NAME=$(jq -r '.acrName' "${{ github.workspace }}/.pulumi-outputs-infra.json")
           ACR_LOGIN_SERVER=$(jq -r '.acrLoginServer' "${{ github.workspace }}/.pulumi-outputs-infra.json")
+          RG_NAME=$(jq -r '.resourceGroupName' "${{ github.workspace }}/.pulumi-outputs-infra.json")
+          APP_NAME=$(jq -r '.containerAppName' "${{ github.workspace }}/.pulumi-outputs-infra.json")
           echo "acr_name=$ACR_NAME" >> "$GITHUB_OUTPUT"
           echo "acr_login_server=$ACR_LOGIN_SERVER" >> "$GITHUB_OUTPUT"
+          echo "resource_group_name=$RG_NAME" >> "$GITHUB_OUTPUT"
+          echo "container_app_name=$APP_NAME" >> "$GITHUB_OUTPUT"
 
   build_and_push:
     runs-on: ubuntu-latest
@@ -101,8 +103,6 @@ jobs:
       staging_url: ${{ steps.export.outputs.staging_url }}
       latest_revision_name: ${{ steps.export.outputs.latest_revision_name }}
     steps:
-      - uses: actions/checkout@v4
-
       - name: Azure login (OIDC)
         uses: azure/login@v2
         with:
@@ -111,30 +111,30 @@ jobs:
           subscription-id: ${{ env.ARM_SUBSCRIPTION_ID }}
           audience: ${{ env.AZURE_AUDIENCE }}
 
-      - name: Pulumi up (deploy staging revision, 0% traffic)
-        uses: pulumi/actions@v6
-        with:
-          command: up
-          stack-name: dev
-          work-dir: src/Infrastructure/Infrastructure.AzureContainerApps.Sample
-          config-map: |
-            {
-              "infrastructure-samples:deployApp": { "value": true },
-              "infrastructure-samples:imageTag": { "value": "${{ needs.build_and_push.outputs.image_tag }}" }
-            }
-
-      - name: Read Pulumi outputs
-        working-directory: src/Infrastructure/Infrastructure.AzureContainerApps.Sample
+      - name: Deploy candidate revision (image + 0% traffic to latest)
         shell: bash
-        run: pulumi stack output --json > "${{ github.workspace }}/.pulumi-outputs-staging.json"
+        env:
+          RG: ${{ needs.infra.outputs.resource_group_name }}
+          APP: ${{ needs.infra.outputs.container_app_name }}
+          IMAGE: ${{ needs.infra.outputs.acr_login_server }}/sample-api:${{ needs.build_and_push.outputs.image_tag }}
+        run: |
+          set -euo pipefail
+          PREV_REV="$(az containerapp show -g "$RG" -n "$APP" --query "properties.latestRevisionName" -o tsv)"
+          az containerapp update -g "$RG" -n "$APP" --container-name api --image "$IMAGE"
+          az containerapp ingress traffic set -g "$RG" -n "$APP" --revision-weight "${PREV_REV}=100 latest=0"
 
       - name: Export outputs
         id: export
+        shell: bash
+        env:
+          RG: ${{ needs.infra.outputs.resource_group_name }}
+          APP: ${{ needs.infra.outputs.container_app_name }}
         run: |
-          STAGING_URL=$(jq -r '.latestRevisionUrl' "${{ github.workspace }}/.pulumi-outputs-staging.json")
-          LATEST_REVISION_NAME=$(jq -r '.latestRevisionName' "${{ github.workspace }}/.pulumi-outputs-staging.json")
-          echo "staging_url=$STAGING_URL" >> "$GITHUB_OUTPUT"
-          echo "latest_revision_name=$LATEST_REVISION_NAME" >> "$GITHUB_OUTPUT"
+          set -euo pipefail
+          FQDN="$(az containerapp show -g "$RG" -n "$APP" --query "properties.latestRevisionFqdn" -o tsv)"
+          REV="$(az containerapp show -g "$RG" -n "$APP" --query "properties.latestRevisionName" -o tsv)"
+          echo "staging_url=https://${FQDN}" >> "$GITHUB_OUTPUT"
+          echo "latest_revision_name=$REV" >> "$GITHUB_OUTPUT"
 
   smoke_test:
     runs-on: ubuntu-latest
@@ -158,10 +158,8 @@ jobs:
 
   promote_to_production:
     runs-on: ubuntu-latest
-    needs: [ smoke_test, build_and_push ]
+    needs: [ smoke_test, infra ]
     steps:
-      - uses: actions/checkout@v4
-
       - name: Azure login (OIDC)
         uses: azure/login@v2
         with:
@@ -170,14 +168,12 @@ jobs:
           subscription-id: ${{ env.ARM_SUBSCRIPTION_ID }}
           audience: ${{ env.AZURE_AUDIENCE }}
 
-      - name: Pulumi up (promote stable -> 100%)
-        uses: pulumi/actions@v6
-        with:
-          command: up
-          stack-name: dev
-          work-dir: src/Infrastructure/Infrastructure.AzureContainerApps.Sample
-          config-map: |
-            {
-              "infrastructure-samples:stableRevisionName": { "value": "${{ needs.smoke_test.outputs.new_revision_name }}" }
-            }
+      - name: Promote latest revision to 100% traffic
+        shell: bash
+        env:
+          RG: ${{ needs.infra.outputs.resource_group_name }}
+          APP: ${{ needs.infra.outputs.container_app_name }}
+        run: |
+          set -euo pipefail
+          az containerapp ingress traffic set -g "$RG" -n "$APP" --revision-weight "latest=100"
 
