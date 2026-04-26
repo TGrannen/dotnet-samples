@@ -12,16 +12,17 @@ permissions:
   id-token: write
   contents: read
 
+env:
+  AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+  AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+  AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+  AZURE_AUDIENCE: api://AzureADTokenExchange
+  ARM_USE_OIDC: true # Tells Pulumi to use OIDC
+  PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+
 jobs:
   infra:
     runs-on: ubuntu-latest
-    env:
-      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-      AZURE_AUDIENCE: api://AzureADTokenExchange
-      ARM_USE_OIDC: true # Tells Pulumi to use OIDC
-      PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
     outputs:
       acr_name: ${{ steps.export.outputs.acr_name }}
       acr_login_server: ${{ steps.export.outputs.acr_login_server }}
@@ -67,11 +68,6 @@ jobs:
   build_and_push:
     runs-on: ubuntu-latest
     needs: [ infra ]
-    env:
-      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-      AZURE_AUDIENCE: api://AzureADTokenExchange
     outputs:
       image_tag: ${{ steps.meta.outputs.image_tag }}
     steps:
@@ -108,13 +104,6 @@ jobs:
     outputs:
       staging_url: ${{ steps.export.outputs.staging_url }}
       latest_revision_name: ${{ steps.export.outputs.latest_revision_name }}
-    env:
-      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-      AZURE_AUDIENCE: api://AzureADTokenExchange
-      ARM_USE_OIDC: true # Tells Pulumi to use OIDC
-      PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
     steps:
       - uses: actions/checkout@v4
 
@@ -178,13 +167,6 @@ jobs:
   promote_to_production:
     runs-on: ubuntu-latest
     needs: [ smoke_test, build_and_push ]
-    env:
-      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-      AZURE_AUDIENCE: api://AzureADTokenExchange
-      ARM_USE_OIDC: true # Tells Pulumi to use OIDC
-      PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
     steps:
       - uses: actions/checkout@v4
 
