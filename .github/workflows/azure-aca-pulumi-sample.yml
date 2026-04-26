@@ -160,6 +160,7 @@ jobs:
             echo "Version endpoint returned placeholder commit; skipping strict SHA compare."
             exit 0
           fi
+          ACTUAL="${ACTUAL%%+*}"
           test "$ACTUAL" = "$EXPECTED"
 
       - name: Capture new revision name
