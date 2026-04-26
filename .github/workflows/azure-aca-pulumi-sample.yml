@@ -36,14 +36,6 @@ jobs:
           subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
           audience: ${{ env.AZURE_AUDIENCE }}
 
-      - name: Configure Pulumi (infra only)
-        uses: pulumi/actions@v6
-        with:
-          command: config
-          stack-name: dev
-          work-dir: src/Infrastructure/Infrastructure.AzureContainerApps.Sample
-          args: set deployApp false
-
       - name: Pulumi up (provision RG/ACR/ACA env/identity)
         uses: pulumi/actions@v6
         with:
@@ -51,6 +43,8 @@ jobs:
           stack-name: dev
           work-dir: src/Infrastructure/Infrastructure.AzureContainerApps.Sample
           args: --yes --skip-preview
+          config-map: |
+            deployApp: "false"
 
       - name: Read Pulumi outputs (json)
         id: outputs
@@ -132,22 +126,6 @@ jobs:
           subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
           audience: ${{ env.AZURE_AUDIENCE }}
 
-      - name: Configure Pulumi for staging deploy
-        uses: pulumi/actions@v6
-        with:
-          command: config
-          stack-name: dev
-          work-dir: src/Infrastructure/Infrastructure.AzureContainerApps.Sample
-          args: set deployApp true
-
-      - name: Set imageTag to commit SHA
-        uses: pulumi/actions@v6
-        with:
-          command: config
-          stack-name: dev
-          work-dir: src/Infrastructure/Infrastructure.AzureContainerApps.Sample
-          args: set imageTag ${{ needs.build_and_push.outputs.image_tag }}
-
       - name: Pulumi up (deploy staging revision, 0% traffic)
         uses: pulumi/actions@v6
         with:
@@ -155,6 +133,9 @@ jobs:
           stack-name: dev
           work-dir: src/Infrastructure/Infrastructure.AzureContainerApps.Sample
           args: --yes --skip-preview
+          config-map: |
+            deployApp: "true"
+            imageTag: "${{ needs.build_and_push.outputs.image_tag }}"
 
       - name: Read Pulumi outputs
         id: outputs
@@ -215,14 +196,6 @@ jobs:
           subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
           audience: ${{ env.AZURE_AUDIENCE }}
 
-      - name: Set Pulumi config for promotion
-        uses: pulumi/actions@v6
-        with:
-          command: config
-          stack-name: dev
-          work-dir: src/Infrastructure/Infrastructure.AzureContainerApps.Sample
-          args: set stableRevisionName ${{ needs.smoke_test.outputs.new_revision_name }}
-
       - name: Pulumi up (promote stable -> 100%)
         uses: pulumi/actions@v6
         with:
@@ -230,4 +203,6 @@ jobs:
           stack-name: dev
           work-dir: src/Infrastructure/Infrastructure.AzureContainerApps.Sample
           args: --yes --skip-preview
+          config-map: |
+            stableRevisionName: "${{ needs.smoke_test.outputs.new_revision_name }}"
 
