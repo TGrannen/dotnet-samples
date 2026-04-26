@@ -16,6 +16,7 @@ return await Pulumi.Deployment.RunAsync(() =>
 
     var location = config.Get("azure-native:location") ?? config.Get("location") ?? "eastus";
     var deployApp = config.GetBoolean("deployApp") ?? true;
+    var enableLogAnalytics = config.GetBoolean("enableLogAnalytics") ?? false;
 
     var imageName = config.Get("imageName") ?? "sample-api";
     var imageTag = config.Get("imageTag") ?? "dev";
@@ -58,37 +59,52 @@ return await Pulumi.Deployment.RunAsync(() =>
         AdminUserEnabled = false,
     });
 
-    var workspace = new Workspace("acasamplelaw", new WorkspaceArgs
+    Workspace? workspace = null;
+    Output<string>? sharedKey = null;
+
+    if (enableLogAnalytics)
     {
-        ResourceGroupName = resourceGroup.Name,
-        Location = resourceGroup.Location,
-        Sku = new WorkspaceSkuArgs
+        workspace = new Workspace("acasamplelaw", new WorkspaceArgs
         {
-            Name = "PerGB2018",
-        },
-        RetentionInDays = 30,
-    });
+            ResourceGroupName = resourceGroup.Name,
+            Location = resourceGroup.Location,
+            Sku = new WorkspaceSkuArgs
+            {
+                Name = "PerGB2018",
+            },
+            // Retention has a cost impact; 30 is the common minimum depending on SKU/region.
+            RetentionInDays = 30,
+        });
 
-    var sharedKeys = GetSharedKeys.Invoke(new GetSharedKeysInvokeArgs
-    {
-        ResourceGroupName = resourceGroup.Name,
-        WorkspaceName = workspace.Name,
-    });
+        var sharedKeys = GetSharedKeys.Invoke(new GetSharedKeysInvokeArgs
+        {
+            ResourceGroupName = resourceGroup.Name,
+            WorkspaceName = workspace.Name,
+        });
 
-    var environment = new ManagedEnvironment("aca-sample-env", new ManagedEnvironmentArgs
+        sharedKey = sharedKeys.Apply(k => k.PrimarySharedKey!);
+    }
+
+    var environmentArgs = new ManagedEnvironmentArgs
     {
         ResourceGroupName = resourceGroup.Name,
         Location = resourceGroup.Location,
-        AppLogsConfiguration = new AppLogsConfigurationArgs
+    };
+
+    if (enableLogAnalytics)
+    {
+        environmentArgs.AppLogsConfiguration = new AppLogsConfigurationArgs
         {
             Destination = "log-analytics",
             LogAnalyticsConfiguration = new LogAnalyticsConfigurationArgs
             {
-                CustomerId = workspace.CustomerId,
-                SharedKey = sharedKeys.Apply(k => k.PrimarySharedKey!),
+                CustomerId = workspace!.CustomerId,
+                SharedKey = sharedKey!,
             },
-        },
-    });
+        };
+    }
+
+    var environment = new ManagedEnvironment("aca-sample-env", environmentArgs);
 
     var pullIdentity = new UserAssignedIdentity("aca-sample-pull-identity", new UserAssignedIdentityArgs
     {
@@ -210,8 +226,10 @@ return await Pulumi.Deployment.RunAsync(() =>
                 },
                 Scale = new ScaleArgs
                 {
-                    MinReplicas = 1,
-                    MaxReplicas = 2,
+                    // Cheapest behavior for samples: allow scale-to-zero.
+                    // With ingress enabled, ACA will use HTTP scaling by default.
+                    MinReplicas = 0,
+                    MaxReplicas = 1,
                 },
             },
         });

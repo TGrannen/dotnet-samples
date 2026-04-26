@@ -1,0 +1,2 @@
+config:
+  infrastructure-samples:deployApp: "false"

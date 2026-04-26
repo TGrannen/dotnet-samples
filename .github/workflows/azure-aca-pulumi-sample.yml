@@ -1,11 +1,11 @@
 name: Azure ACA Blue-Green (Pulumi C# Sample)
 
 on:
-  push:
-    branches: [ main ]
-    paths:
-      - "src/Infrastructure/Infrastructure.AzureContainerApps.Sample/**"
-      - ".github/workflows/azure-aca-pulumi-sample.yml"
+  # push:
+  #   branches: [ main ]
+  #   paths:
+  #     - "src/Infrastructure/Infrastructure.AzureContainerApps.Sample/**"
+  #     - ".github/workflows/azure-aca-pulumi-sample.yml"
   workflow_dispatch:
 
 permissions:
