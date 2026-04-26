@@ -8,6 +8,8 @@ namespace Infrastructure.AzureContainerApps.Sample.Helpers;
 
 internal static class ContainerAppSupport
 {
+    // Exists on MCR without ACR; used when DeployApp is false so the first up succeeds before CI pushes sample-api.
+    private const string PlaceholderImage = "mcr.microsoft.com/dotnet/samples:aspnetapp";
     public static TrafficWeightArgs[] BuildTraffic(string? stableRevisionNameConfig)
     {
         return string.IsNullOrWhiteSpace(stableRevisionNameConfig)
@@ -64,7 +66,10 @@ internal static class ContainerAppSupport
         TrafficWeightArgs[] traffic,
         CustomResourceOptions options)
     {
-        var image = Output.Format($"{acr.LoginServer}/{cfg.ImageName}:{cfg.ImageTag}");
+        // Infra-only runs must not reference ACR tags that do not exist yet (IgnoreChanges does not apply on create).
+        var image = cfg.DeployApp
+            ? Output.Format($"{acr.LoginServer}/{cfg.ImageName}:{cfg.ImageTag}")
+            : Output.Create(PlaceholderImage);
 
         return new ContainerApp(appName, new ContainerAppArgs
         {
