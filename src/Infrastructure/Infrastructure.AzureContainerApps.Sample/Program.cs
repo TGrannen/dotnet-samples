@@ -1,51 +1,23 @@
-using System.Text;
 using Pulumi;
 using Pulumi.AzureNative.Authorization;
 using Pulumi.AzureNative.ContainerRegistry;
 using Pulumi.AzureNative.ContainerRegistry.Inputs;
-using Pulumi.AzureNative.OperationalInsights;
-using Pulumi.AzureNative.OperationalInsights.Inputs;
 using Pulumi.AzureNative.Resources;
 using Pulumi.AzureNative.ManagedIdentity;
 using Pulumi.AzureNative.App;
 using Pulumi.AzureNative.App.Inputs;
+using Infrastructure.AzureContainerApps.Sample.Helpers;
 
 return await Pulumi.Deployment.RunAsync(() =>
 {
-    var config = new Config();
+    var cfg = SampleConfig.FromPulumiConfig(new Config());
 
-    var location = config.Get("azure-native:location") ?? config.Get("location") ?? "eastus";
-    var deployApp = config.GetBoolean("deployApp") ?? true;
-    var enableLogAnalytics = config.GetBoolean("enableLogAnalytics") ?? false;
-
-    var imageName = config.Get("imageName") ?? "sample-api";
-    var imageTag = config.Get("imageTag") ?? "dev";
-    var containerPort = config.GetInt32("containerPort") ?? 8080;
-
-    var cpu = config.GetDouble("cpu") ?? 0.25;
-    var memory = config.Get("memory") ?? "0.5Gi";
-
-    var isLive = config.GetBoolean("isLive") ?? false;
-    var stableRevisionNameConfig = config.Get("stableRevisionName"); // may be null on first run
-
-    static string ToAcrSafeSuffix(string input)
-    {
-        var sb = new StringBuilder();
-        foreach (var ch in input.ToLowerInvariant())
-        {
-            if ((ch >= 'a' && ch <= 'z') || (ch >= '0' && ch <= '9'))
-                sb.Append(ch);
-        }
-        return sb.Length == 0 ? "dev" : sb.ToString();
-    }
-
-    var stackSuffix = ToAcrSafeSuffix(Pulumi.Deployment.Instance.StackName);
-    var acrName = $"acasmp{stackSuffix}";
-    if (acrName.Length > 50) acrName = acrName[..50];
+    var stackSuffix = Naming.ToAcrSafeSuffix(Pulumi.Deployment.Instance.StackName);
+    var acrName = Naming.BuildAcrName(stackSuffix);
 
     var resourceGroup = new ResourceGroup("aca-sample-rg", new ResourceGroupArgs
     {
-        Location = location,
+        Location = cfg.Location,
     });
 
     var acr = new Registry(acrName, new RegistryArgs
@@ -59,31 +31,7 @@ return await Pulumi.Deployment.RunAsync(() =>
         AdminUserEnabled = false,
     });
 
-    Workspace? workspace = null;
-    Output<string>? sharedKey = null;
-
-    if (enableLogAnalytics)
-    {
-        workspace = new Workspace("acasamplelaw", new WorkspaceArgs
-        {
-            ResourceGroupName = resourceGroup.Name,
-            Location = resourceGroup.Location,
-            Sku = new WorkspaceSkuArgs
-            {
-                Name = "PerGB2018",
-            },
-            // Retention has a cost impact; 30 is the common minimum depending on SKU/region.
-            RetentionInDays = 30,
-        });
-
-        var sharedKeys = GetSharedKeys.Invoke(new GetSharedKeysInvokeArgs
-        {
-            ResourceGroupName = resourceGroup.Name,
-            WorkspaceName = workspace.Name,
-        });
-
-        sharedKey = sharedKeys.Apply(k => k.PrimarySharedKey!);
-    }
+    var (_, _, appLogsConfiguration) = LogAnalyticsSupport.MaybeCreate(cfg.EnableLogAnalytics, resourceGroup);
 
     var environmentArgs = new ManagedEnvironmentArgs
     {
@@ -91,18 +39,8 @@ return await Pulumi.Deployment.RunAsync(() =>
         Location = resourceGroup.Location,
     };
 
-    if (enableLogAnalytics)
-    {
-        environmentArgs.AppLogsConfiguration = new AppLogsConfigurationArgs
-        {
-            Destination = "log-analytics",
-            LogAnalyticsConfiguration = new LogAnalyticsConfigurationArgs
-            {
-                CustomerId = workspace!.CustomerId,
-                SharedKey = sharedKey!,
-            },
-        };
-    }
+    if (appLogsConfiguration is not null)
+        environmentArgs.AppLogsConfiguration = appLogsConfiguration;
 
     var environment = new ManagedEnvironment("aca-sample-env", environmentArgs);
 
@@ -126,135 +64,32 @@ return await Pulumi.Deployment.RunAsync(() =>
         Scope = acr.Id,
     });
 
-    var appName = $"aca-sample-api-{stackSuffix}";
-
-    var image = Output.Format($"{acr.LoginServer}/{imageName}:{imageTag}");
-
-    Output<string>? latestRevisionName = null;
-    Output<string>? stableRevisionName = null;
-    Output<string>? stableUrl = null;
-    Output<string>? latestRevisionUrl = null;
+    var appName = Naming.BuildAppName(stackSuffix);
 
     // Always keep the Container App in the Pulumi state so infra-only runs don't delete it.
     // When deployApp=false, we "freeze" it by protecting it from deletion and ignoring changes,
     // so the stack can still update infra (RG/ACR/env/identity) safely.
-    var traffic = string.IsNullOrWhiteSpace(stableRevisionNameConfig)
-        ? new[]
-        {
-            new TrafficWeightArgs
-            {
-                Label = "stable",
-                LatestRevision = true,
-                Weight = 100,
-            },
-        }
-        : new[]
-        {
-            new TrafficWeightArgs
-            {
-                Label = "stable",
-                RevisionName = stableRevisionNameConfig,
-                Weight = 100,
-            },
-            new TrafficWeightArgs
-            {
-                Label = "staging",
-                LatestRevision = true,
-                Weight = 0,
-            },
-        };
+    var traffic = ContainerAppSupport.BuildTraffic(cfg.StableRevisionName);
+    var containerAppOptions = ContainerAppSupport.BuildContainerAppOptions(cfg.DeployApp);
 
-    var containerAppOptions = new CustomResourceOptions
-    {
-        Protect = !deployApp,
-        IgnoreChanges = deployApp
-            ? new List<string>()
-            : new List<string>
-            {
-                "configuration",
-                "template",
-                "identity",
-            },
-    };
+    var containerApp = ContainerAppSupport.CreateContainerApp(
+        appName: appName,
+        cfg: cfg,
+        resourceGroupName: resourceGroup.Name,
+        location: resourceGroup.Location,
+        environment: environment,
+        acr: acr,
+        pullIdentity: pullIdentity,
+        traffic: traffic,
+        options: containerAppOptions);
 
-    var containerApp = new ContainerApp(appName, new ContainerAppArgs
-    {
-        ResourceGroupName = resourceGroup.Name,
-        Location = resourceGroup.Location,
-        ManagedEnvironmentId = environment.Id,
-        Configuration = new ConfigurationArgs
-        {
-            ActiveRevisionsMode = ActiveRevisionsMode.Multiple,
-            Ingress = new IngressArgs
-            {
-                External = true,
-                TargetPort = containerPort,
-                Transport = IngressTransportMethod.Auto,
-                Traffic = traffic,
-            },
-            Registries =
-            {
-                new RegistryCredentialsArgs
-                {
-                    Server = acr.LoginServer,
-                    Identity = pullIdentity.Id,
-                },
-            },
-        },
-        Identity = new Pulumi.AzureNative.Commontypesv5.Inputs.ManagedServiceIdentityArgs
-        {
-            Type = "UserAssigned",
-            UserAssignedIdentities =
-            {
-                pullIdentity.Id,
-            },
-        },
-        Template = new TemplateArgs
-        {
-            Containers =
-            {
-                new ContainerArgs
-                {
-                    Name = "api",
-                    Image = image,
-                    Env =
-                    {
-                        new EnvironmentVarArgs
-                        {
-                            Name = "ASPNETCORE_URLS",
-                            Value = $"http://0.0.0.0:{containerPort}",
-                        },
-                        new EnvironmentVarArgs
-                        {
-                            Name = "APP_VERSION_SHA",
-                            Value = imageTag,
-                        },
-                    },
-                    Resources = new ContainerResourcesArgs
-                    {
-                        Cpu = cpu,
-                        Memory = memory,
-                    },
-                },
-            },
-            Scale = new ScaleArgs
-            {
-                // Cheapest behavior for samples: allow scale-to-zero.
-                // With ingress enabled, ACA will use HTTP scaling by default.
-                MinReplicas = 0,
-                MaxReplicas = 1,
-            },
-        },
-    }, containerAppOptions);
-
-    latestRevisionName = containerApp.LatestRevisionName;
-    stableRevisionName = string.IsNullOrWhiteSpace(stableRevisionNameConfig)
+    var latestRevisionName = containerApp.LatestRevisionName;
+    var stableRevisionName = string.IsNullOrWhiteSpace(cfg.StableRevisionName)
         ? latestRevisionName
-        : Output.Create(stableRevisionNameConfig);
+        : Output.Create(cfg.StableRevisionName);
 
-    stableUrl = Output.Format($"https://{appName}.{environment.DefaultDomain}");
-    // Always reachable, regardless of traffic weights / labels.
-    latestRevisionUrl = containerApp.LatestRevisionFqdn.Apply(fqdn => $"https://{fqdn}");
+    var stableUrl = ContainerAppSupport.StableUrl(appName, environment);
+    var latestRevisionUrl = ContainerAppSupport.LatestRevisionUrl(containerApp);
 
     return new Dictionary<string, object?>
     {
