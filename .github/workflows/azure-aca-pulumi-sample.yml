@@ -45,7 +45,9 @@ jobs:
           work-dir: src/Infrastructure/Infrastructure.AzureContainerApps.Sample
           args: --yes --skip-preview
           config-map: |
-            infrastructure-samples:deployApp: "false"
+            {
+              "infrastructure-samples:deployApp": { "value": false }
+            }
 
       - name: Read Pulumi outputs (json)
         id: outputs
@@ -123,8 +125,10 @@ jobs:
           work-dir: src/Infrastructure/Infrastructure.AzureContainerApps.Sample
           args: --yes --skip-preview
           config-map: |
-            infrastructure-samples:deployApp: "true"
-            infrastructure-samples:imageTag: "${{ needs.build_and_push.outputs.image_tag }}"
+            {
+              "infrastructure-samples:deployApp": { "value": true },
+              "infrastructure-samples:imageTag": { "value": "${{ needs.build_and_push.outputs.image_tag }}" }
+            }
 
       - name: Read Pulumi outputs
         id: outputs
@@ -186,5 +190,7 @@ jobs:
           work-dir: src/Infrastructure/Infrastructure.AzureContainerApps.Sample
           args: --yes --skip-preview
           config-map: |
-            infrastructure-samples:stableRevisionName: "${{ needs.smoke_test.outputs.new_revision_name }}"
+            {
+              "infrastructure-samples:stableRevisionName": { "value": "${{ needs.smoke_test.outputs.new_revision_name }}" }
+            }
 
