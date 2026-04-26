@@ -135,121 +135,133 @@ return await Pulumi.Deployment.RunAsync(() =>
     Output<string>? stableUrl = null;
     Output<string>? latestRevisionUrl = null;
 
-    if (deployApp)
-    {
-        // Create/update the Container App. Updating the image creates a new revision.
-        var traffic = string.IsNullOrWhiteSpace(stableRevisionNameConfig)
-            ? new[]
-            {
-                new TrafficWeightArgs
-                {
-                    Label = "stable",
-                    LatestRevision = true,
-                    Weight = 100,
-                },
-            }
-            : new[]
-            {
-                new TrafficWeightArgs
-                {
-                    Label = "stable",
-                    RevisionName = stableRevisionNameConfig,
-                    Weight = 100,
-                },
-                new TrafficWeightArgs
-                {
-                    Label = "staging",
-                    LatestRevision = true,
-                    Weight = 0,
-                },
-            };
-
-        var containerApp = new ContainerApp(appName, new ContainerAppArgs
+    // Always keep the Container App in the Pulumi state so infra-only runs don't delete it.
+    // When deployApp=false, we "freeze" it by protecting it from deletion and ignoring changes,
+    // so the stack can still update infra (RG/ACR/env/identity) safely.
+    var traffic = string.IsNullOrWhiteSpace(stableRevisionNameConfig)
+        ? new[]
         {
-            ResourceGroupName = resourceGroup.Name,
-            Location = resourceGroup.Location,
-            ManagedEnvironmentId = environment.Id,
-            Configuration = new ConfigurationArgs
+            new TrafficWeightArgs
             {
-                ActiveRevisionsMode = ActiveRevisionsMode.Multiple,
-                Ingress = new IngressArgs
+                Label = "stable",
+                LatestRevision = true,
+                Weight = 100,
+            },
+        }
+        : new[]
+        {
+            new TrafficWeightArgs
+            {
+                Label = "stable",
+                RevisionName = stableRevisionNameConfig,
+                Weight = 100,
+            },
+            new TrafficWeightArgs
+            {
+                Label = "staging",
+                LatestRevision = true,
+                Weight = 0,
+            },
+        };
+
+    var containerAppOptions = new CustomResourceOptions
+    {
+        Protect = !deployApp,
+        IgnoreChanges = deployApp
+            ? new List<string>()
+            : new List<string>
+            {
+                "configuration",
+                "template",
+                "identity",
+            },
+    };
+
+    var containerApp = new ContainerApp(appName, new ContainerAppArgs
+    {
+        ResourceGroupName = resourceGroup.Name,
+        Location = resourceGroup.Location,
+        ManagedEnvironmentId = environment.Id,
+        Configuration = new ConfigurationArgs
+        {
+            ActiveRevisionsMode = ActiveRevisionsMode.Multiple,
+            Ingress = new IngressArgs
+            {
+                External = true,
+                TargetPort = containerPort,
+                Transport = IngressTransportMethod.Auto,
+                Traffic = traffic,
+            },
+            Registries =
+            {
+                new RegistryCredentialsArgs
                 {
-                    External = true,
-                    TargetPort = containerPort,
-                    Transport = IngressTransportMethod.Auto,
-                    Traffic = traffic,
+                    Server = acr.LoginServer,
+                    Identity = pullIdentity.Id,
                 },
-                Registries =
+            },
+        },
+        Identity = new Pulumi.AzureNative.Commontypesv5.Inputs.ManagedServiceIdentityArgs
+        {
+            Type = "UserAssigned",
+            UserAssignedIdentities =
+            {
+                pullIdentity.Id,
+            },
+        },
+        Template = new TemplateArgs
+        {
+            Containers =
+            {
+                new ContainerArgs
                 {
-                    new RegistryCredentialsArgs
+                    Name = "api",
+                    Image = image,
+                    Env =
                     {
-                        Server = acr.LoginServer,
-                        Identity = pullIdentity.Id,
+                        new EnvironmentVarArgs
+                        {
+                            Name = "ASPNETCORE_URLS",
+                            Value = $"http://0.0.0.0:{containerPort}",
+                        },
+                        new EnvironmentVarArgs
+                        {
+                            Name = "APP_VERSION_SHA",
+                            Value = imageTag,
+                        },
+                    },
+                    Resources = new ContainerResourcesArgs
+                    {
+                        Cpu = cpu,
+                        Memory = memory,
                     },
                 },
             },
-            Identity = new Pulumi.AzureNative.Commontypesv5.Inputs.ManagedServiceIdentityArgs
+            Scale = new ScaleArgs
             {
-                Type = "UserAssigned",
-                UserAssignedIdentities =
-                {
-                    pullIdentity.Id,
-                },
+                // Cheapest behavior for samples: allow scale-to-zero.
+                // With ingress enabled, ACA will use HTTP scaling by default.
+                MinReplicas = 0,
+                MaxReplicas = 1,
             },
-            Template = new TemplateArgs
-            {
-                Containers =
-                {
-                    new ContainerArgs
-                    {
-                        Name = "api",
-                        Image = image,
-                        Env =
-                        {
-                            new EnvironmentVarArgs
-                            {
-                                Name = "ASPNETCORE_URLS",
-                                Value = $"http://0.0.0.0:{containerPort}",
-                            },
-                            new EnvironmentVarArgs
-                            {
-                                Name = "APP_VERSION_SHA",
-                                Value = imageTag,
-                            },
-                        },
-                        Resources = new ContainerResourcesArgs
-                        {
-                            Cpu = cpu,
-                            Memory = memory,
-                        },
-                    },
-                },
-                Scale = new ScaleArgs
-                {
-                    // Cheapest behavior for samples: allow scale-to-zero.
-                    // With ingress enabled, ACA will use HTTP scaling by default.
-                    MinReplicas = 0,
-                    MaxReplicas = 1,
-                },
-            },
-        });
+        },
+    }, containerAppOptions);
 
-        latestRevisionName = containerApp.LatestRevisionName;
-        stableRevisionName = string.IsNullOrWhiteSpace(stableRevisionNameConfig)
-            ? latestRevisionName
-            : Output.Create(stableRevisionNameConfig);
+    latestRevisionName = containerApp.LatestRevisionName;
+    stableRevisionName = string.IsNullOrWhiteSpace(stableRevisionNameConfig)
+        ? latestRevisionName
+        : Output.Create(stableRevisionNameConfig);
 
-        stableUrl = Output.Format($"https://{appName}.{environment.DefaultDomain}");
-        // Always reachable, regardless of traffic weights / labels.
-        latestRevisionUrl = containerApp.LatestRevisionFqdn.Apply(fqdn => $"https://{fqdn}");
-    }
+    stableUrl = Output.Format($"https://{appName}.{environment.DefaultDomain}");
+    // Always reachable, regardless of traffic weights / labels.
+    latestRevisionUrl = containerApp.LatestRevisionFqdn.Apply(fqdn => $"https://{fqdn}");
 
     return new Dictionary<string, object?>
     {
         ["resourceGroupName"] = resourceGroup.Name,
         ["acrName"] = acr.Name,
         ["acrLoginServer"] = acr.LoginServer,
-        ["containerAppName"] = deployApp ? appName : null,
+        ["containerAppName"] = appName,
         ["latestRevisionName"] = latestRevisionName,
         ["stableRevisionName"] = stableRevisionName,
         ["stableUrl"] = stableUrl,
