@@ -121,7 +121,10 @@ jobs:
           set -euo pipefail
           PREV_REV="$(az containerapp show -g "$RG" -n "$APP" --query "properties.latestRevisionName" -o tsv)"
           az containerapp update -g "$RG" -n "$APP" --container-name api --image "$IMAGE"
-          az containerapp ingress traffic set -g "$RG" -n "$APP" --revision-weight "${PREV_REV}=100 latest=0"
+          NEW_REV="$(az containerapp show -g "$RG" -n "$APP" --query "properties.latestRevisionName" -o tsv)"
+          az containerapp ingress traffic set -g "$RG" -n "$APP" \
+            --revision-weight "${PREV_REV}=100" \
+            --revision-weight "${NEW_REV}=0"
 
       - name: Export outputs
         id: export
@@ -175,5 +178,6 @@ jobs:
           APP: ${{ needs.infra.outputs.container_app_name }}
         run: |
           set -euo pipefail
-          az containerapp ingress traffic set -g "$RG" -n "$APP" --revision-weight "latest=100"
+          REV="${{ needs.smoke_test.outputs.new_revision_name }}"
+          az containerapp ingress traffic set -g "$RG" -n "$APP" --revision-weight "${REV}=100"
 
