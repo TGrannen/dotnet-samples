@@ -15,6 +15,13 @@ permissions:
 jobs:
   infra:
     runs-on: ubuntu-latest
+    env:
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      AZURE_AUDIENCE: api://AzureADTokenExchange
+      ARM_USE_OIDC: true # Tells Pulumi to use OIDC
+      PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
     outputs:
       acr_name: ${{ steps.export.outputs.acr_name }}
       acr_login_server: ${{ steps.export.outputs.acr_login_server }}
@@ -24,10 +31,10 @@ jobs:
       - name: Azure login (OIDC)
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          audience: api://AzureADTokenExchange
+          client-id: ${{ env.AZURE_CLIENT_ID }}
+          tenant-id: ${{ env.AZURE_TENANT_ID }}
+          subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
+          audience: ${{ env.AZURE_AUDIENCE }}
 
       - name: Configure Pulumi (infra only)
         uses: pulumi/actions@v6
@@ -36,8 +43,6 @@ jobs:
           stack-name: dev
           work-dir: src/Infrastructure/Infrastructure.AzureContainerApps.Sample
           args: set deployApp false
-        env:
-          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
 
       - name: Pulumi up (provision RG/ACR/ACA env/identity)
         uses: pulumi/actions@v6
@@ -46,9 +51,6 @@ jobs:
           stack-name: dev
           work-dir: src/Infrastructure/Infrastructure.AzureContainerApps.Sample
           args: --yes --skip-preview
-        env:
-          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
-          PULUMI_CONFIG_PASSPHRASE: ""
 
       - name: Read Pulumi outputs (json)
         id: outputs
@@ -58,8 +60,6 @@ jobs:
           stack-name: dev
           work-dir: src/Infrastructure/Infrastructure.AzureContainerApps.Sample
           args: --json
-        env:
-          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
 
       - name: Export outputs
         id: export
@@ -73,6 +73,11 @@ jobs:
   build_and_push:
     runs-on: ubuntu-latest
     needs: [ infra ]
+    env:
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      AZURE_AUDIENCE: api://AzureADTokenExchange
     outputs:
       image_tag: ${{ steps.meta.outputs.image_tag }}
     steps:
@@ -85,10 +90,10 @@ jobs:
       - name: Azure login (OIDC)
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          audience: api://AzureADTokenExchange
+          client-id: ${{ env.AZURE_CLIENT_ID }}
+          tenant-id: ${{ env.AZURE_TENANT_ID }}
+          subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
+          audience: ${{ env.AZURE_AUDIENCE }}
 
       - name: ACR login
         run: az acr login --name "${{ needs.infra.outputs.acr_name }}"
@@ -109,16 +114,23 @@ jobs:
     outputs:
       staging_url: ${{ steps.export.outputs.staging_url }}
       latest_revision_name: ${{ steps.export.outputs.latest_revision_name }}
+    env:
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      AZURE_AUDIENCE: api://AzureADTokenExchange
+      ARM_USE_OIDC: true # Tells Pulumi to use OIDC
+      PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
     steps:
       - uses: actions/checkout@v4
 
       - name: Azure login (OIDC)
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          audience: api://AzureADTokenExchange
+          client-id: ${{ env.AZURE_CLIENT_ID }}
+          tenant-id: ${{ env.AZURE_TENANT_ID }}
+          subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
+          audience: ${{ env.AZURE_AUDIENCE }}
 
       - name: Configure Pulumi for staging deploy
         uses: pulumi/actions@v6
@@ -127,8 +139,6 @@ jobs:
           stack-name: dev
           work-dir: src/Infrastructure/Infrastructure.AzureContainerApps.Sample
           args: set deployApp true
-        env:
-          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
 
       - name: Set imageTag to commit SHA
         uses: pulumi/actions@v6
@@ -137,8 +147,6 @@ jobs:
           stack-name: dev
           work-dir: src/Infrastructure/Infrastructure.AzureContainerApps.Sample
           args: set imageTag ${{ needs.build_and_push.outputs.image_tag }}
-        env:
-          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
 
       - name: Pulumi up (deploy staging revision, 0% traffic)
         uses: pulumi/actions@v6
@@ -147,9 +155,6 @@ jobs:
           stack-name: dev
           work-dir: src/Infrastructure/Infrastructure.AzureContainerApps.Sample
           args: --yes --skip-preview
-        env:
-          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
-          PULUMI_CONFIG_PASSPHRASE: ""
 
       - name: Read Pulumi outputs
         id: outputs
@@ -159,8 +164,6 @@ jobs:
           stack-name: dev
           work-dir: src/Infrastructure/Infrastructure.AzureContainerApps.Sample
           args: --json
-        env:
-          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
 
       - name: Export outputs
         id: export
@@ -194,16 +197,23 @@ jobs:
   promote_to_production:
     runs-on: ubuntu-latest
     needs: [ smoke_test, build_and_push ]
+    env:
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      AZURE_AUDIENCE: api://AzureADTokenExchange
+      ARM_USE_OIDC: true # Tells Pulumi to use OIDC
+      PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
     steps:
       - uses: actions/checkout@v4
 
       - name: Azure login (OIDC)
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          audience: api://AzureADTokenExchange
+          client-id: ${{ env.AZURE_CLIENT_ID }}
+          tenant-id: ${{ env.AZURE_TENANT_ID }}
+          subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
+          audience: ${{ env.AZURE_AUDIENCE }}
 
       - name: Set Pulumi config for promotion
         uses: pulumi/actions@v6
@@ -212,8 +222,6 @@ jobs:
           stack-name: dev
           work-dir: src/Infrastructure/Infrastructure.AzureContainerApps.Sample
           args: set stableRevisionName ${{ needs.smoke_test.outputs.new_revision_name }}
-        env:
-          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
 
       - name: Pulumi up (promote stable -> 100%)
         uses: pulumi/actions@v6
@@ -222,7 +230,4 @@ jobs:
           stack-name: dev
           work-dir: src/Infrastructure/Infrastructure.AzureContainerApps.Sample
           args: --yes --skip-preview
-        env:
-          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
-          PULUMI_CONFIG_PASSPHRASE: ""
 
