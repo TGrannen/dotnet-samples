@@ -1,9 +1,15 @@
-using ApiService.Api.Persistence.Entities;
-
 namespace ApiService.Api.Tests.Features.Products;
 
 public class ProductIntegrationTests : IntegrationTestsBase
 {
+    private IProductsApi _api = null!;
+
+    [Before(Test)]
+    public void SetupApiAsync()
+    {
+        _api = RestService.For<IProductsApi>(Factory.CreateClient());
+    }
+
     [Test]
     public async Task GetProduct_WhenSeeded_ReturnsProduct()
     {
@@ -17,8 +23,7 @@ public class ProductIntegrationTests : IntegrationTestsBase
             return Task.CompletedTask;
         });
 
-        var api = RestService.For<IProductsApi>(Factory.CreateClient());
-        var result = await api.GetAsync<ProductResponse>(productId);
+        var result = await _api.GetAsync<ProductResponse>(productId);
 
         await Assert.That(result.Name).IsEqualTo("Test Product");
         await Assert.That(result.Price).IsEqualTo(99.99m);
@@ -27,10 +32,8 @@ public class ProductIntegrationTests : IntegrationTestsBase
     [Test]
     public async Task CreateProduct_ThenGet_ReturnsCreatedProduct()
     {
-        var api = RestService.For<IProductsApi>(Factory.CreateClient());
-
-        var id = await api.CreateAsync<Guid>(new CreateProductRequest("High-End GPU", 1200.00m));
-        var product = await api.GetAsync<ProductResponse>(id);
+        var id = await _api.CreateAsync<Guid>(new CreateProductRequest("High-End GPU", 1200.00m));
+        var product = await _api.GetAsync<ProductResponse>(id);
 
         await Assert.That(id).IsNotEqualTo(Guid.Empty);
         await Assert.That(product.Name).IsEqualTo("High-End GPU");
@@ -40,9 +43,7 @@ public class ProductIntegrationTests : IntegrationTestsBase
     [Test]
     public async Task CreateProduct_WithInvalidName_ReturnsBadRequest()
     {
-        var api = RestService.For<IProductsApi>(Factory.CreateClient());
-
-        var exception = await Assert.That(async () => await api.CreateAsync<Guid>(new CreateProductRequest(string.Empty, 10m)))
+        var exception = await Assert.That(async () => await _api.CreateAsync<Guid>(new CreateProductRequest(string.Empty, 10m)))
             .Throws<ApiException>();
 
         await Assert.That(exception).IsNotNull();
@@ -66,8 +67,7 @@ public class ProductIntegrationTests : IntegrationTestsBase
             return Task.CompletedTask;
         });
 
-        var api = RestService.For<IProductsApi>(Factory.CreateClient());
-        var list = await api.ListAsync();
+        var list = await _api.ListAsync();
 
         await Assert.That(list.Any(p => p.Name == "List A")).IsTrue();
         await Assert.That(list.Any(p => p.Name == "List B")).IsTrue();
@@ -76,12 +76,12 @@ public class ProductIntegrationTests : IntegrationTestsBase
     [Test]
     public async Task UpdateProduct_ThenGet_ReturnsUpdatedValues()
     {
-        var api = RestService.For<IProductsApi>(Factory.CreateClient());
-        var id = await api.CreateAsync<Guid>(new CreateProductRequest("Before", 50m));
+        var id = await SeedAsync(async () => await _api.CreateAsync<Guid>(new CreateProductRequest("Before", 50m)));
+
         SaveChangesTrackerReset();
 
-        await api.UpdateAsync(id, new UpdateProductRequest("After", 75m));
-        var product = await api.GetAsync<ProductResponse>(id);
+        await _api.UpdateAsync(id, new UpdateProductRequest("After", 75m));
+        var product = await _api.GetAsync<ProductResponse>(id);
 
         await Assert.That(product.Name).IsEqualTo("After");
         await Assert.That(product.Price).IsEqualTo(75m);
@@ -90,11 +90,10 @@ public class ProductIntegrationTests : IntegrationTestsBase
     [Test]
     public async Task UpdateProduct_WithInvalidName_ReturnsBadRequest()
     {
-        var api = RestService.For<IProductsApi>(Factory.CreateClient());
-        var id = await api.CreateAsync<Guid>(new CreateProductRequest("Valid", 50m));
+        var id = await _api.CreateAsync<Guid>(new CreateProductRequest("Valid", 50m));
 
         var exception = await Assert.That(async () =>
-                await api.UpdateAsync(id, new UpdateProductRequest(string.Empty, 10m)))
+                await _api.UpdateAsync(id, new UpdateProductRequest(string.Empty, 10m)))
             .Throws<ApiException>();
 
         await Assert.That(exception).IsNotNull();
@@ -104,13 +103,11 @@ public class ProductIntegrationTests : IntegrationTestsBase
     [Test]
     public async Task DeleteProduct_ThenGet_ReturnsNotFound()
     {
-        var api = RestService.For<IProductsApi>(Factory.CreateClient());
-        var id = await api.CreateAsync<Guid>(new CreateProductRequest("To Remove", 10m));
-        SaveChangesTrackerReset();
+        var id = await SeedAsync(async () => await _api.CreateAsync<Guid>(new CreateProductRequest("To Remove", 10m)));
 
-        await api.DeleteAsync(id);
+        await _api.DeleteAsync(id);
 
-        var exception = await Assert.That(async () => await api.GetAsync<ProductResponse>(id))
+        var exception = await Assert.That(async () => await _api.GetAsync<ProductResponse>(id))
             .Throws<ApiException>();
 
         await Assert.That(exception).IsNotNull();
@@ -120,9 +117,7 @@ public class ProductIntegrationTests : IntegrationTestsBase
     [Test]
     public async Task DeleteProduct_WhenIdUnknown_ReturnsNotFound()
     {
-        var api = RestService.For<IProductsApi>(Factory.CreateClient());
-
-        var exception = await Assert.That(async () => await api.DeleteAsync(Guid.NewGuid()))
+        var exception = await Assert.That(async () => await _api.DeleteAsync(Guid.NewGuid()))
             .Throws<ApiException>();
 
         await Assert.That(exception).IsNotNull();

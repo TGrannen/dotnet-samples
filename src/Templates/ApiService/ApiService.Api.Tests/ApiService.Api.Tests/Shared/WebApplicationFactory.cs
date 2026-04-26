@@ -9,13 +9,13 @@ namespace ApiService.Api.Tests.Shared;
 
 public class WebApplicationFactory : TestWebApplicationFactory<Program>
 {
-    [ClassDataSource<PostgresContainer>(Shared = SharedType.PerTestSession)]
-    public PostgresContainer Postgres { get; init; } = null!;
+    [ClassDataSource<SqlServerContainer>(Shared = SharedType.PerTestSession)]
+    public SqlServerContainer SqlServer { get; init; } = null!;
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.UseEnvironment("Testing");
-        builder.UseSetting("ConnectionStrings:DefaultConnection", Postgres.GetConnectionString());
+        builder.UseSetting("ConnectionStrings:DefaultConnection", SqlServer.GetConnectionString());
 
         builder.ConfigureTestServices(services =>
         {
@@ -28,7 +28,7 @@ public class WebApplicationFactory : TestWebApplicationFactory<Program>
                 services.Remove(descriptor);
             }
 
-            services.AddPersistence(Postgres.GetConnectionString(), (sp, options) =>
+            services.AddPersistence(SqlServer.GetConnectionString(), (sp, options) =>
             {
                 var tracker = sp.GetRequiredService<SaveChangesTracker>();
                 options.AddInterceptors(new SaveCountInterceptor(tracker));
