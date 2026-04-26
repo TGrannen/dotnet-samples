@@ -63,26 +63,22 @@ return await Pulumi.Deployment.RunAsync(() =>
         Scope = acr.Id,
     });
 
-    var appName = Naming.BuildAppName(cfg.AcrSafeSuffix);
-
     // Container app shell (ingress, registry identity, scale mode) is managed here; image and traffic weights are updated in CI via Azure CLI.
-    _ = ContainerAppSupport.CreateContainerApp(
-        appName: appName,
-        cfg: cfg,
+    var app = ContainerAppSupport.CreateContainerApp(cfg: cfg,
         resourceGroupName: resourceGroup.Name,
         location: resourceGroup.Location,
         environment: environment,
         acr: acr,
         pullIdentity: pullIdentity);
 
-    var stableUrl = ContainerAppSupport.StableUrl(appName, environment);
+    var stableUrl = ContainerAppSupport.StableUrl(app.Name, environment);
 
     return new Dictionary<string, object?>
     {
         ["resourceGroupName"] = resourceGroup.Name,
         ["acrName"] = acr.Name,
         ["acrLoginServer"] = acr.LoginServer,
-        ["containerAppName"] = appName,
+        ["containerAppName"] = app.Name,
         ["stableUrl"] = stableUrl,
     };
 });

@@ -11,16 +11,14 @@ internal static class ContainerAppSupport
     // MCR image so the first `pulumi up` succeeds before CI pushes to ACR. Image updates are done with Azure CLI.
     private const string PlaceholderImage = "mcr.microsoft.com/azuredocs/containerapps-helloworld";
 
-    public static ContainerApp CreateContainerApp(
-        string appName,
-        SampleConfig cfg,
+    public static ContainerApp CreateContainerApp(SampleConfig cfg,
         Output<string> resourceGroupName,
         Output<string> location,
         ManagedEnvironment environment,
         Registry acr,
         UserAssignedIdentity pullIdentity)
     {
-        return new ContainerApp(appName, new ContainerAppArgs
+        return new ContainerApp($"aca-sample-api-{cfg.AcrSafeSuffix}", new ContainerAppArgs
         {
             ResourceGroupName = resourceGroupName,
             Location = location,
@@ -106,6 +104,6 @@ internal static class ContainerAppSupport
         });
     }
 
-    public static Output<string> StableUrl(string appName, ManagedEnvironment environment) =>
+    public static Output<string> StableUrl(Output<string> appName, ManagedEnvironment environment) =>
         Output.Format($"https://{appName}.{environment.DefaultDomain}");
 }

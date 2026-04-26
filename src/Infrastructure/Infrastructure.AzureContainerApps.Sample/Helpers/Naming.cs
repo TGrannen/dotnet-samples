@@ -12,7 +12,5 @@ internal static class Naming
 
         return acrName;
     }
-
-    public static string BuildAppName(string stackSuffix) => $"aca-sample-api-{stackSuffix}";
 }
 
